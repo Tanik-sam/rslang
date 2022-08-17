@@ -1,0 +1,37 @@
+.footer {
+    background: $color-primary;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 0.4rem 0 0.5rem 0;
+}
+
+.footer__wrapper {
+    @include media-tablet {
+        padding-left: 24px;
+    }
+}
+.footer-navigation{
+    align-items: center;  
+}
+
+.footer__link{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+}
+.person-link{
+text-decoration: none;
+color: $color-dark;
+}
+.logo-object{
+    background-image: url("./assets/icons/logo_rss.svg");
+    width: 136px;
+    height: 50px;
+    background-size: auto;
+}
+.fa-github-alt {
+    font-size: 3rem;
+    color: $color-dark;
+}

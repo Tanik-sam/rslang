@@ -46,7 +46,7 @@ const baseConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './src/pages/main/index.html'),
+      template: path.resolve(__dirname, './src/view/main/main.html'),
       filename: 'index.html',
     }),
     new CleanWebpackPlugin(),

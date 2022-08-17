@@ -1,0 +1,26 @@
+.navigation {
+    display: flex;
+    font-size: 1.5rem;
+    line-height: 2.8rem;
+}
+.navigation__link{
+    text-decoration: none;
+    color: $color-dark;
+    font-family: $font_sansserif;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.navigation__link-item {
+    list-style: none;
+    padding: 0 10px;
+    cursor: pointer;
+    @extend %transition;
+    &:hover {
+        color: $color-primary;
+    }
+}
+.header__navigation {
+    @include media-tablet {
+        display: none;
+    }
+}
