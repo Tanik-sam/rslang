@@ -1,14 +1,14 @@
 class App {
-    /*private controller;
+    /* private controller;
     private view;
     constructor() {
         this.controller = new AppController();
         this.view = new AppView();
-    }*/
+    } */
 
     start(): void {
         (document.getElementById('login') as HTMLElement).addEventListener('click', (e: Event) =>
-            alert( `Ты нажал ${e.target}, а что ты сделал, чтобы она работала????`)
+            alert(`Ты нажал ${e.target}, а что ты сделал, чтобы она работала????`)
         );
     }
 }

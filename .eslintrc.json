@@ -1,7 +1,7 @@
 {
     "plugins": ["prettier", "import","@typescript-eslint"],
     "extends": [
-        "airbnb",
+        "airbnb-base",
         "plugin:prettier/recommended",
         "prettier",
         "eslint:recommended",
