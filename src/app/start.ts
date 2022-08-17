@@ -8,7 +8,7 @@ class App {
 
     start(): void {
         (document.getElementById('login') as HTMLElement).addEventListener('click', (e: Event) =>
-            alert(`Ты нажал ${e.target}, а что ты сделал, чтобы она работала????`)
+            console.log(`Ты нажал ${e.target}, а что ты сделал, чтобы она работала????`)
         );
     }
 }
