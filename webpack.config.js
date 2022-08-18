@@ -6,7 +6,10 @@ const EslingPlugin = require('eslint-webpack-plugin');
 
 
 const baseConfig = {
-  entry: path.resolve(__dirname, './src/index.ts'),
+  entry: {
+    index: path.resolve(__dirname, './src/index.ts'),
+    'audio-challenge': path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.ts')
+  },
   mode: 'development',
   module: {
     rules: [
@@ -41,13 +44,18 @@ const baseConfig = {
     extensions: ['.ts', '.js','.css','.sass'],
   },
   output: {
-    filename: 'index.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, './dist'),
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/view/main/main.html'),
       filename: 'index.html',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'audio-challenge.html',
+      template: path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.html'),
+      chunks: ['audio-challenge']
     }),
     new CleanWebpackPlugin(),
     new EslingPlugin({ extensions: 'ts' }),
