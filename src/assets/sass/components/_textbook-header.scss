@@ -1,0 +1,22 @@
+.textbook-header {
+    background: $color-primary-pink;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 0;
+}
+.textbook-header__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+
+    @include media-tablet {
+        padding-left: 24px;
+    }
+}
+.textbook-header__buttons{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    gap:1rem;
+}

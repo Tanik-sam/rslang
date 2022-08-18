@@ -1,5 +1,5 @@
 .features {
-    padding: 0.8rem 0;
+    padding: 6rem 0;
     @include media-tablet {
         text-align: center;
     }
@@ -41,12 +41,16 @@
 }
 
 .feature {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     position: relative;
-    &_hidden {
-        display: none;
+    @extend %transition;
+    &:hover {
+        background: $color-light;
+        transform: scale(1.1);
     }
     @include media-tablet {
         overflow: hidden;

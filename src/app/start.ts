@@ -1,14 +1,18 @@
+import Textbook from '../view/textbook/textbook';
+
 class App {
-    /* private controller;
-    private view;
+    private textbook;
+
     constructor() {
-        this.controller = new AppController();
-        this.view = new AppView();
-    } */
+        this.textbook = new Textbook();
+    }
 
     start(): void {
         (document.getElementById('login') as HTMLElement).addEventListener('click', (e: Event) =>
             console.log(`Ты нажал ${e.target}, а что ты сделал, чтобы она работала????`)
+        );
+        (document.getElementById('textbook') as HTMLElement).addEventListener('click', (e: Event) =>
+            this.textbook.drawTextbook()
         );
     }
 }

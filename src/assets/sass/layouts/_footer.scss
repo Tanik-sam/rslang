@@ -17,9 +17,9 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.6rem;
     align-items: center;
-    justify-content: space-between;
+    justify-content: right;
 }
 .person-link{
 text-decoration: none;
@@ -32,6 +32,6 @@ color: $color-dark;
     background-size: auto;
 }
 .fa-github-alt {
-    font-size: 3rem;
+    font-size: 2rem;
     color: $color-dark;
 }

@@ -1,7 +1,7 @@
 .header {
     background: $color-primary;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
-    padding: 0.4rem 0 0.5rem 0;
+    padding: 0;
 }
 
 .header__wrapper {
@@ -16,6 +16,7 @@
 }
 .logo__wrapper{
     display: flex;
+    align-items: center;
     justify-content: space-between;
     flex-direction: row;
     gap: 1rem
