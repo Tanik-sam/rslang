@@ -1,0 +1,72 @@
+.levels {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    background-color: $color-light;
+}
+.level {
+    @extend %font-prim;
+    padding: 2.5rem 2rem 2.5rem 2rem;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    @extend %transition;
+    &_elementary{
+        background: $color-ivory;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-ivory-hover;
+            transform: scale(1.1);
+        }
+    }
+    &_preIntermediate{
+        background: $color-light-pearch;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-light-pearch-hover;
+            transform: scale(1.1);
+        }
+    }
+    &_intermediate{
+        background: $color-pearch;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-pearch-hover;
+            transform: scale(1.1);
+        }
+    }
+    &_upperIntermediate{
+        background: $color-dark-pink;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-dark-pink-hover;
+            transform: scale(1.1);
+        }
+    }
+    &_advanced{
+        background: $color-blue-transp;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-blue-transp-hover;
+            transform: scale(1.1);
+        }
+    }
+    &_proficiency{
+        background: $color-green;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-green-hover;
+            transform: scale(1.1);
+        }
+    }
+}

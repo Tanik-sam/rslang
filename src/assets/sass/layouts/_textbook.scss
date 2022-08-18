@@ -1,0 +1,81 @@
+.textbook-body{
+    display:flex;
+    flex-direction:row;
+    margin: auto;
+}
+.textbook-article{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:0.5rem 1rem 1rem 1rem;
+}
+.textbook-words {
+    width:100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.textbook-words__word {
+    margin-top: 0.5rem;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $color-ivory;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding: 1.8rem 2.4rem 1.8rem 2.4rem;
+    &:hover {
+        background-color: $color-ivory-hover;
+    }
+}
+.textbook-words__word-name{
+    display: inline;
+    @extend %font-prim;
+    font-size: 1.5rem;
+    color: $color-dark;
+    font-weight: 300;
+    padding-right:0.5rem;
+    &_red{
+        color:red;
+        font-weight: 600;
+    }
+}
+.textbook-word__setence{
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: $color-dark;
+    &_add{
+        font-weight: 300;
+    }
+}
+.textbook-word__stat{
+    padding-top:1rem;
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 0.9rem;
+    color: $color-dark;
+}
+.textbook-words__view{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.textbook-words__image{
+    width: 10rem;
+    height: 10rem;
+    background-image: url('./assets/img/main_page.png');
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    margin: 1rem;
+}
+.textbook-words__buttons{
+    margin: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap:1rem;
+}
