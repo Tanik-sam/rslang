@@ -1,5 +1,5 @@
 {
-    "name": "online-store",
+    "name": "RSLang",
     "version": "1.0.0",
     "description": "",
     "main": "webpack.base.config.js",
@@ -13,7 +13,7 @@
         "url": ""
     },
     "keywords": [],
-    "author": "Tatiana Samoilovich",
+    "author": "Tatiana Samoilovich, Dasha Usova, Semion Krapivin",
     "license": "ISC",
     "homepage": "",
     "devDependencies": {
