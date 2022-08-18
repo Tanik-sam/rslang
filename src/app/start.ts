@@ -11,7 +11,7 @@ class App {
         (document.getElementById('login') as HTMLElement).addEventListener('click', (e: Event) =>
             console.log(`Ты нажал ${e.target}, а что ты сделал, чтобы она работала????`)
         );
-        (document.getElementById('textbook') as HTMLElement).addEventListener('click', (e: Event) =>
+        (document.getElementById('textbook') as HTMLElement).addEventListener('click', () =>
             this.textbook.drawTextbook()
         );
     }

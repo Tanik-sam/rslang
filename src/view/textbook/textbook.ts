@@ -6,7 +6,7 @@ class Textbook {
 
     group = localStorage.group || 0;
 
-    data: IWords[];
+    data!: IWords[];
 
     drawTextbook(): void {
         if (document.querySelector('.container') as HTMLElement) {
@@ -16,7 +16,7 @@ class Textbook {
         const textBookTemp = document.querySelector('#textbook-template') as HTMLTemplateElement;
         const textBookClone = textBookTemp.content.cloneNode(true) as HTMLElement;
         fragment.append(textBookClone);
-        document.querySelector('.container').append(fragment);
+        (document.querySelector('.container') as HTMLElement).append(fragment);
         const fragment1 = document.createDocumentFragment() as DocumentFragment;
         const wordTemp = document.querySelector('#textbookWords') as HTMLTemplateElement;
         (async () => {
@@ -27,7 +27,7 @@ class Textbook {
                 (wordClone.querySelector('.textbook-words__word-trans') as HTMLElement).innerHTML = item.textMeaning;
                 (wordClone.querySelector('.textbook-words__image') as HTMLElement).innerHTML = item.image;
                 fragment1.append(wordClone);
-                document.querySelector('.textbook-article').append(fragment1);
+                (document.querySelector('.textbook-article') as HTMLElement).append(fragment1);
             });
         })();
     }
