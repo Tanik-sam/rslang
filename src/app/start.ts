@@ -1,5 +1,5 @@
-// @ts-ignore
-import Textbook from '../view/textbook/textbook.ts';
+import Textbook from '../view/textbook/textbook';
+
 class App {
     private textbook;
 
