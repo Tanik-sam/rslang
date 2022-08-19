@@ -45,7 +45,7 @@ class Textbook {
         });
         const audioStart = document.querySelectorAll('.textbook-words__word-btn');
         console.log(audioStart);
-        for (let i = 0; i < audioStart.length; i++) {
+        for (let i = 0; i < audioStart.length; i += 1) {
             audioStart[i].addEventListener('click', (e) => {
                 let id!: string;
                 (async () => {
