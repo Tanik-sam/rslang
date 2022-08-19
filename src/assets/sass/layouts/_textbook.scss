@@ -1,4 +1,8 @@
 .textbook-body{
+    background-color: $color-light;
+    width: 100%;
+}
+.textbook-body_wrapper{
     display:flex;
     flex-direction:row;
     margin: auto;
@@ -9,6 +13,7 @@
     flex-direction: column;
     align-items: center;
     padding:0.5rem 1rem 1rem 1rem;
+    background-color: white;
 }
 .textbook-words {
     width:100%;
@@ -29,10 +34,10 @@
         background-color: $color-ivory-hover;
     }
 }
-.textbook-words__word-name{
+.textbook-words__word-name, .textbook-words__word-vol{
     display: inline;
     @extend %font-prim;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: $color-dark;
     font-weight: 300;
     padding-right:0.5rem;
@@ -41,14 +46,19 @@
         font-weight: 600;
     }
 }
-.textbook-word__setence{
+.transparent-btn {
+    background-color: transparent;
+    border: none;
+}
+.textbook-word__setence, .textbook-word__setence_tr, textbook-words__word-btn{
     @extend %font-prim;
     font-style: normal;
-    font-weight: 500;
-    font-size: 1.1rem;
+    font-weight: 550;
+    font-size: 1.2rem;
     color: $color-dark;
-    &_add{
-        font-weight: 300;
+    &_ex{
+        font-weight: 400;
+        font-size: 1.2rem;
     }
 }
 .textbook-word__stat{
@@ -68,6 +78,7 @@
     width: 10rem;
     height: 10rem;
     background-image: url('./assets/img/main_page.png');
+    background-size: cover;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
     border-radius: 50%;
     margin: 1rem;

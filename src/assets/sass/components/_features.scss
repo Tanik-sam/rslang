@@ -4,6 +4,9 @@
         text-align: center;
     }
 }
+.feature {
+    min-height: 17rem;
+}
 
 .features__title {
     margin: 0 0 0.2rem;
@@ -18,6 +21,10 @@
     @include media-tablet {
         justify-content: center;
     }
+}
+.feature__link {
+    text-decoration: none;
+    color: $color-dark;
 }
 .fa-book, .fa-volume-high, .fa-clock, .fa-chart-line {
     font-size: 2rem;
@@ -49,7 +56,7 @@
     position: relative;
     @extend %transition;
     &:hover {
-        background: $color-light;
+        background: $color-primary;
         transform: scale(1.1);
     }
     @include media-tablet {
@@ -75,27 +82,5 @@
     @include media-tablet {
         position: absolute;
         top: 0;
-    }
-}
-
-.article-modal__content {
-    .feature__image {
-        width: 100%;
-        @include media-tablet {
-            position: static;
-        }
-    }
-
-    .feature__date {
-        font-size: 1.3rem;
-        margin: 0 0 0.3rem;
-    }
-
-    .feature__name {
-        margin-bottom: 0.6rem;
-    }
-
-    .feature__text {
-        margin: 0 0 0.8rem;
     }
 }
