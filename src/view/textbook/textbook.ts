@@ -23,7 +23,6 @@ class Textbook {
     }
 
     drawTextbook(): void {
-        localStorage.clear();
         (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
         const container = document.querySelector('#words-container') as HTMLElement;
         container.innerHTML = '';
