@@ -1,5 +1,5 @@
 import { IWords } from '../../app/interfaces';
-import { getWords } from '../../controller/fetch';
+import { getWord, getWords } from '../../controller/fetch';
 /*
 const wordList = 'http://localhost:3000/words';
 
@@ -11,13 +11,24 @@ export async function getWords(page = 0, group = 0): Promise<IWords[]> {
     }
     throw new Error(`${response.status}`);
 }
+
+export async function getWord(id: string): Promise<IWords> {
+    const response = await fetch(`${wordList}/${id}`);
+    if (response.status === 200) {
+        const word = await response.json();
+        return word;
+    }
+    throw new Error(`${response.status}`);
+}
 */
 class AudioChallengeGame {
-    data: IWords[] | undefined;
+    data: IWords[] = [];
 
-    allWords: object[] | undefined;
+    wordData!: IWords;
 
-    taken: string[] | undefined;
+    allWords: object[] = [];
+
+    taken: string[] = [];
 
     hearts = 5;
 
@@ -25,7 +36,15 @@ class AudioChallengeGame {
 
     group = 0;
 
+    id = '';
+
     currentWord = 0;
+
+    userAnswers: string[] = [];
+
+    correctAnswers: IWords[] = [];
+
+    rightWord = '';
 
     getData(): Promise<void> {
         return (async () => {
@@ -33,9 +52,14 @@ class AudioChallengeGame {
         })();
     }
 
-    async draw(value: number) {
+    getWordData(): Promise<void> {
+        return (async () => {
+            this.wordData = await getWord(this.id);
+        })();
+    }
+
+    async draw(value: number): Promise<void> {
         this.group = value - 1;
-        await this.getData();
         const wrap: HTMLElement | null = document.getElementById('audio-challenge__wrapper');
         if (wrap) {
             while (wrap.firstChild) {
@@ -65,16 +89,25 @@ class AudioChallengeGame {
         const play: HTMLElement = document.createElement('span');
         play.innerText = 'play';
         wrap?.appendChild(play);
-        const fragment: DocumentFragment = document.createDocumentFragment();
+        const wordDetailsSection: HTMLElement = document.createElement('section');
+        wordDetailsSection.id = 'word-details';
+        wrap?.appendChild(wordDetailsSection);
         if (wrap) {
             wrap.appendChild(wordsSection);
         }
+        const fragment: DocumentFragment = document.createDocumentFragment();
         for (let i = 0; i < 5; i += 1) {
             const btn: HTMLButtonElement = document.createElement('button');
             btn.id = `word-btn-${i}`;
             btn.classList.add('button', 'button_white', 'word_button');
             btn.addEventListener('click', () => {
-                console.log('click word');
+                this.userAnswers.push(btn.id);
+                if (this.rightWord === btn.id) {
+                    btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
+                } else {
+                    btn.style.backgroundColor = '#ff405d';
+                }
+                this.drawWordDetails();
                 this.drawWords();
             });
             fragment.appendChild(btn);
@@ -84,27 +117,62 @@ class AudioChallengeGame {
         answerBtn.id = 'answer-btn';
         answerBtn.textContent = 'Не знаю :(';
         answerBtn.addEventListener('click', () => {
-            console.log('click answer');
+            this.drawWordDetails();
             this.drawWords();
         });
         answerBtn.classList.add('button', 'button_colored');
         wrap?.appendChild(answerBtn);
-        this.drawWords();
     }
 
-    async drawWords() {
-        console.log('this.drawWords');
-        const wordsSection = document.getElementsByClassName('button button_white word_button');
-        console.log(wordsSection.length, this.currentWord);
+    async drawWords(): Promise<void> {
+        await this.getData();
+        this.taken = [];
+        const wordBtns: HTMLCollectionOf<Element> = document.getElementsByClassName('button button_white word_button');
         if (this.currentWord > 19) {
             this.page += 1;
             await this.getData();
             this.currentWord = 0;
         }
         for (let i = this.currentWord, j = 0; i < this.currentWord + 5; i += 1, j += 1) {
-            wordsSection[j].textContent = this.data![i].word;
-            this.taken?.push(wordsSection[j].id);
+            if (wordBtns[j]) {
+                (wordBtns[j] as HTMLButtonElement).style.backgroundColor = '#ffffff';
+                wordBtns[j].textContent = this.data[i].wordTranslate;
+                // wordBtns[j].textContent = this.data[i].id;
+                wordBtns[j].id = this.data[i].id;
+            }
+            if (this.data[i] === undefined) {
+                return;
+            }
+            this.taken.push(this.data[i].id);
             this.currentWord += 1;
+            if (j === 4) {
+                this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
+                console.log('its right', this.rightWord);
+            }
+        }
+    }
+
+    getRandomNumberFrom0to4(): number {
+        return Math.floor(Math.random() * 5);
+    }
+
+    async drawWordDetails() {
+        const word: IWords = await getWord(this.rightWord);
+        this.correctAnswers.push(word);
+        const index = this.correctAnswers.length - 1;
+        const wordDetailsSection: HTMLElement | null = document.getElementById('word-details');
+        if (wordDetailsSection) {
+            while (wordDetailsSection.firstChild) {
+                wordDetailsSection.removeChild(wordDetailsSection.firstChild);
+            }
+        }
+        const details: HTMLElement = document.createElement('span');
+        if (this.correctAnswers[index] === undefined) {
+            return;
+        }
+        details.innerHTML = `<b>${this.correctAnswers[index].word}</b> ${this.correctAnswers[index].transcription}`;
+        if (wordDetailsSection) {
+            wordDetailsSection.appendChild(details);
         }
     }
 }

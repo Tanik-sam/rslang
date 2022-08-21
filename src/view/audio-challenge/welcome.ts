@@ -28,6 +28,7 @@ class Welcome {
         btnStart.addEventListener('click', async () => {
             console.log('start');
             this.drawGame(this.selectedLevel);
+            this.game.drawWords();
         });
         wrap?.appendChild(h2);
         wrap?.appendChild(h6);
