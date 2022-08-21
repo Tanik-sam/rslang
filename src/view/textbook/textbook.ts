@@ -291,5 +291,23 @@ window.onload = function textbookInit() {
     const textbook = new Textbook();
     textbook.getData();
     textbook.eventListen();
+    const goTopBtn = document.querySelector('.back_to_top') as HTMLElement;
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const coords = document.documentElement.clientHeight;
+        if (scrolled > coords) {
+            goTopBtn.classList.add('back_to_top-show');
+        }
+        if (scrolled < coords) {
+            goTopBtn.classList.remove('back_to_top-show');
+        }
+    });
+    goTopBtn.addEventListener('click', function backToTop() {
+        const coords = document.documentElement.clientHeight;
+        if (window.pageYOffset > 0) {
+            window.scrollBy(0, -coords);
+            setTimeout(backToTop, 10);
+        }
+    });
 };
 export default Textbook;

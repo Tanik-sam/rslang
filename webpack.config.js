@@ -10,6 +10,7 @@ const baseConfig = {
     index: path.resolve(__dirname, './src/index.ts'),
     'textbook': path.resolve(__dirname, './src/view/textbook/textbook.ts'),
     'audio-challenge': path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.ts'),
+    'registration': path.resolve(__dirname, './src/view/registration/registration.ts'),
   },
   mode: 'development',
   module: {
@@ -62,6 +63,11 @@ const baseConfig = {
       filename: 'audio-challenge.html',
       template: path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.html'),
       chunks: ['audio-challenge']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'registration.html',
+      template: path.resolve(__dirname, './src/view/registration/registration.html'),
+      chunks: ['registration']
     }),
     new CleanWebpackPlugin(),
     new EslingPlugin({ extensions: 'ts' }),
