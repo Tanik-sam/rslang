@@ -1,7 +1,41 @@
+import { IWords } from '../../app/interfaces';
+import { getWords } from '../../controller/fetch';
+/*
+const wordList = 'http://localhost:3000/words';
+
+export async function getWords(page = 0, group = 0): Promise<IWords[]> {
+    const response = await fetch(`${wordList}?page=${page}&group=${group}`);
+    if (response.status === 200) {
+        const words = await response.json();
+        return words;
+    }
+    throw new Error(`${response.status}`);
+}
+*/
 class AudioChallengeGame {
+    data: IWords[] | undefined;
+
+    allWords: object[] | undefined;
+
+    taken: string[] | undefined;
+
     hearts = 5;
 
-    draw(value: number): void {
+    page = 0;
+
+    group = 0;
+
+    currentWord = 0;
+
+    getData(): Promise<void> {
+        return (async () => {
+            this.data = await getWords(this.page, this.group);
+        })();
+    }
+
+    async draw(value: number) {
+        this.group = value - 1;
+        await this.getData();
         const wrap: HTMLElement | null = document.getElementById('audio-challenge__wrapper');
         if (wrap) {
             while (wrap.firstChild) {
@@ -38,17 +72,40 @@ class AudioChallengeGame {
         for (let i = 0; i < 5; i += 1) {
             const btn: HTMLButtonElement = document.createElement('button');
             btn.id = `word-btn-${i}`;
-            btn.classList.add('button', 'button_white');
+            btn.classList.add('button', 'button_white', 'word_button');
             btn.addEventListener('click', () => {
                 console.log('click word');
+                this.drawWords();
             });
             fragment.appendChild(btn);
         }
         wordsSection.appendChild(fragment);
         const answerBtn: HTMLButtonElement = document.createElement('button');
         answerBtn.id = 'answer-btn';
+        answerBtn.textContent = 'Не знаю :(';
+        answerBtn.addEventListener('click', () => {
+            console.log('click answer');
+            this.drawWords();
+        });
         answerBtn.classList.add('button', 'button_colored');
         wrap?.appendChild(answerBtn);
+        this.drawWords();
+    }
+
+    async drawWords() {
+        console.log('this.drawWords');
+        const wordsSection = document.getElementsByClassName('button button_white word_button');
+        console.log(wordsSection.length, this.currentWord);
+        if (this.currentWord > 19) {
+            this.page += 1;
+            await this.getData();
+            this.currentWord = 0;
+        }
+        for (let i = this.currentWord, j = 0; i < this.currentWord + 5; i += 1, j += 1) {
+            wordsSection[j].textContent = this.data![i].word;
+            this.taken?.push(wordsSection[j].id);
+            this.currentWord += 1;
+        }
     }
 }
 

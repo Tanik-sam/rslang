@@ -25,7 +25,7 @@ class Welcome {
         const btnStart: HTMLButtonElement = document.createElement('button');
         btnStart.id = 'start-btn';
         btnStart.textContent = 'Начать игру';
-        btnStart.addEventListener('click', () => {
+        btnStart.addEventListener('click', async () => {
             console.log('start');
             this.drawGame(this.selectedLevel);
         });
