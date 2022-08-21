@@ -8,22 +8,30 @@ import { getWords, getWord } from '../../controller/fetch';
 class Registration {
     password = '';
 
+    name = '';
+
+    email = '';
+
     checkName(val: string): void {
         if (val === '' || val === ' ' || !val.match(/[\d\w/]/)) {
             (document.querySelector('.incorrect_name') as HTMLElement).innerHTML = 'Введите имя латинскими буквами!';
+        } else {
+            this.name = val;
         }
     }
 
     checkEmail(val: string): void {
         if (!val.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
             (document.querySelector('.incorrect_email') as HTMLElement).innerHTML = 'Ваш e-mail введен неверно!';
+        } else {
+            this.email = val;
         }
     }
 
     checkPassword(val: string): void {
         if (!val.match(/(?=.*[0-9])(?=.*[a-z])[0-9a-z]{6,}/i)) {
             (document.querySelector('.incorrect_password') as HTMLElement).innerHTML =
-                'Пароль должен быть не менее 6символов и содержать латинские буквы и цифры!';
+                'Пароль должен быть не короче 6 символов и содержать латинские буквы и цифры!';
         } else {
             this.password = val;
         }
@@ -32,6 +40,12 @@ class Registration {
     checkConfirm(val: string): void {
         if (val !== this.password) {
             (document.querySelector('.incorrect_confirm') as HTMLElement).innerHTML = 'Пароли не совпадают!';
+        }
+    }
+
+    registr() {
+        if (this.name && this.email && this.password) {
+            console.log('все ок, можно региться');
         }
     }
 }
@@ -56,5 +70,9 @@ window.onload = function registrInit() {
     registrationConfirm.addEventListener('blur', (e) => {
         (document.querySelector('.incorrect_confirm') as HTMLElement).innerHTML = '';
         registration.checkConfirm((e.target as HTMLInputElement).value);
+    });
+    const registrationButton = document.querySelector('#registr') as HTMLElement;
+    registrationConfirm.addEventListener('click', () => {
+        registration.registr();
     });
 };
