@@ -4,14 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
 
-
 const baseConfig = {
   entry: {
     index: path.resolve(__dirname, './src/index.ts'),
     'textbook': path.resolve(__dirname, './src/view/textbook/textbook.ts'),
     'audio-challenge': path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.ts'),
-    'registration': path.resolve(__dirname, './src/view/registration/registration.ts'),
+     registration: path.resolve(__dirname, './src/view/registration/registration.ts'),
     'login': path.resolve(__dirname, './src/view/login/login.ts'),
+     sprint: path.resolve(__dirname, './src/view/sprint/sprint.ts'),
   },
   mode: 'development',
   module: {
@@ -29,61 +29,59 @@ const baseConfig = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
-     /* подключение fontawesome {
-        test: /\.(svg|eot|woff|woff2|ttf)$/,
-        type: 'asset/inline'
-    },*/
-    {
-      test: /\.(svg|eot|woff|woff2|ttf)$/,
-      type: 'asset/resource',
-      generator: {
-        //publicPath: '../fonts/',
-        filename: 'compiled/fonts/[hash][ext][query]'
-      }
-   },
+            {
+                test: /\.(svg|eot|woff|woff2|ttf)$/,
+                type: 'asset/resource',
+                generator: {
+                    // publicPath: '../fonts/',
+                    filename: 'compiled/fonts/[hash][ext][query]',
+                },
+            },
+        ],
+    },
+    resolve: {
+        extensions: ['.ts', '.js', '.css', '.sass'],
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, './dist'),
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, './src/view/main/main.html'),
+            filename: 'index.html',
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'textbook.html',
+            template: path.resolve(__dirname, './src/view/textbook/textbook.html'),
+            chunks: ['textbook'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'audio-challenge.html',
+            template: path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.html'),
+            chunks: ['audio-challenge'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'registration.html',
+            template: path.resolve(__dirname, './src/view/registration/registration.html'),
+            chunks: ['registration']
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'login.html',
+            template: path.resolve(__dirname, './src/view/login/login.html'),
+            chunks: ['login']
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'sprint.html',
+            template: path.resolve(__dirname, './src/view/sprint/sprint.html'),
+            chunks: ['sprint'],
+        }),
+        new CleanWebpackPlugin(),
+        new EslingPlugin({ extensions: 'ts' }),
     ],
-  },
-  resolve: {
-    extensions: ['.ts', '.js','.css','.sass'],
-  },
-  output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, './dist'),
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './src/view/main/main.html'),
-      filename: 'index.html',
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'textbook.html',
-      template: path.resolve(__dirname, './src/view/textbook/textbook.html'),
-      chunks: ['textbook']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'audio-challenge.html',
-      template: path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.html'),
-      chunks: ['audio-challenge']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'registration.html',
-      template: path.resolve(__dirname, './src/view/registration/registration.html'),
-      chunks: ['registration']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'login.html',
-      template: path.resolve(__dirname, './src/view/login/login.html'),
-      chunks: ['login']
-    }),
-    new CleanWebpackPlugin(),
-    new EslingPlugin({ extensions: 'ts' }),
-    
-  ],
 };
-
 module.exports = ({ mode }) => {
-  const isProductionMode = mode === 'prod';
-  const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
-
-  return merge(baseConfig, envConfig);
+    const isProductionMode = mode === 'prod';
+    const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
+    return merge(baseConfig, envConfig);
 };

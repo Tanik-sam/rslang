@@ -1,9 +1,9 @@
 import '../../style.scss';
-import '../../assets/sass/components/_audio-challenge.scss';
+import '../../assets/sass/components/_sprint.scss';
 import Welcome from './welcome';
 // import { getWords } from '../../controller/fetch';
 
-class AudioChallenge {
+class SprintGame {
     private welcome: Welcome;
 
     constructor() {
@@ -15,9 +15,9 @@ class AudioChallenge {
     }
 }
 
-window.onload = function audioChallengeInit(): void {
-    const audioChallenge: AudioChallenge = new AudioChallenge();
-    audioChallenge.drawWelcome();
+window.onload = function SprintGameInit(): void {
+    const sprintGame: SprintGame = new SprintGame();
+    sprintGame.drawWelcome();
 };
 
-export default AudioChallenge;
+export default SprintGame;
