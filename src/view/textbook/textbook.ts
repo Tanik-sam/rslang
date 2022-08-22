@@ -23,7 +23,21 @@ class Textbook {
     }
 
     drawTextbook(): void {
-        (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
+        try {
+            (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
+        } catch (e) {
+            console.log('Wait for a page load to complete!');
+        }
+        if (this.page === 0) {
+            (document.querySelector('.pagination_back') as HTMLElement).classList.add('inactive');
+            (document.querySelector('.pagination_front') as HTMLElement).classList.remove('inactive');
+        } else if (this.page === 29) {
+            (document.querySelector('.pagination_front') as HTMLElement).classList.add('inactive');
+            (document.querySelector('.pagination_back') as HTMLElement).classList.remove('inactive');
+        } else {
+            (document.querySelector('.pagination_back') as HTMLElement).classList.remove('inactive');
+            (document.querySelector('.pagination_front') as HTMLElement).classList.remove('inactive');
+        }
         const container = document.querySelector('#words-container') as HTMLElement;
         container.innerHTML = '';
         const fragment1 = document.createDocumentFragment() as DocumentFragment;
@@ -55,7 +69,7 @@ class Textbook {
                 let id!: string;
                 (async () => {
                     const word = await getWord(
-                        (e.target as HTMLElement).closest('button')?.getAttribute('id')?.split(' ')[1]
+                        (e.target as HTMLElement).closest('button')?.getAttribute('id')?.split(' ')[1] || ''
                     );
                     const audio = new Audio();
                     const tracks = [
@@ -148,13 +162,13 @@ class Textbook {
     paginateBack() {
         if (Number(this.page <= 0)) {
             this.page = 0;
-        } else this.page = Number(this.page) - 1;
+        } else this.page -= 1;
     }
 
     paginateFront() {
-        if (Number(this.page >= 30)) {
-            this.page = 30;
-        } else this.page = Number(this.page) + 1;
+        if (this.page > 29) {
+            this.page = 29;
+        } else this.page += 1;
     }
 
     startPag() {
@@ -277,5 +291,23 @@ window.onload = function textbookInit() {
     const textbook = new Textbook();
     textbook.getData();
     textbook.eventListen();
+    const goTopBtn = document.querySelector('.back_to_top') as HTMLElement;
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const coords = document.documentElement.clientHeight;
+        if (scrolled > coords) {
+            goTopBtn.classList.add('back_to_top-show');
+        }
+        if (scrolled < coords) {
+            goTopBtn.classList.remove('back_to_top-show');
+        }
+    });
+    goTopBtn.addEventListener('click', function backToTop() {
+        const coords = document.documentElement.clientHeight;
+        if (window.pageYOffset > 0) {
+            window.scrollBy(0, -coords);
+            setTimeout(backToTop, 10);
+        }
+    });
 };
 export default Textbook;

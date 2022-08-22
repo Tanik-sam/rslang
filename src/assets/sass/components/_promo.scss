@@ -78,3 +78,10 @@
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
     border-radius: 10px;
 }
+.promo__setence{
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: $color-dark;
+}

@@ -14,3 +14,24 @@ export interface IWords {
     textMeaningTranslate: string;
     textExampleTranslate: string;
 }
+export interface IUser {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export interface IID {
+    id: string;
+    email: string;
+}
+
+export interface ILogin {
+    email: string;
+    password: string;
+}
+
+export interface IToken {
+    message: string;
+    token: string;
+    userId: string;
+}
