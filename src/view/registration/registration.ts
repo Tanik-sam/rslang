@@ -81,7 +81,7 @@ class Registration {
         (userClone.querySelector('.modal-window_name') as HTMLElement).textContent = `${user.name},`;
         fragment.append(userClone);
         (document.querySelector('.registration') as HTMLElement).append(fragment);
-        (document.querySelector('#exit') as HTMLElement).addEventListener('click', (e) => {
+        (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
             (document.querySelector('.registration') as HTMLElement).removeChild(
                 document.querySelector('.overlay') as HTMLElement
             );

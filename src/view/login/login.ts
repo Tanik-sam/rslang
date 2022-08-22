@@ -4,7 +4,7 @@ import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import { loginUser } from '../../controller/fetch';
-import { IToken, IUser } from '../../app/interfaces';
+import { IToken } from '../../app/interfaces';
 
 class Login {
     password = '';
@@ -40,7 +40,7 @@ class Login {
                 const token: IToken = await loginUser(user);
                 console.log(token);
                 localStorage.setItem(this.email, JSON.stringify(token));
-                this.modal(token);
+                this.modal();
             })();
         } else {
             this.checkEmail(this.email);
@@ -48,14 +48,14 @@ class Login {
         }
     }
 
-    modal(user: IToken) {
+    modal() {
         const fragment = document.createDocumentFragment() as DocumentFragment;
         const modal = document.querySelector('#modal') as HTMLTemplateElement;
         const userClone = modal.content.cloneNode(true) as HTMLElement;
         (userClone.querySelector('.modal-window_name') as HTMLElement).textContent = `${this.name},`;
         fragment.append(userClone);
         (document.querySelector('.registration') as HTMLElement).append(fragment);
-        (document.querySelector('#exit') as HTMLElement).addEventListener('click', (e) => {
+        (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
             (document.querySelector('.registration') as HTMLElement).removeChild(
                 document.querySelector('.overlay') as HTMLElement
             );
