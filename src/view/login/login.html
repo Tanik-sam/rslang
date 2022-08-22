@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
+    <title>Authorization</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap"
         rel="stylesheet">
 </head>
@@ -48,18 +48,17 @@
         <section class="registration block-shadowed">
             <div class="wrapper">
                 <div class = "registration-form">
-                    <h2 class="registration__title">Регистрация</h2>
-                    <p class="registration__setence">*Регистрация позволит использовать все возможности приложения</p>
+                    <h2 class="registration__title">Авторизация</h2>
+                    <p class="registration__setence">*Авторизуйтесь для использовавния всех возможностей приложения!</p>
                     <div class="registration__input"><i class="fa-solid fa-user"></i><input class="registration__name input-box" type="text" placeholder ="Как вас зовут?"/></div>
                     <span class="incorrect incorrect_name"></span>
                     <div class="registration__input"> <i class="fa-solid fa-envelope"></i><input class="registration__email input-box" type="email" placeholder ="Ваш e-mail"/></div>
                     <span class="incorrect incorrect_email"></span>
                     <div class="registration__input"><i class="fa-solid fa-key"></i><input class="registration__password input-box" type="password" placeholder ="Пароль"/></div>
                     <span class="incorrect incorrect_password"></span>
-                    <div class="registration__input"><i class="fa-solid fa-key"></i><input class="registration__confirm input-box" type="password" placeholder ="Подтвердите пароль"/></div>
-                    <span class="incorrect incorrect_confirm"></span>
-                    <a class = "string-link" href="login.html">Я уже зарегистрирован!</a>
-                    <button id = "registr2" class="button button_colored">Зарегистрироваться</button>
+
+                    <a class = "string-link" href="registration.html">Я еще не зарегистрирован!</a>
+                    <button id = "login2" class="button button_colored">Войти</button>
                 </div>
             </div>
         </section>
@@ -95,8 +94,8 @@
                 <div class="modal-window__info">
                     <div class="modal-window__img"><i class="fa-solid fa-user"></i></div>
                     <h2 class="modal-window_name"></h2>
-                    <p3 class="modal-window_text">Вы успешно зарегистрированы!</p>
-                    <a class = "button_login" id="exit" href="index.html"><div class="button button_colored div-button">Отлично!</div></a>
+                    <p3 class="modal-window_text">Вы авторизованы!</p>
+                    <a class = "button_login" href="index.html"><div class="button button_colored div-button">Отлично!</div></a>
                 </div>
             </div>
     </template>

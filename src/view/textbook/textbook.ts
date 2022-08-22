@@ -69,7 +69,7 @@ class Textbook {
                 let id!: string;
                 (async () => {
                     const word = await getWord(
-                        (e.target as HTMLElement).closest('button')?.getAttribute('id')?.split(' ')[1]
+                        (e.target as HTMLElement).closest('button')?.getAttribute('id')?.split(' ')[1] || ''
                     );
                     const audio = new Audio();
                     const tracks = [

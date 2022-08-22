@@ -35,7 +35,7 @@
     font-size: 1.2rem;
     font-weight: 500;
     color: $color-gray_dark;
-    padding: 2rem 0 2rem 0;
+    margin: 2rem 0 2rem 0;
     @extend %transition;
     &:hover {
         font-weight: 600;
