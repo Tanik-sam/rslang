@@ -1,10 +1,10 @@
-import AudioChallengeGame from './game';
+import SprintGame from './game';
 
 class Welcome {
-    private game: AudioChallengeGame;
+    private game: SprintGame;
 
     constructor() {
-        this.game = new AudioChallengeGame();
+        this.game = new SprintGame();
     }
 
     langLevels: string[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -12,11 +12,11 @@ class Welcome {
     selectedLevel = 0;
 
     drawDefault(): void {
-        const wrap: HTMLElement | null = document.getElementById('audio-challenge__wrapper');
+        const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
         const h2: HTMLElement = document.createElement('h2');
-        h2.innerText = 'Аудио-вызов';
+        h2.innerText = 'Спринт';
         const h6: HTMLElement = document.createElement('h6');
-        h6.innerText = 'Улучши своё восприятие речи на слух!';
+        h6.innerText = 'Тренируй скорость восприятия!';
         const h5: HTMLElement = document.createElement('h5');
         h5.innerText = 'Выбери уровень сложности:';
         const btnSection: HTMLElement = document.createElement('section');
