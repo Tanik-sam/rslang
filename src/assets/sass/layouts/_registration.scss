@@ -3,6 +3,9 @@
     margin: auto;
     margin-top: 8rem;
     margin-bottom: 8rem;
+    &__container{
+      min-height: calc(100vh - 145px);
+    }
 }
 .registration-form {
     display: flex;

@@ -2,136 +2,145 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSLang</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap"
-        rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSLang</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div class="content">
-        <header class="header">
-            <div class="wrapper header__wrapper">
-                <div class="header__logo-line">
-                    <span class="header__hamburger hamburger"><span class="hamburger__line"></span></span>
-                    <a href="index.html" class="logo">
-                        <div class="logo__wrapper">
-                            <div class="logo__image"></div>
-                            <h1>RSLang</h1>
-                        </div>
-                    </a>
-                </div>
-                <nav class="header__navigation">
-                    <ul class="navigation">
-                        <a href="index.html" class="navigation__link">
-                            <li class="navigation__link-item">Главная</li>
-                        </a>
-                        <a href="textbook.html" class="navigation__link">
-                            <li class="navigation__link-item">Учебник</li>
-                        </a>
-                        <a href="#" class="navigation__link">
-                            <li class="navigation__link-item">Игры</li>
-                        </a>
-                        <a href="#" class="navigation__link">
-                            <li class="navigation__link-item">Статистика</li>
-                        </a>
-                    </ul>
-                </nav>
-                <div class="header__buttons">
-                    <a class = "button_login" href="registration.html"><div id='login' class="button button_white div-button">Регистрация</div></a>
-                    <a class = "button_login" href="login.html"><div class="button button_colored div-button">Вход</div></a>
-                </div>
+  <div class="content">
+    <header class="header">
+      <div class="wrapper header__wrapper">
+        <div class="header__logo-line">
+          <span class="header__hamburger hamburger"><span class="hamburger__line"></span></span>
+          <a href="index.html" class="logo">
+            <div class="logo__wrapper">
+              <div class="logo__image"></div>
+              <h1>RSLang</h1>
             </div>
-        </header>
-        <section class="promo">
-            <div class="wrapper promo__wrapper">
-                <div class="promo__image"></div>
-                <div class="promo__content">
-                    <h2 class="promo__title">Прокачай свой английский вместе с RSLang!</h2>
-                    <h3 class="promo__text">Изучай, играя. Смотри достижения.</h3>
-                    <p class="promo__text promo__setence">Традиционные и новые эффективные подходы к изучению слов, мотивация в виде статистики, различные уровни сложности - все это ты найдешь в RSLang.</p>
-                    <div class="promo__buttons">
-                        <button class="button button_colored">Начнем?</button>
-                        <a href="#" class="link-button">
-                            <i class="fa-solid fa-play"></i>
-                            <span class="link-button__text">Демо</span>
-                        </a>
-                    </div>
-                </div>
+          </a>
+        </div>
+        <nav class="header__navigation">
+          <ul class="navigation">
+            <a href="index.html" class="navigation__link">
+              <li class="navigation__link-item navigation__link-item--active">Главная</li>
+            </a>
+            <a href="textbook.html" class="navigation__link">
+              <li class="navigation__link-item">Учебник</li>
+            </a>
+            <a href="audio-challenge.html" class="navigation__link">
+              <li class="navigation__link-item">Аудиовызов</li>
+            </a>
+            <a href="sprint.html" class="navigation__link">
+              <li class="navigation__link-item">Спринт</li>
+            </a>
+            <a href="statistics.html" class="navigation__link">
+              <li class="navigation__link-item">Статистика</li>
+            </a>
+          </ul>
+        </nav>
+        <div class="header__buttons">
+          <a class="button_login" href="registration.html">
+            <div id='login' class="button button_white div-button">Регистрация</div>
+          </a>
+          <a class="button_login" href="login.html">
+            <div class="button button_colored div-button">Вход</div>
+          </a>
+        </div>
+      </div>
+    </header>
+    <div class="main__wrapper">
+      <section class="promo">
+        <div class="wrapper promo__wrapper">
+          <div class="promo__image"></div>
+          <div class="promo__content">
+            <h2 class="promo__title">Прокачай свой английский вместе с RSLang!</h2>
+            <h3 class="promo__text">Изучай играя. Смотри достижения.</h3>
+            <p class="promo__text promo__setence">Традиционные и новые эффективные подходы к изучению слов, мотивация в
+              виде статистики, различные уровни сложности - все это ты найдешь в <span>RSLang</span>.</p>
+            <div class="promo__buttons">
+              <button class="button button_colored">Начнем?</button>
+              <a href="#" class="link-button">
+                <i class="fa-solid fa-play"></i>
+                <span class="link-button__text">Демо</span>
+              </a>
             </div>
-        </section>
-        <section class="features">
-            <div class="wrapper">
-                <div class="layout-4-column feature-wrapper">
-                    <a class="feature__link" href='textbook.html'>
-                        <article class="feature block-shadowed">
-                            <i class="fa-solid fa-book"></i>
-                            <div class="feature__content">
-                                <h3 class="feature__name">Учебник</h3>
-                                <p class="tool__text">Более 3500 слов, разные уровни сложности, ассоциативные картинки, удобная
-                                    навигация</p>
-                            </div>
-                        </article>
-                    </a>
-                    <a class="feature__link" href="audio-challenge.html">
-                        <article class="feature block-shadowed">
-                            <i class="fa-solid fa-volume-high"></i>
-                            <div class="feature__content">
-                                <h3 class="feature__name">Аудиовызов</h3>
-                                <p class="tool__text">Тренировка восприятия ангийской 
-                                    речи на слух</p>
-                            </div>
-                        </article>
-                    </a>
-                    <a class="feature__link" href="sprint.html">
-                    <article class="feature block-shadowed">
-                        <i class="fa-solid fa-clock"></i>
-                        <div class="feature__content">
-                            <h3 class="feature__name">Спринт</h3>
-                            <p class="tool__text">Выбор правильного варианта перевода по времени</p>
-                        </div>
-                    </article>
-                    </a>
-                    <a class="feature__link" href="audio-challenge.html">
-                    <article class="feature block-shadowed">
-                        <i class="fa-solid fa-chart-line"></i>
-                        <div class="feature__content">
-                            <h3 class="feature__name">Статистика</h3>
-                            <p class="tool__text">Статистика ваших успехов в обучении.</p>
-                        </div>
-                    </article>
-                </a>
+          </div>
+        </div>
+      </section>
+      <section class="features">
+        <div class="wrapper">
+          <div class="layout-4-column feature-wrapper">
+            <a class="feature__link" href='textbook.html'>
+              <article class="feature block-shadowed">
+                <i class="fa-solid fa-book"></i>
+                <div class="feature__content">
+                  <h3 class="feature__name">Учебник</h3>
+                  <p class="tool__text">Более 3500 слов, разные уровни сложности, ассоциативные картинки, удобная
+                    навигация</p>
                 </div>
-            </div>
-        </section>
-        <footer class="footer">
-            <div class="wrapper footer__wrapper">
-
-                <div class="footer-navigation layout-3-column">
-                    <div class="footer-navigation__column">
-                        <h4 class="footer-navigation__title">©2022 RSLang</h4>
-                    </div>
-                    <div class="footer-navigation__column">
-                        <a href="#" class="logo-footer">
-                            <div class="logo-object">
-                            </div>
-                        </a>
-
-                    </div>
-                    <div class="footer-navigation__column">
-                        <div class="footer__link">
-                            <i class="fa-brands fa-github-alt"></i>
-                            <div><a class="person-link" href="https://github.com/S4mm4ael">S4mm4el</a></div>
-                            <div><a class="person-link" href="https://github.com/Sammily">Sammily</a></div>
-                            <div><a class="person-link" href="https://github.com/Tanik-sam">Tanik-sam</a></div>
-                        </div>
-                    </div>
+              </article>
+            </a>
+            <a class="feature__link" href="audio-challenge.html">
+              <article class="feature block-shadowed">
+                <i class="fa-solid fa-volume-high"></i>
+                <div class="feature__content">
+                  <h3 class="feature__name">Аудиовызов</h3>
+                  <p class="tool__text">Тренировка восприятия ангийской
+                    речи на слух</p>
                 </div>
-            </div>
-        </footer>
+              </article>
+            </a>
+            <a class="feature__link" href="sprint.html">
+              <article class="feature block-shadowed">
+                <i class="fa-solid fa-clock"></i>
+                <div class="feature__content">
+                  <h3 class="feature__name">Спринт</h3>
+                  <p class="tool__text">Выбор правильного варианта перевода по времени</p>
+                </div>
+              </article>
+            </a>
+            <a class="feature__link" href="statistics.html">
+              <article class="feature block-shadowed">
+                <i class="fa-solid fa-chart-line"></i>
+                <div class="feature__content">
+                  <h3 class="feature__name">Статистика</h3>
+                  <p class="tool__text">Статистика ваших успехов в обучении.</p>
+                </div>
+              </article>
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
+    <footer class="footer">
+      <div class="wrapper footer__wrapper">
+
+        <div class="footer-navigation layout-3-column">
+          <div class="footer-navigation__column">
+            <h4 class="footer-navigation__title">©2022 RSLang</h4>
+          </div>
+          <div class="footer-navigation__column">
+            <a href="https://rs.school/" class="logo-footer">
+              <div class="logo-object">
+              </div>
+            </a>
+
+          </div>
+          <div class="footer-navigation__column">
+            <div class="footer__link">
+              <i class="fa-brands fa-github-alt"></i>
+              <div><a class="person-link" href="https://github.com/S4mm4ael">S4mm4el</a></div>
+              <div><a class="person-link" href="https://github.com/Sammily">Sammily</a></div>
+              <div><a class="person-link" href="https://github.com/Tanik-sam">Tanik-sam</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
 </body>
 
 </html>
