@@ -1,5 +1,5 @@
 .promo {
-    padding: 4rem 0 4rem 0;
+    padding: 2rem 0 2rem 0;
     overflow: hidden;
 }
 
@@ -51,6 +51,7 @@
 .promo__text {
     max-width: 30rem;
     margin: 0 0 2rem;
+    
     @extend %font-add;
     font-size: 1.8rem;
     @include media-tablet {
@@ -84,4 +85,13 @@
     font-weight: 400;
     font-size: 1.2rem;
     color: $color-dark;
+    span{
+      font-weight: 600;
+    }
+}
+.main__wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-height: calc(100vh - 145px);
 }

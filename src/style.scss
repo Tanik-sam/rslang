@@ -34,7 +34,7 @@ h2 {
         family: $font_sansserif;
         style: normal;
         size: 2.5rem;
-        weight: 400;
+        weight: 600;
         color: $color-dark;
     }
 
@@ -48,14 +48,14 @@ h3 {
         family: $font_sansserif;
         style: normal;
         size: 1.8rem;
-        weight: 400;
+        weight: 600;
         color: $color-light_blue;
     }
 
     letter-spacing: 0.06em;
     line-height: 100%;
     text-align: left;
-    color: $color-primary;
+    color: $color-additional;
     margin: 1rem 0;
 }
 

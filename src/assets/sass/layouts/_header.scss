@@ -20,7 +20,15 @@
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
-    gap: 1rem
+    gap: 1rem;
+    &:hover{
+      h1{
+        transition: 0.3s ;
+        color: #fff;
+      }
+      
+    }
+  
 }
 .logo__image {
     background-image: url("./assets/icons/logo_main.png");
@@ -31,6 +39,7 @@
 }
 .logo{
         text-decoration: none;
+        
 }
 .header__logo-line {
     display: flex;
@@ -40,6 +49,7 @@
         flex-grow: 1;
         position: relative;
     }
+    
 }
 
 .header__hamburger {
