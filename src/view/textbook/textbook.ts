@@ -3,8 +3,9 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord } from '../../controller/fetch';
+import { getWords, getWord, loginUser } from '../../controller/fetch';
 import { IWords } from '../../app/interfaces';
+import { local } from '../../controller/local';
 
 class Textbook {
     page = Number(localStorage.page) || 0;
@@ -301,6 +302,7 @@ window.onload = function textbookInit() {
     const textbook = new Textbook();
     textbook.getData();
     textbook.eventListen();
+    local();
     const goTopBtn = document.querySelector('.back_to_top') as HTMLElement;
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
