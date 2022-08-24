@@ -66,11 +66,11 @@ class Login {
         fragment.append(userClone);
         (document.querySelector('.registration') as HTMLElement).append(fragment);
         try {
-        (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
-            (document.querySelector('.registration') as HTMLElement).removeChild(
-                document.querySelector('.overlay') as HTMLElement
-            );
-        });
+            (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
+                (document.querySelector('.registration') as HTMLElement).removeChild(
+                    document.querySelector('.overlay') as HTMLElement
+                );
+            });
         } catch (e) {
             console.log('little shortcoming');
         }

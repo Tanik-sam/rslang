@@ -23,7 +23,6 @@ class Registration {
             (document.querySelector('.incorrect_name') as HTMLElement).innerHTML = 'Введите имя (2 - 30 символов)!';
         } else {
             this.name = val;
-            console.log (this.name);
         }
     }
 

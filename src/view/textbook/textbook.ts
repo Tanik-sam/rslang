@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord, loginUser } from '../../controller/fetch';
+import { getWords, getWord } from '../../controller/fetch';
 import { IWords } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
@@ -67,7 +67,6 @@ class Textbook {
         const audioStart = document.querySelectorAll('.textbook-words__word-btn');
         for (let i = 0; i < audioStart.length; i += 1) {
             audioStart[i].addEventListener('click', (e) => {
-                let id!: string;
                 (async () => {
                     const word = await getWord(
                         (e.target as HTMLElement).closest('button')?.getAttribute('id')?.split(' ')[1] || ''
@@ -129,10 +128,10 @@ class Textbook {
             console.log('Wait for a page load to complete!');
         }
         try {
-            (document.querySelector('#sprint') as HTMLElement).addEventListener('click', (e) => {
+            (document.querySelector('#sprint') as HTMLElement).addEventListener('click', () => {
                 localStorage.setItem('flag', 'game');
             });
-            (document.querySelector('#audio') as HTMLElement).addEventListener('click', (e) => {
+            (document.querySelector('#audio') as HTMLElement).addEventListener('click', () => {
                 localStorage.setItem('flag', 'game');
             });
         } catch (e) {
