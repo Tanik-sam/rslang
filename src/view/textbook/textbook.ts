@@ -128,6 +128,16 @@ class Textbook {
             console.log('Wait for a page load to complete!');
         }
         try {
+            (document.querySelector('#sprint') as HTMLElement).addEventListener('click', (e) => {
+                localStorage.setItem('flag', 'game');
+            });
+            (document.querySelector('#audio') as HTMLElement).addEventListener('click', (e) => {
+                localStorage.setItem('flag', 'game');
+            });
+        } catch (e) {
+            console.log('Wait for a page load to complete!');
+        }
+        try {
             (document.querySelector('.pagination') as HTMLElement).addEventListener('click', (e) => {
                 (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove('chosen-page');
                 switch ((e.target as HTMLElement).innerHTML) {
