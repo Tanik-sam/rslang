@@ -1,10 +1,12 @@
 import { IWords } from '../../app/interfaces';
 import { getWord, getWords } from '../../controller/fetch';
-/*
-const wordList = 'http://localhost:3000/words';
 
+// const wordList = 'http://localhost:3000/words';
+const serverName = 'https://rs-lang2022.herokuapp.com/';
+// const serverName = 'http://localhost:3000/';
+/*
 export async function getWords(page = 0, group = 0): Promise<IWords[]> {
-    const response = await fetch(`${wordList}?page=${page}&group=${group}`);
+    const response: Response = await fetch(`${wordList}?page=${page}&group=${group}`);
     if (response.status === 200) {
         const words = await response.json();
         return words;
@@ -13,7 +15,7 @@ export async function getWords(page = 0, group = 0): Promise<IWords[]> {
 }
 
 export async function getWord(id: string): Promise<IWords> {
-    const response = await fetch(`${wordList}/${id}`);
+    const response: Response = await fetch(`${wordList}/${id}`);
     if (response.status === 200) {
         const word = await response.json();
         return word;
@@ -86,9 +88,15 @@ class AudioChallengeGame {
         if (wrap) {
             wrap.appendChild(heartSection);
         }
-        const play: HTMLElement = document.createElement('span');
-        play.innerText = 'play';
-        wrap?.appendChild(play);
+        const audioSection: HTMLElement = document.createElement('section');
+        audioSection.id = 'play';
+        const audio = document.createElement('audio');
+        const audioSrc: HTMLSourceElement = document.createElement('source');
+        audioSrc.id = 'audio-src';
+        audioSrc.src = '';
+        wrap?.appendChild(audioSection);
+        audioSection?.appendChild(audio);
+        audio?.appendChild(audioSrc);
         const wordDetailsSection: HTMLElement = document.createElement('section');
         wordDetailsSection.id = 'word-details';
         wrap?.appendChild(wordDetailsSection);
@@ -96,6 +104,9 @@ class AudioChallengeGame {
             wrap.appendChild(wordsSection);
         }
         const fragment: DocumentFragment = document.createDocumentFragment();
+        const answerBtn: HTMLButtonElement = document.createElement('button');
+        answerBtn.id = 'answer-btn';
+        answerBtn.textContent = 'Не знаю :(';
         for (let i = 0; i < 5; i += 1) {
             const btn: HTMLButtonElement = document.createElement('button');
             btn.id = `word-btn-${i}`;
@@ -106,19 +117,50 @@ class AudioChallengeGame {
                     btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
                 } else {
                     btn.style.backgroundColor = '#ff405d';
+                    const rigthBtn = document.getElementById(this.rightWord);
+                    if (rigthBtn) {
+                        rigthBtn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
+                    }
                 }
                 this.drawWordDetails();
-                this.drawWords();
+                answerBtn.textContent = 'Дальше';
+                answerBtn.style.backgroundColor = '#ffffff';
+                answerBtn.style.color = '#000000';
+                const btns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.word_button');
+                /* eslint-disable-next-line */
+                for (const elem of btns) {
+                    elem.disabled = true;
+                }
             });
             fragment.appendChild(btn);
         }
         wordsSection.appendChild(fragment);
-        const answerBtn: HTMLButtonElement = document.createElement('button');
-        answerBtn.id = 'answer-btn';
-        answerBtn.textContent = 'Не знаю :(';
         answerBtn.addEventListener('click', () => {
-            this.drawWordDetails();
-            this.drawWords();
+            if (answerBtn.textContent === 'Не знаю :(') {
+                this.drawWordDetails();
+                answerBtn.textContent = 'Дальше';
+                answerBtn.style.backgroundColor = '#ffffff';
+                answerBtn.style.color = '#000000';
+                const rigthBtn: HTMLElement | null = document.getElementById(this.rightWord);
+                if (rigthBtn) {
+                    rigthBtn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
+                }
+                const btns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.word_button');
+                /* eslint-disable-next-line */
+                for (const elem of btns) {
+                    elem.disabled = true;
+                }
+            } else {
+                answerBtn.textContent = 'Не знаю :(';
+                answerBtn.style.backgroundColor = '#ff405d';
+                this.drawWords();
+                this.hideWordDetails();
+                const btns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.word_button');
+                /* eslint-disable-next-line */
+                for (const elem of btns) {
+                    elem.disabled = false;
+                }
+            }
         });
         answerBtn.classList.add('button', 'button_colored');
         wrap?.appendChild(answerBtn);
@@ -147,7 +189,11 @@ class AudioChallengeGame {
             this.currentWord += 1;
             if (j === 4) {
                 this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
-                console.log('its right', this.rightWord);
+                const word = this.data.find((item) => item.id === this.rightWord);
+                if (word) {
+                    this.correctAnswers.push(word);
+                }
+                this.playAudio();
             }
         }
     }
@@ -156,24 +202,42 @@ class AudioChallengeGame {
         return Math.floor(Math.random() * 5);
     }
 
-    async drawWordDetails() {
-        const word: IWords = await getWord(this.rightWord);
-        this.correctAnswers.push(word);
-        const index = this.correctAnswers.length - 1;
+    playAudio(): void {
+        const audio: HTMLAudioElement = new Audio();
+        const index: number = this.correctAnswers.length - 1;
+        audio.src = `${serverName}${this.correctAnswers[index].audio}`;
+        audio.play();
+    }
+
+    async drawWordDetails(): Promise<void> {
+        const index: number = this.correctAnswers.length - 1;
         const wordDetailsSection: HTMLElement | null = document.getElementById('word-details');
+        wordDetailsSection?.classList.remove('hide');
         if (wordDetailsSection) {
             while (wordDetailsSection.firstChild) {
                 wordDetailsSection.removeChild(wordDetailsSection.firstChild);
             }
         }
+        const image: HTMLImageElement = document.createElement('img');
+        image.id = 'word-image';
+        image.src = `${serverName}${this.correctAnswers[index].image}`;
+        image.addEventListener('click', () => {
+            this.playAudio();
+        });
         const details: HTMLElement = document.createElement('span');
         if (this.correctAnswers[index] === undefined) {
             return;
         }
         details.innerHTML = `<b>${this.correctAnswers[index].word}</b> ${this.correctAnswers[index].transcription}`;
         if (wordDetailsSection) {
+            wordDetailsSection.appendChild(image);
             wordDetailsSection.appendChild(details);
         }
+    }
+
+    hideWordDetails(): void {
+        const wordDetailsSection: HTMLElement | null = document.getElementById('word-details');
+        wordDetailsSection?.classList.add('hide');
     }
 }
 

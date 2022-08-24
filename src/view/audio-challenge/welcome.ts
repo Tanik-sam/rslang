@@ -27,8 +27,8 @@ class Welcome {
         btnStart.className = 'button button_white btn-start';
         btnStart.textContent = 'Начать игру';
         btnStart.addEventListener('click', async () => {
-            console.log('start');
-            this.drawGame(this.selectedLevel);
+            // console.log('start');
+            this.game.draw(this.selectedLevel);
             this.game.drawWords();
         });
         wrap?.appendChild(h2);
@@ -51,10 +51,6 @@ class Welcome {
             fragment.appendChild(btn);
         });
         btnSection.appendChild(fragment);
-    }
-
-    drawGame(value: number) {
-        this.game.draw(value);
     }
 }
 
