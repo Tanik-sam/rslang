@@ -4,14 +4,23 @@ import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import { loginUser } from '../../controller/fetch';
+import { local } from '../../controller/local';
 import { IToken } from '../../app/interfaces';
 
 class Login {
     password = '';
 
-    name = localStorage.currentUser || '';
+    name = localStorage.currentUserName || '';
 
-    email = localStorage.getItem(localStorage.currentUser) || '';
+    email = localStorage.currentUserEmail || '';
+
+    checkName(val: string): void {
+        if (val === '' || val === ' ' || !val.match(/^[а-яё]{2,30}|[a-z]{2,30}$/iu)) {
+            (document.querySelector('.incorrect_name') as HTMLElement).innerHTML = 'Введите имя (2 - 30 символов)!';
+        } else {
+            this.name = val;
+        }
+    }
 
     checkEmail(val: string): void {
         if (!val.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
@@ -32,14 +41,15 @@ class Login {
 
     login() {
         if (this.email && this.password) {
+            localStorage.setItem('currentUserName', this.name);
+            localStorage.setItem('currentUserEmail', this.email);
             const user = {
                 email: this.email,
                 password: this.password,
             };
             (async () => {
                 const token: IToken = await loginUser(user);
-                console.log(token);
-                localStorage.setItem(this.email, JSON.stringify(token));
+                localStorage.setItem('currentUserToken', JSON.stringify(token));
                 this.modal();
             })();
         } else {
@@ -55,23 +65,26 @@ class Login {
         (userClone.querySelector('.modal-window_name') as HTMLElement).textContent = `${this.name},`;
         fragment.append(userClone);
         (document.querySelector('.registration') as HTMLElement).append(fragment);
-        (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
-            (document.querySelector('.registration') as HTMLElement).removeChild(
-                document.querySelector('.overlay') as HTMLElement
-            );
-        });
+        try {
+            (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
+                (document.querySelector('.registration') as HTMLElement).removeChild(
+                    document.querySelector('.overlay') as HTMLElement
+                );
+            });
+        } catch (e) {
+            console.log('little shortcoming');
+        }
     }
 }
 window.onload = function loginInit() {
+    local();
     const login = new Login();
     const loginName = document.querySelector('.registration__name') as HTMLElement;
-    if (localStorage.currentUser) {
-        loginName.setAttribute('value', localStorage.currentUser);
-    }
+    loginName.addEventListener('blur', (e) => {
+        (document.querySelector('.incorrect_name') as HTMLElement).innerHTML = '';
+        login.checkName((e.target as HTMLInputElement).value);
+    });
     const registrationEmail = document.querySelector('.registration__email') as HTMLElement;
-    if (localStorage.currentUser) {
-        registrationEmail.setAttribute('value', localStorage.getItem(localStorage.currentUser) || '');
-    }
     registrationEmail.addEventListener('blur', (e) => {
         (document.querySelector('.incorrect_email') as HTMLElement).innerHTML = '';
         login.checkEmail((e.target as HTMLInputElement).value);

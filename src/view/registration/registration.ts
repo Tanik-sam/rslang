@@ -5,17 +5,18 @@ import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import { createUser } from '../../controller/fetch';
 import { IID, IUser } from '../../app/interfaces';
+import { local } from '../../controller/local';
 
 class Registration {
     password = '';
 
-    name = localStorage.currentUser || '';
+    name = '';
 
-    email = localStorage.getItem(localStorage.currentUser) || '';
+    email = '';
 
     confirm = false;
 
-    userId = localStorage.getItem(this.email) || '';
+    userId = '';
 
     checkName(val: string): void {
         if (val === '' || val === ' ' || !val.match(/^[а-яё]{2,30}|[a-z]{2,30}$/iu)) {
@@ -57,13 +58,8 @@ class Registration {
                 email: this.email,
                 password: this.password,
             };
-            if (!localStorage.getItem(this.name)) {
-                localStorage.setItem(this.name, this.email);
-                localStorage.setItem('currentUser', this.name);
-            }
             (async () => {
                 const userId: IID = await createUser(user);
-                console.log(userId);
                 this.modal(user);
             })();
         } else {
@@ -89,19 +85,14 @@ class Registration {
     }
 }
 window.onload = function registrInit() {
+    local();
     const registration = new Registration();
     const registrationName = document.querySelector('.registration__name') as HTMLElement;
-    if (localStorage.currentUser) {
-        registrationName.setAttribute('value', localStorage.currentUser);
-    }
     registrationName.addEventListener('blur', (e) => {
         (document.querySelector('.incorrect_name') as HTMLElement).innerHTML = '';
         registration.checkName((e.target as HTMLInputElement).value);
     });
     const registrationEmail = document.querySelector('.registration__email') as HTMLElement;
-    if (localStorage.currentUser) {
-        registrationEmail.setAttribute('value', localStorage.getItem(localStorage.currentUser) || '');
-    }
     registrationEmail.addEventListener('blur', (e) => {
         (document.querySelector('.incorrect_email') as HTMLElement).innerHTML = '';
         registration.checkEmail((e.target as HTMLInputElement).value);
