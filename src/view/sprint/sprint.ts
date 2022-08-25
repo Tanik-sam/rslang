@@ -1,5 +1,4 @@
 import '../../style.scss';
-import '../../assets/sass/components/_sprint.scss';
 import Welcome from './welcome';
 // import { getWords } from '../../controller/fetch';
 
