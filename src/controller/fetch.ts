@@ -1,4 +1,4 @@
-import { IWords, IUser, IID, ILogin, IUserWord } from '../app/interfaces';
+import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord } from '../app/interfaces';
 
 // const wordList = 'https://rs-lang2022.herokuapp.com/words';
 // const userList = 'https://rs-lang2022.herokuapp.com/users';
@@ -63,18 +63,32 @@ export async function loginUser(login: ILogin) {
 
     throw new Error(`${response.status}`);
 }
-export async function getUserWords(): Promise<IUserWord[]> {
+export async function getUserWords(): Promise<IUserGetWord[]> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/words`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        }
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
     });
     const content = await response.json();
-    return (content);
+    return content;
+    throw new Error(`${response.status}`);
+}
+export async function getUserWord(wordId: string): Promise<IUserGetWord> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
+    const content = await response.json();
+    return content;
     throw new Error(`${response.status}`);
 }
 export async function createUserWord(wordId: string, word: IUserWord) {

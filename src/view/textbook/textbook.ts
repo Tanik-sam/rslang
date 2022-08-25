@@ -3,8 +3,8 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord, getUserWords, createUserWord } from '../../controller/fetch';
-import { IWords, IUserWord } from '../../app/interfaces';
+import { getWords, getWord, getUserWords, getUserWord, createUserWord, updateUserWord } from '../../controller/fetch';
+import { IWords, IUserGetWord } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
 class Textbook {
@@ -16,11 +16,12 @@ class Textbook {
 
     color = 'rgba(255, 234, 167, 0.7)';
 
-    userWords!: IUserWord[];
+    userWords!: IUserGetWord[];
 
     getData(): void {
         (async () => {
             this.data = await getWords(this.page, this.group);
+            this.userWords = await getUserWords();
             this.drawTextbook();
         })();
     }
@@ -65,6 +66,14 @@ class Textbook {
             ) as HTMLElement).style.backgroundImage = `url("https://rs-lang2022.herokuapp.com/${item.image}")`;
             (wordClone.querySelector('.learned') as HTMLElement).setAttribute('id', `del ${item.id}`);
             (wordClone.querySelector('.difficult') as HTMLElement).setAttribute('id', `dif ${item.id}`);
+            (wordClone.querySelector('.textbook-words__learned') as HTMLElement).setAttribute(
+                'id',
+                `delcheck_${item.id}`
+            );
+            (wordClone.querySelector('.textbook-words__difficult') as HTMLElement).setAttribute(
+                'id',
+                `difcheck_${item.id}`
+            );
             if (!(localStorage.currentUserName && localStorage.currentUserEmail)) {
                 (wordClone.querySelector('.learned') as HTMLInputElement).disabled = true;
                 (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = true;
@@ -75,16 +84,26 @@ class Textbook {
                 (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = false;
                 (wordClone.querySelector('.learned') as HTMLElement).classList.remove('disabled');
                 (wordClone.querySelector('.difficult') as HTMLElement).classList.remove('disabled');
-                (async () => {
-                    const getr: IUserWord[] = await getUserWords();
-                    console.log (getr);
-                    this.userWords = getr;
-                    (wordClone.querySelector('.textbook-words__difficult') as HTMLElement).innerHTML ='<i class="fa-solid fa-check"></i>';
-                    (wordClone.querySelector('.textbook-words__learned') as HTMLElement).innerHTML ='<i class="fa-solid fa-check"></i>';
-                })();
             }
             fragment1.append(wordClone);
             container.append(fragment1);
+            if (localStorage.currentUserName && localStorage.currentUserEmail) {
+                this.userWords.forEach((wrd) => {
+                    if (wrd.wordId === item.id) {
+                        (async () => {
+                            const userWord = await getUserWord(item.id);
+                            if (userWord.difficulty === 'hard') {
+                                (container.querySelector(`#difcheck_${item.id}`) as HTMLElement).innerHTML =
+                                    '<i class="fa-solid fa-check"></i>';
+                            }
+                            if (userWord.optional.learned === true) {
+                                (container.querySelector(`#delcheck_${item.id}`) as HTMLElement).innerHTML =
+                                    '<i class="fa-solid fa-check"></i>';
+                            }
+                        })();
+                    }
+                });
+            }
         });
         const audioStart = document.querySelectorAll('.textbook-words__word-btn');
         for (let i = 0; i < audioStart.length; i += 1) {
@@ -113,36 +132,89 @@ class Textbook {
         const learnedList = Array.from(document.getElementsByClassName('learned'));
         learnedList.forEach((item) => {
             item.addEventListener('click', (e) => {
+                let flag = false;
+                let difficulty = 'easy';
+                let attempts = 0;
+                let successAtempts = 0;
                 const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
-                const word = {
-                    difficulty: 'easy',
-                    optional: {
-                        attempts: 0,
-                        successAtempts: 0,
-                        learned: true,
-                    },
-                };
-                (async () => {
-                    const wordCreated = await createUserWord(wordId, word);
-                })();
+                (document.querySelector(`#delcheck_${wordId}`) as HTMLElement).innerHTML =
+                    '<i class="fa-solid fa-check"></i>';
+                this.userWords.forEach((w) => {
+                    if (w.id === wordId) {
+                        flag = true;
+                        difficulty = w.difficulty;
+                        attempts = w.optional.attempts;
+                        successAtempts = w.optional.successAtempts;
+                        const word = {
+                            difficulty,
+                            optional: {
+                                attempts,
+                                successAtempts,
+                                learned: true,
+                            },
+                        };
+                        (async () => {
+                            const wordCreated = await updateUserWord(wordId, word);
+                        })();
+                    }
+                });
+                if (!flag) {
+                    const word = {
+                        difficulty: 'easy',
+                        optional: {
+                            attempts: 0,
+                            successAtempts: 0,
+                            learned: true,
+                        },
+                    };
+                    (async () => {
+                        const wordCreated = await createUserWord(wordId, word);
+                    })();
+                }
             });
         });
         const difficultList = Array.from(document.getElementsByClassName('difficult'));
         difficultList.forEach((item) => {
             item.addEventListener('click', (e) => {
+                let flag = false;
+                let learned = false;
+                let attempts = 0;
+                let successAtempts = 0;
                 const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
-                const word = {
-                    difficulty: 'hard',
-                    optional: {
-                        attempts: 0,
-                        successAtempts: 0,
-                        learned: false,
-                    },
-                };
-                (async () => {
-                    const wordCreated = await createUserWord(wordId, word);
-                    const getr = await getUserWords();
-                })();
+                (document.querySelector(`#difcheck_${wordId}`) as HTMLElement).innerHTML =
+                    '<i class="fa-solid fa-check"></i>';
+                this.userWords.forEach((w) => {
+                    if (w.id === wordId) {
+                        flag = true;
+                        learned = w.optional.learned;
+                        attempts = w.optional.attempts;
+                        successAtempts = w.optional.successAtempts;
+                        const word = {
+                            difficulty: 'hard',
+                            optional: {
+                                attempts,
+                                successAtempts,
+                                learned,
+                            },
+                        };
+                        (async () => {
+                            const wordCreated = await updateUserWord(wordId, word);
+                        })();
+                    }
+                });
+                if (!flag) {
+                    const word = {
+                        difficulty: 'hard',
+                        optional: {
+                            attempts: 0,
+                            successAtempts: 0,
+                            learned: false,
+                        },
+                    };
+                    (async () => {
+                        const wordCreated = await createUserWord(wordId, word);
+                    })();
+                }
             });
         });
     }

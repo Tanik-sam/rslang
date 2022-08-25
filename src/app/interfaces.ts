@@ -40,3 +40,10 @@ export interface IUserWord {
     difficulty: string;
     optional: {attempts: number, successAtempts: number, learned: boolean}
 }
+
+export interface IUserGetWord {
+    difficulty: string;
+    id: string;
+    optional: {attempts: number, successAtempts: number, learned: boolean};
+    wordId: string;
+}
