@@ -74,4 +74,14 @@
             transform: scale(1.1);
         }
     }
+    &_difficult{
+        z-index: 0;
+        background: $color-violett;
+        color: $color-dark;
+        &:hover {
+            color: white;
+            background: $color-violett-hover;
+            transform: scale(1.1);
+        }       
+    }
 }

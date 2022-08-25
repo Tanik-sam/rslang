@@ -63,10 +63,19 @@ export async function loginUser(login: ILogin) {
 
     throw new Error(`${response.status}`);
 }
-
-export async function refreshToken() {
+export async function getUserWords(): Promise<IUserWord[]> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
-    const response = await fetch(`${userList}/${userId}/tokens`);
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/words`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        }
+    });
+    const content = await response.json();
+    return (content);
+    throw new Error(`${response.status}`);
 }
 export async function createUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
@@ -83,6 +92,24 @@ export async function createUserWord(wordId: string, word: IUserWord) {
     });
     const content = await response.json();
     console.log(content);
+    throw new Error(`${response.status}`);
+}
+export async function updateUserWord(wordId: string, word: IUserWord) {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
+    const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
+        method: 'PUT',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(word),
+    });
+    const content = await response.json();
+    console.log(content);
+    throw new Error(`${response.status}`);
 }
 export async function deleteUserWord(wordId: string) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
@@ -93,4 +120,8 @@ export async function deleteUserWord(wordId: string) {
         console.log('delete ok');
     }
     throw new Error(`${response.status}`);
+}
+export async function refreshToken() {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const response = await fetch(`${userList}/${userId}/tokens`);
 }

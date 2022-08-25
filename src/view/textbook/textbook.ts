@@ -3,8 +3,8 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord, deleteUserWord, createUserWord } from '../../controller/fetch';
-import { IWords } from '../../app/interfaces';
+import { getWords, getWord, getUserWords, createUserWord } from '../../controller/fetch';
+import { IWords, IUserWord } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
 class Textbook {
@@ -15,6 +15,8 @@ class Textbook {
     data!: IWords[];
 
     color = 'rgba(255, 234, 167, 0.7)';
+
+    userWords!: IUserWord[];
 
     getData(): void {
         (async () => {
@@ -61,18 +63,25 @@ class Textbook {
             (wordClone.querySelector(
                 '.textbook-words__image'
             ) as HTMLElement).style.backgroundImage = `url("https://rs-lang2022.herokuapp.com/${item.image}")`;
-            (wordClone.querySelector('.delete') as HTMLElement).setAttribute('id', `del ${item.id}`);
+            (wordClone.querySelector('.learned') as HTMLElement).setAttribute('id', `del ${item.id}`);
             (wordClone.querySelector('.difficult') as HTMLElement).setAttribute('id', `dif ${item.id}`);
             if (!(localStorage.currentUserName && localStorage.currentUserEmail)) {
-                (wordClone.querySelector('.delete') as HTMLInputElement).disabled = true;
+                (wordClone.querySelector('.learned') as HTMLInputElement).disabled = true;
                 (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = true;
-                (wordClone.querySelector('.delete') as HTMLElement).classList.add('disabled');
+                (wordClone.querySelector('.learned') as HTMLElement).classList.add('disabled');
                 (wordClone.querySelector('.difficult') as HTMLElement).classList.add('disabled');
             } else {
-                (wordClone.querySelector('.delete') as HTMLInputElement).disabled = false;
+                (wordClone.querySelector('.learned') as HTMLInputElement).disabled = false;
                 (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = false;
-                (wordClone.querySelector('.delete') as HTMLElement).classList.remove('disabled');
+                (wordClone.querySelector('.learned') as HTMLElement).classList.remove('disabled');
                 (wordClone.querySelector('.difficult') as HTMLElement).classList.remove('disabled');
+                (async () => {
+                    const getr: IUserWord[] = await getUserWords();
+                    console.log (getr);
+                    this.userWords = getr;
+                    (wordClone.querySelector('.textbook-words__difficult') as HTMLElement).innerHTML ='<i class="fa-solid fa-check"></i>';
+                    (wordClone.querySelector('.textbook-words__learned') as HTMLElement).innerHTML ='<i class="fa-solid fa-check"></i>';
+                })();
             }
             fragment1.append(wordClone);
             container.append(fragment1);
@@ -101,8 +110,8 @@ class Textbook {
                 })();
             });
         }
-        const deleteList = Array.from(document.getElementsByClassName('delete'));
-        deleteList.forEach((item) => {
+        const learnedList = Array.from(document.getElementsByClassName('learned'));
+        learnedList.forEach((item) => {
             item.addEventListener('click', (e) => {
                 const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
                 const word = {
@@ -132,6 +141,7 @@ class Textbook {
                 };
                 (async () => {
                     const wordCreated = await createUserWord(wordId, word);
+                    const getr = await getUserWords();
                 })();
             });
         });
