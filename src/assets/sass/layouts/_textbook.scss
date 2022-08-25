@@ -91,3 +91,11 @@
     justify-content: space-between;
     gap:1rem;
 }
+
+.disabled{
+    color: $color-gray_dark;
+    &:hover {
+        transform: scale(1);
+        background: $color-gray;
+    }
+}

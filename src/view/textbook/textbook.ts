@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord } from '../../controller/fetch';
+import { getWords, getWord, deleteUserWord, createUserWord } from '../../controller/fetch';
 import { IWords } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
@@ -61,6 +61,19 @@ class Textbook {
             (wordClone.querySelector(
                 '.textbook-words__image'
             ) as HTMLElement).style.backgroundImage = `url("https://rs-lang2022.herokuapp.com/${item.image}")`;
+            (wordClone.querySelector('.delete') as HTMLElement).setAttribute('id', `del ${item.id}`);
+            (wordClone.querySelector('.difficult') as HTMLElement).setAttribute('id', `dif ${item.id}`);
+            if (!(localStorage.currentUserName && localStorage.currentUserEmail)) {
+                (wordClone.querySelector('.delete') as HTMLInputElement).disabled = true;
+                (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = true;
+                (wordClone.querySelector('.delete') as HTMLElement).classList.add('disabled');
+                (wordClone.querySelector('.difficult') as HTMLElement).classList.add('disabled');
+            } else {
+                (wordClone.querySelector('.delete') as HTMLInputElement).disabled = false;
+                (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = false;
+                (wordClone.querySelector('.delete') as HTMLElement).classList.remove('disabled');
+                (wordClone.querySelector('.difficult') as HTMLElement).classList.remove('disabled');
+            }
             fragment1.append(wordClone);
             container.append(fragment1);
         });
@@ -88,6 +101,40 @@ class Textbook {
                 })();
             });
         }
+        const deleteList = Array.from(document.getElementsByClassName('delete'));
+        deleteList.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
+                const word = {
+                    difficulty: 'easy',
+                    optional: {
+                        attempts: 0,
+                        successAtempts: 0,
+                        learned: true,
+                    },
+                };
+                (async () => {
+                    const wordCreated = await createUserWord(wordId, word);
+                })();
+            });
+        });
+        const difficultList = Array.from(document.getElementsByClassName('difficult'));
+        difficultList.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
+                const word = {
+                    difficulty: 'hard',
+                    optional: {
+                        attempts: 0,
+                        successAtempts: 0,
+                        learned: false,
+                    },
+                };
+                (async () => {
+                    const wordCreated = await createUserWord(wordId, word);
+                })();
+            });
+        });
     }
 
     eventListen() {

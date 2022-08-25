@@ -35,3 +35,8 @@ export interface IToken {
     token: string;
     userId: string;
 }
+
+export interface IUserWord {
+    difficulty: string;
+    optional: {attempts: number, successAtempts: number, learned: boolean}
+}
