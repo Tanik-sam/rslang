@@ -12,6 +12,7 @@ const baseConfig = {
         registration: path.resolve(__dirname, './src/view/registration/registration.ts'),
         login: path.resolve(__dirname, './src/view/login/login.ts'),
         sprint: path.resolve(__dirname, './src/view/sprint/sprint.ts'),
+        about: path.resolve(__dirname, './src/view/about/about.ts'),
     },
     mode: 'development',
     module: {
@@ -75,6 +76,11 @@ const baseConfig = {
             filename: 'sprint.html',
             template: path.resolve(__dirname, './src/view/sprint/sprint.html'),
             chunks: ['sprint'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'about.html',
+            template: path.resolve(__dirname, './src/view/about/about.html'),
+            chunks: ['about'],
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
