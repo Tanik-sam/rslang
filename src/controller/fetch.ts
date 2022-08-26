@@ -60,10 +60,31 @@ export async function loginUser(login: ILogin) {
         (document.querySelector('.incorrect_email') as HTMLElement).innerHTML =
             'Неправильное имя пользователя или пароль!';
     }
+    if (response.status === 404) {
+        (document.querySelector('.incorrect_email') as HTMLElement).innerHTML = 'Такого пользователя не существует!';
+    }
 
     throw new Error(`${response.status}`);
 }
+export async function refreshUserToken() {
+    console.log('мы туть, в рефреше');
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const refreshToken = `${JSON.parse(localStorage.currentUserToken).refreshToken}`;
+    const response = await fetch(`${userList}/${userId}/tokens`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${refreshToken}`,
+            Accept: 'application/json',
+        },
+    });
+    const content = await response.json();
+    if (content) {
+        localStorage.setItem('currentUserToken', JSON.stringify(content));
+    }
+    console.log(content);
+}
 export async function getUserWords(): Promise<IUserGetWord[]> {
+    console.log('мы туть, в гетюзервордс');
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/words`, {
@@ -74,6 +95,9 @@ export async function getUserWords(): Promise<IUserGetWord[]> {
         },
     });
     const content = await response.json();
+    if (response.status === 401 || response.status === 402) {
+        refreshUserToken();
+    }
     return content;
     throw new Error(`${response.status}`);
 }
@@ -88,6 +112,9 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
         },
     });
     const content = await response.json();
+    if (response.status === 401 || response.status === 402) {
+        refreshUserToken();
+    }
     return content;
     throw new Error(`${response.status}`);
 }
@@ -134,8 +161,4 @@ export async function deleteUserWord(wordId: string) {
         console.log('delete ok');
     }
     throw new Error(`${response.status}`);
-}
-export async function refreshToken() {
-    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
-    const response = await fetch(`${userList}/${userId}/tokens`);
 }

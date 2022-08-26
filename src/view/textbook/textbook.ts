@@ -22,6 +22,7 @@ class Textbook {
         (async () => {
             this.data = await getWords(this.page, this.group);
             this.userWords = await getUserWords();
+            console.log(this.userWords);
             this.drawTextbook();
         })();
     }
@@ -140,7 +141,7 @@ class Textbook {
                 (document.querySelector(`#delcheck_${wordId}`) as HTMLElement).innerHTML =
                     '<i class="fa-solid fa-check"></i>';
                 this.userWords.forEach((w) => {
-                    if (w.id === wordId) {
+                    if (w.wordId === wordId) {
                         flag = true;
                         difficulty = w.difficulty;
                         attempts = w.optional.attempts;
@@ -154,7 +155,8 @@ class Textbook {
                             },
                         };
                         (async () => {
-                            const wordCreated = await updateUserWord(wordId, word);
+                            const wordUpdated = await updateUserWord(wordId, word);
+                            this.userWords = await getUserWords();
                         })();
                     }
                 });
@@ -169,6 +171,7 @@ class Textbook {
                     };
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
+                        this.userWords = await getUserWords();
                     })();
                 }
             });
@@ -184,7 +187,7 @@ class Textbook {
                 (document.querySelector(`#difcheck_${wordId}`) as HTMLElement).innerHTML =
                     '<i class="fa-solid fa-check"></i>';
                 this.userWords.forEach((w) => {
-                    if (w.id === wordId) {
+                    if (w.wordId === wordId) {
                         flag = true;
                         learned = w.optional.learned;
                         attempts = w.optional.attempts;
@@ -198,7 +201,8 @@ class Textbook {
                             },
                         };
                         (async () => {
-                            const wordCreated = await updateUserWord(wordId, word);
+                            const wordUpdated = await updateUserWord(wordId, word);
+                            this.userWords = await getUserWords();
                         })();
                     }
                 });
@@ -213,6 +217,7 @@ class Textbook {
                     };
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
+                        this.userWords = await getUserWords();
                     })();
                 }
             });
