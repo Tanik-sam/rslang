@@ -94,10 +94,13 @@ export async function getUserWords(): Promise<IUserGetWord[]> {
             Accept: 'application/json',
         },
     });
-    const content = await response.json();
+    console.log(response.status)
     if (response.status === 401 || response.status === 402) {
         refreshUserToken();
     }
+    const content = await response.json();
+   
+
     return content;
     throw new Error(`${response.status}`);
 }

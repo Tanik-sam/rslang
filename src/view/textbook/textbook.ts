@@ -22,9 +22,33 @@ class Textbook {
         (async () => {
             this.data = await getWords(this.page, this.group);
             this.userWords = await getUserWords();
-            console.log(this.userWords);
-            this.drawTextbook();
+            if (this.group === 6) {
+                this.getUserData();
+            } else {
+                this.asideColor();
+                this.drawTextbook();
+                (document.querySelector('.pagination') as HTMLElement).classList.remove('hidden');
+            }
         })();
+    }
+
+    getUserData(): void {
+        const difficultWords: IWords[] = [];
+        localStorage.setItem('group', this.group.toString());
+        localStorage.setItem('page', '0');
+        this.userWords.forEach((wrd, i) => {
+            (async () => {
+                const difficultWord = await getWord(wrd.wordId);
+                difficultWords.push(difficultWord);
+                this.data = difficultWords;
+                if (i === this.userWords.length - 1) {
+                    this.asideColor();
+                    this.drawTextbook();
+                }
+            })();
+        });
+
+        (document.querySelector('.pagination') as HTMLElement).classList.add('hidden');
     }
 
     drawTextbook(): void {
@@ -42,6 +66,11 @@ class Textbook {
         } else {
             (document.querySelector('.pagination_back') as HTMLElement).classList.remove('inactive');
             (document.querySelector('.pagination_front') as HTMLElement).classList.remove('inactive');
+        }
+        if (!(localStorage.currentUserName && localStorage.currentUserEmail)) {
+            (document.querySelector('.level_difficult') as HTMLElement).classList.add('disabled');
+        } else {
+            (document.querySelector('.level_difficult') as HTMLElement).classList.remove('disabled');
         }
         const container = document.querySelector('#words-container') as HTMLElement;
         container.innerHTML = '';
@@ -224,6 +253,34 @@ class Textbook {
         });
     }
 
+    asideColor() {
+        switch (this.group) {
+            case 0:
+                this.color = 'rgba(255, 234, 167, 0.7)';
+                break;
+            case 1:
+                this.color = 'rgba(250, 177, 160, 0.7)';
+                break;
+            case 2:
+                this.color = 'rgba(255, 118, 117, 0.7)';
+                break;
+            case 3:
+                this.color = 'rgba(253, 121, 168, 0.7)';
+                break;
+            case 4:
+                this.color = 'rgba(9, 132, 227, 0.7)';
+                break;
+            case 5:
+                this.color = 'rgba(0, 184, 148, 0.7)';
+                break;
+            case 6:
+                this.color = 'rgb(162, 155, 254)';
+                break;
+            default:
+                this.color = 'rgba(255, 234, 167, 0.7)';
+        }
+    }
+
     eventListen() {
         try {
             (document.querySelector('.levels') as HTMLElement).addEventListener('click', (e) => {
@@ -231,32 +288,43 @@ class Textbook {
                     case 'level level_elementary':
                         this.group = 0;
                         this.color = 'rgba(255, 234, 167, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_preIntermediate':
                         this.group = 1;
                         this.color = 'rgba(250, 177, 160, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_intermediate':
                         this.group = 2;
                         this.color = 'rgba(255, 118, 117, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_upperIntermediate':
                         this.group = 3;
                         this.color = 'rgba(253, 121, 168, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_advanced':
                         this.group = 4;
                         this.color = 'rgba(9, 132, 227, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_proficiency':
                         this.group = 5;
                         this.color = 'rgba(0, 184, 148, 0.7)';
+                        this.getData();
+                        break;
+                    case 'level level_difficult':
+                        this.group = 6;
+                        this.color = 'rgb(162, 155, 254)';
+                        this.getUserData();
                         break;
                     default:
                         this.group = 0;
                         this.color = 'rgba(255, 234, 167, 0.7)';
+                        this.getData();
                 }
-                this.getData();
             });
         } catch (e) {
             console.log('Wait for a page load to complete!');
