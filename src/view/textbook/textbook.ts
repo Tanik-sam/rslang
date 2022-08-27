@@ -25,7 +25,7 @@ class Textbook {
                 this.userWords = await getUserWords();
             }
             if (this.group === 6) {
-                this.getUserData();
+                this.getUserDifficultWords();
             } else {
                 this.asideColor();
                 this.drawTextbook();
@@ -34,24 +34,23 @@ class Textbook {
         })();
     }
 
-    getUserData(): void {
+    getUserDifficultWords(): void {
         const difficultWords: IWords[] = [];
-        localStorage.setItem('group', this.group.toString());
+        localStorage.setItem('group', '6');
         localStorage.setItem('page', '0');
-        this.userWords.forEach((wrd, i) => {
-            console.log (wrd);
-            if (wrd.difficulty === 'hard') {
+        (async () => {
+            this.userWords.forEach((wrd) => {
                 (async () => {
-                    const difficultWord = await getWord(wrd.wordId);
-                    difficultWords.push(difficultWord);
-                    this.data = difficultWords;
-                    if (i === this.userWords.length - 1) {
+                    if (wrd.difficulty === 'hard') {
+                        const difficultWord = await getWord(wrd.wordId);
+                        difficultWords.push(difficultWord);
+                        this.data = difficultWords;
                         this.asideColor();
                         this.drawTextbook();
                     }
                 })();
-            }
-        });
+            });
+        })();
         (document.querySelector('.pagination') as HTMLElement).classList.add('hidden');
     }
 
@@ -100,6 +99,9 @@ class Textbook {
             ) as HTMLElement).style.backgroundImage = `url("https://rs-lang2022.herokuapp.com/${item.image}")`;
             (wordClone.querySelector('.learned') as HTMLElement).setAttribute('id', `del ${item.id}`);
             (wordClone.querySelector('.difficult') as HTMLElement).setAttribute('id', `dif ${item.id}`);
+            if (this.group === 6) {
+                (wordClone.querySelector('.difficult') as HTMLElement).innerHTML = 'удалить';
+            }
             (wordClone.querySelector('.textbook-words__learned') as HTMLElement).setAttribute(
                 'id',
                 `delcheck_${item.id}`
@@ -216,17 +218,21 @@ class Textbook {
                 let learned = false;
                 let attempts = 0;
                 let successAtempts = 0;
+                let dif = 'hard';
+                if (this.group === 6) {
+                    dif = 'easy';
+                }
                 const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
                 (document.querySelector(`#difcheck_${wordId}`) as HTMLElement).innerHTML =
                     '<i class="fa-solid fa-check"></i>';
                 this.userWords.forEach((w) => {
-                    if (w.wordId === wordId) {
+                    if (w.wordId === wordId || this.group === 6) {
                         flag = true;
                         learned = w.optional.learned;
                         attempts = w.optional.attempts;
                         successAtempts = w.optional.successAtempts;
                         const word = {
-                            difficulty: 'hard',
+                            difficulty: dif,
                             optional: {
                                 attempts,
                                 successAtempts,
@@ -235,13 +241,12 @@ class Textbook {
                         };
                         (async () => {
                             const wordUpdated = await updateUserWord(wordId, word);
-                            this.userWords = await getUserWords();
                         })();
                     }
                 });
                 if (!flag) {
                     const word = {
-                        difficulty: 'hard',
+                        difficulty: dif,
                         optional: {
                             attempts: 0,
                             successAtempts: 0,
@@ -250,9 +255,12 @@ class Textbook {
                     };
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
-                        this.userWords = await getUserWords();
                     })();
                 }
+                (async () => {
+                    this.userWords = await getUserWords();
+                })();
+                this.getData();
             });
         });
     }
@@ -322,7 +330,7 @@ class Textbook {
                     case 'level level_difficult':
                         this.group = 6;
                         this.color = 'rgb(162, 155, 254)';
-                        this.getUserData();
+                        this.getUserDifficultWords();
                         break;
                     default:
                         this.group = 0;
