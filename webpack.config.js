@@ -5,30 +5,31 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
 
 const baseConfig = {
-  entry: {
-    index: path.resolve(__dirname, './src/index.ts'),
-    'textbook': path.resolve(__dirname, './src/view/textbook/textbook.ts'),
-    'audio-challenge': path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.ts'),
-     registration: path.resolve(__dirname, './src/view/registration/registration.ts'),
-    'login': path.resolve(__dirname, './src/view/login/login.ts'),
-     sprint: path.resolve(__dirname, './src/view/sprint/sprint.ts'),
-  },
-  mode: 'development',
-  module: {
-    rules: [
-      {
-        test: /\.(scss|css)$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-      },
-      {
-        test: /.ts$/i,
-        use: 'ts-loader',
-        //  exclude:'node_modules'
-      },
-      {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
-      },
+    entry: {
+        index: path.resolve(__dirname, './src/index.ts'),
+        textbook: path.resolve(__dirname, './src/view/textbook/textbook.ts'),
+        'audio-challenge': path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.ts'),
+        registration: path.resolve(__dirname, './src/view/registration/registration.ts'),
+        login: path.resolve(__dirname, './src/view/login/login.ts'),
+        sprint: path.resolve(__dirname, './src/view/sprint/sprint.ts'),
+        about: path.resolve(__dirname, './src/view/about/about.ts'),
+    },
+    mode: 'development',
+    module: {
+        rules: [
+            {
+                test: /\.(scss|css)$/i,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+            },
+            {
+                test: /.ts$/i,
+                use: 'ts-loader',
+                //  exclude:'node_modules'
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
+            },
             {
                 test: /\.(svg|eot|woff|woff2|ttf)$/,
                 type: 'asset/resource',
@@ -64,17 +65,22 @@ const baseConfig = {
         new HtmlWebpackPlugin({
             filename: 'registration.html',
             template: path.resolve(__dirname, './src/view/registration/registration.html'),
-            chunks: ['registration']
+            chunks: ['registration'],
         }),
         new HtmlWebpackPlugin({
             filename: 'login.html',
             template: path.resolve(__dirname, './src/view/login/login.html'),
-            chunks: ['login']
+            chunks: ['login'],
         }),
         new HtmlWebpackPlugin({
             filename: 'sprint.html',
             template: path.resolve(__dirname, './src/view/sprint/sprint.html'),
             chunks: ['sprint'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'about.html',
+            template: path.resolve(__dirname, './src/view/about/about.html'),
+            chunks: ['about'],
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
