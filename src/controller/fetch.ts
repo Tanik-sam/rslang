@@ -64,7 +64,7 @@ export async function loginUser(login: ILogin) {
         (document.querySelector('.incorrect_email') as HTMLElement).innerHTML = 'Такого пользователя не существует!';
     }
 
-    throw new Error(`${response.status}`);
+    throw new Error(`${response.status} в логин`);
 }
 export async function refreshUserToken() {
     console.log('мы туть, в рефреше');
@@ -78,13 +78,13 @@ export async function refreshUserToken() {
         },
     });
     const content = await response.json();
+    
     if (content) {
         localStorage.setItem('currentUserToken', JSON.stringify(content));
     }
-    console.log(content);
+    throw new Error(`${response.status}`);
 }
 export async function getUserWords(): Promise<IUserGetWord[]> {
-    console.log('мы туть, в гетюзервордс');
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/words`, {
@@ -94,15 +94,13 @@ export async function getUserWords(): Promise<IUserGetWord[]> {
             Accept: 'application/json',
         },
     });
-    console.log(response.status)
     if (response.status === 401 || response.status === 402) {
         refreshUserToken();
     }
     const content = await response.json();
-   
-
+    throw new Error(`${response.status}` );
     return content;
-    throw new Error(`${response.status}`);
+    
 }
 export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
@@ -118,8 +116,8 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     if (response.status === 401 || response.status === 402) {
         refreshUserToken();
     }
-    return content;
     throw new Error(`${response.status}`);
+    return content;
 }
 export async function createUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;

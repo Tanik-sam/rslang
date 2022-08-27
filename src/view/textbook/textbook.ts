@@ -21,7 +21,9 @@ class Textbook {
     getData(): void {
         (async () => {
             this.data = await getWords(this.page, this.group);
-            this.userWords = await getUserWords();
+            if (localStorage.currentUserName && localStorage.currentUserEmail) {
+                this.userWords = await getUserWords();
+            }
             if (this.group === 6) {
                 this.getUserData();
             } else {
