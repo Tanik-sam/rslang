@@ -113,8 +113,8 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     if (response.status === 401 || response.status === 402) {
         refreshUserToken();
     }
-    throw new Error(`${response.status}`);
     return content;
+    throw new Error(`${response.status}`);
 }
 export async function createUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;

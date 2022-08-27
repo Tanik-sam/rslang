@@ -39,17 +39,19 @@ class Textbook {
         localStorage.setItem('group', this.group.toString());
         localStorage.setItem('page', '0');
         this.userWords.forEach((wrd, i) => {
-            (async () => {
-                const difficultWord = await getWord(wrd.wordId);
-                difficultWords.push(difficultWord);
-                this.data = difficultWords;
-                if (i === this.userWords.length - 1) {
-                    this.asideColor();
-                    this.drawTextbook();
-                }
-            })();
+            console.log (wrd);
+            if (wrd.difficulty === 'hard') {
+                (async () => {
+                    const difficultWord = await getWord(wrd.wordId);
+                    difficultWords.push(difficultWord);
+                    this.data = difficultWords;
+                    if (i === this.userWords.length - 1) {
+                        this.asideColor();
+                        this.drawTextbook();
+                    }
+                })();
+            }
         });
-
         (document.querySelector('.pagination') as HTMLElement).classList.add('hidden');
     }
 
