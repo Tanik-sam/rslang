@@ -78,7 +78,6 @@ export async function refreshUserToken() {
         },
     });
     const content = await response.json();
-    
     if (content) {
         localStorage.setItem('currentUserToken', JSON.stringify(content));
     }
@@ -95,12 +94,10 @@ export async function getUserWords(): Promise<IUserGetWord[]> {
         },
     });
     if (response.status === 401 || response.status === 402) {
-        refreshUserToken();
+        console.log('Надо сделать refreshUserToken(), но он не работает! Перелогиньтесь!');
     }
     const content = await response.json();
-    throw new Error(`${response.status}` );
     return content;
-    
 }
 export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
