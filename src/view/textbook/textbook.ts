@@ -14,6 +14,8 @@ class Textbook {
 
     data!: IWords[];
 
+    translate = true;
+
     color = 'rgba(255, 234, 167, 0.7)';
 
     userWords!: IUserGetWord[];
@@ -84,15 +86,25 @@ class Textbook {
             (wordClone.querySelector('.textbook-words') as HTMLElement).setAttribute('id', item.id);
             (wordClone.querySelector('.textbook-words__word') as HTMLElement).style.backgroundColor = this.color;
             (wordClone.querySelector('.textbook-words__word-name_red') as HTMLElement).innerHTML = item.word;
-            (wordClone.querySelector(
-                '.textbook-words__word-trans'
-            ) as HTMLElement).innerHTML = ` ${item.transcription} ${item.wordTranslate}`;
-            (wordClone.querySelector('.textbook-word__setence') as HTMLElement).innerHTML = item.textMeaning;
-            (wordClone.querySelector('.textbook-word__setence_tr') as HTMLElement).innerHTML =
-                item.textMeaningTranslate;
-            (wordClone.querySelector('.textbook-word__setence_ex') as HTMLElement).innerHTML = item.textExample;
-            (wordClone.querySelector('.textbook-word__setence_tr_ex') as HTMLElement).innerHTML =
-                item.textExampleTranslate;
+            if (this.translate === true) {
+                (wordClone.querySelector(
+                    '.textbook-words__word-trans'
+                ) as HTMLElement).innerHTML = ` ${item.transcription} ${item.wordTranslate}`;
+                (wordClone.querySelector('.textbook-word__setence') as HTMLElement).innerHTML = item.textMeaning;
+                (wordClone.querySelector('.textbook-word__setence_tr') as HTMLElement).innerHTML =
+                    item.textMeaningTranslate;
+                (wordClone.querySelector('.textbook-word__setence_ex') as HTMLElement).innerHTML = item.textExample;
+                (wordClone.querySelector('.textbook-word__setence_tr_ex') as HTMLElement).innerHTML =
+                    item.textExampleTranslate;
+            } else {
+                (wordClone.querySelector(
+                    '.textbook-words__word-trans'
+                ) as HTMLElement).innerHTML = ` ${item.transcription}`;
+                (wordClone.querySelector('.textbook-word__setence') as HTMLElement).innerHTML = item.textMeaning;
+                (wordClone.querySelector('.textbook-word__setence_tr') as HTMLElement).innerHTML = '';
+                (wordClone.querySelector('.textbook-word__setence_ex') as HTMLElement).innerHTML = item.textExample;
+                (wordClone.querySelector('.textbook-word__setence_tr_ex') as HTMLElement).innerHTML = '';
+            }
             (wordClone.querySelector('.textbook-words__word-btn') as HTMLElement).setAttribute('id', `vol ${item.id}`);
             (wordClone.querySelector(
                 '.textbook-words__image'
@@ -381,6 +393,28 @@ class Textbook {
         } catch (e) {
             console.log('Wait for a page load to complete!');
         }
+        (document.querySelector('#settings') as HTMLElement).addEventListener('click', () => {
+            const fragment = document.createDocumentFragment() as DocumentFragment;
+            const modal = document.querySelector('#modalSet') as HTMLTemplateElement;
+            const userClone = modal.content.cloneNode(true) as HTMLElement;
+            if (!this.translate) {
+                (userClone.querySelector('#checkbox') as HTMLInputElement).removeAttribute('checked');
+            }
+            fragment.append(userClone);
+            (document.querySelector('.textbook-header') as HTMLElement).append(fragment);
+            (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
+                if ((document.querySelector('#checkbox') as HTMLInputElement).checked) {
+                    this.translate = true;
+                    this.getData();
+                } else {
+                    this.translate = false;
+                    this.getData();
+                }
+                (document.querySelector('.textbook-header') as HTMLElement).removeChild(
+                    document.querySelector('.overlay') as HTMLElement
+                );
+            });
+        });
     }
 
     paginateBack() {
