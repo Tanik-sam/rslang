@@ -49,10 +49,15 @@
   font-size: 32px;
   color: white;
   padding: 0;
+  &--active{
+    background: #fff;
+    color: #000
+  }
   &:hover,
   &:active {
     background: $color-violett;
     transform: scale(1.1);
+    
 }
 }
 .btn-start{

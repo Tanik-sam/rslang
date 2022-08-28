@@ -10,7 +10,7 @@ class SprintGame {
 
     taken: string[] = [];
 
-    hearts = 5;
+    // hearts = 5;
 
     page = 0;
 
@@ -20,7 +20,7 @@ class SprintGame {
 
     currentWord = 0;
 
-    userAnswers: string[] = [];
+    userAnswers: boolean[] = [];
 
     correctAnswers: IWords[] = [];
 
@@ -86,6 +86,7 @@ class SprintGame {
         wordsContainer.id = 'words-container';
         wordsContainer.className = 'words__container';
         wrap?.appendChild(wordsContainer);
+
         wordsContainer.innerHTML = `
         <p id="word-1">divide</p>
         <p class="words__container--small">это</p>
@@ -105,6 +106,8 @@ class SprintGame {
         if (wrap) {
             wrap.appendChild(buttonContainer);
         }
+        // test
+        console.log(await getWords(this.page, this.group));
     }
 
     async drawWords(): Promise<void> {
