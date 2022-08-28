@@ -3,8 +3,8 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord } from '../../controller/fetch';
-import { IWords } from '../../app/interfaces';
+import { getWords, getWord, getUserWords, getUserWord, createUserWord, updateUserWord } from '../../controller/fetch';
+import { IWords, IUserGetWord } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
 class Textbook {
@@ -16,11 +16,42 @@ class Textbook {
 
     color = 'rgba(255, 234, 167, 0.7)';
 
+    userWords!: IUserGetWord[];
+
     getData(): void {
         (async () => {
             this.data = await getWords(this.page, this.group);
-            this.drawTextbook();
+            if (localStorage.currentUserName && localStorage.currentUserEmail) {
+                this.userWords = await getUserWords();
+            }
+            if (this.group === 6) {
+                this.getUserDifficultWords();
+            } else {
+                this.asideColor();
+                this.drawTextbook();
+                (document.querySelector('.pagination') as HTMLElement).classList.remove('hidden');
+            }
         })();
+    }
+
+    getUserDifficultWords(): void {
+        const difficultWords: IWords[] = [];
+        localStorage.setItem('group', '6');
+        localStorage.setItem('page', '0');
+        (async () => {
+            this.userWords.forEach((wrd) => {
+                (async () => {
+                    if (wrd.difficulty === 'hard') {
+                        const difficultWord = await getWord(wrd.wordId);
+                        difficultWords.push(difficultWord);
+                        this.data = difficultWords;
+                        this.asideColor();
+                        this.drawTextbook();
+                    }
+                })();
+            });
+        })();
+        (document.querySelector('.pagination') as HTMLElement).classList.add('hidden');
     }
 
     drawTextbook(): void {
@@ -38,6 +69,11 @@ class Textbook {
         } else {
             (document.querySelector('.pagination_back') as HTMLElement).classList.remove('inactive');
             (document.querySelector('.pagination_front') as HTMLElement).classList.remove('inactive');
+        }
+        if (!(localStorage.currentUserName && localStorage.currentUserEmail)) {
+            (document.querySelector('.level_difficult') as HTMLElement).classList.add('disabled');
+        } else {
+            (document.querySelector('.level_difficult') as HTMLElement).classList.remove('disabled');
         }
         const container = document.querySelector('#words-container') as HTMLElement;
         container.innerHTML = '';
@@ -61,8 +97,49 @@ class Textbook {
             (wordClone.querySelector(
                 '.textbook-words__image'
             ) as HTMLElement).style.backgroundImage = `url("https://rs-lang2022.herokuapp.com/${item.image}")`;
+            (wordClone.querySelector('.learned') as HTMLElement).setAttribute('id', `del ${item.id}`);
+            (wordClone.querySelector('.difficult') as HTMLElement).setAttribute('id', `dif ${item.id}`);
+            if (this.group === 6) {
+                (wordClone.querySelector('.difficult') as HTMLElement).innerHTML = 'удалить';
+            }
+            (wordClone.querySelector('.textbook-words__learned') as HTMLElement).setAttribute(
+                'id',
+                `delcheck_${item.id}`
+            );
+            (wordClone.querySelector('.textbook-words__difficult') as HTMLElement).setAttribute(
+                'id',
+                `difcheck_${item.id}`
+            );
+            if (!(localStorage.currentUserName && localStorage.currentUserEmail)) {
+                (wordClone.querySelector('.learned') as HTMLInputElement).disabled = true;
+                (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = true;
+                (wordClone.querySelector('.learned') as HTMLElement).classList.add('disabled');
+                (wordClone.querySelector('.difficult') as HTMLElement).classList.add('disabled');
+            } else {
+                (wordClone.querySelector('.learned') as HTMLInputElement).disabled = false;
+                (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = false;
+                (wordClone.querySelector('.learned') as HTMLElement).classList.remove('disabled');
+                (wordClone.querySelector('.difficult') as HTMLElement).classList.remove('disabled');
+            }
             fragment1.append(wordClone);
             container.append(fragment1);
+            if (localStorage.currentUserName && localStorage.currentUserEmail) {
+                this.userWords.forEach((wrd) => {
+                    if (wrd.wordId === item.id) {
+                        (async () => {
+                            const userWord = await getUserWord(item.id);
+                            if (userWord.difficulty === 'hard') {
+                                (container.querySelector(`#difcheck_${item.id}`) as HTMLElement).innerHTML =
+                                    '<i class="fa-solid fa-check"></i>';
+                            }
+                            if (userWord.optional.learned === true) {
+                                (container.querySelector(`#delcheck_${item.id}`) as HTMLElement).innerHTML =
+                                    '<i class="fa-solid fa-check"></i>';
+                            }
+                        })();
+                    }
+                });
+            }
         });
         const audioStart = document.querySelectorAll('.textbook-words__word-btn');
         for (let i = 0; i < audioStart.length; i += 1) {
@@ -88,6 +165,132 @@ class Textbook {
                 })();
             });
         }
+        const learnedList = Array.from(document.getElementsByClassName('learned'));
+        learnedList.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                let flag = false;
+                let difficulty = 'easy';
+                let attempts = 0;
+                let successAtempts = 0;
+                const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
+                (document.querySelector(`#delcheck_${wordId}`) as HTMLElement).innerHTML =
+                    '<i class="fa-solid fa-check"></i>';
+                this.userWords.forEach((w) => {
+                    if (w.wordId === wordId) {
+                        flag = true;
+                        difficulty = w.difficulty;
+                        attempts = w.optional.attempts;
+                        successAtempts = w.optional.successAtempts;
+                        const word = {
+                            difficulty,
+                            optional: {
+                                attempts,
+                                successAtempts,
+                                learned: true,
+                            },
+                        };
+                        (async () => {
+                            const wordUpdated = await updateUserWord(wordId, word);
+                            this.userWords = await getUserWords();
+                        })();
+                    }
+                });
+                if (!flag) {
+                    const word = {
+                        difficulty: 'easy',
+                        optional: {
+                            attempts: 0,
+                            successAtempts: 0,
+                            learned: true,
+                        },
+                    };
+                    (async () => {
+                        const wordCreated = await createUserWord(wordId, word);
+                        this.userWords = await getUserWords();
+                    })();
+                }
+            });
+        });
+        const difficultList = Array.from(document.getElementsByClassName('difficult'));
+        difficultList.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                let flag = false;
+                let learned = false;
+                let attempts = 0;
+                let successAtempts = 0;
+                let dif = 'hard';
+                if (this.group === 6) {
+                    dif = 'easy';
+                }
+                const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
+                (document.querySelector(`#difcheck_${wordId}`) as HTMLElement).innerHTML =
+                    '<i class="fa-solid fa-check"></i>';
+                this.userWords.forEach((w) => {
+                    if (w.wordId === wordId || this.group === 6) {
+                        flag = true;
+                        learned = w.optional.learned;
+                        attempts = w.optional.attempts;
+                        successAtempts = w.optional.successAtempts;
+                        const word = {
+                            difficulty: dif,
+                            optional: {
+                                attempts,
+                                successAtempts,
+                                learned,
+                            },
+                        };
+                        (async () => {
+                            const wordUpdated = await updateUserWord(wordId, word);
+                        })();
+                    }
+                });
+                if (!flag) {
+                    const word = {
+                        difficulty: dif,
+                        optional: {
+                            attempts: 0,
+                            successAtempts: 0,
+                            learned: false,
+                        },
+                    };
+                    (async () => {
+                        const wordCreated = await createUserWord(wordId, word);
+                    })();
+                }
+                (async () => {
+                    this.userWords = await getUserWords();
+                })();
+                this.getData();
+            });
+        });
+    }
+
+    asideColor() {
+        switch (this.group) {
+            case 0:
+                this.color = 'rgba(255, 234, 167, 0.7)';
+                break;
+            case 1:
+                this.color = 'rgba(250, 177, 160, 0.7)';
+                break;
+            case 2:
+                this.color = 'rgba(255, 118, 117, 0.7)';
+                break;
+            case 3:
+                this.color = 'rgba(253, 121, 168, 0.7)';
+                break;
+            case 4:
+                this.color = 'rgba(9, 132, 227, 0.7)';
+                break;
+            case 5:
+                this.color = 'rgba(0, 184, 148, 0.7)';
+                break;
+            case 6:
+                this.color = 'rgb(162, 155, 254)';
+                break;
+            default:
+                this.color = 'rgba(255, 234, 167, 0.7)';
+        }
     }
 
     eventListen() {
@@ -97,32 +300,43 @@ class Textbook {
                     case 'level level_elementary':
                         this.group = 0;
                         this.color = 'rgba(255, 234, 167, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_preIntermediate':
                         this.group = 1;
                         this.color = 'rgba(250, 177, 160, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_intermediate':
                         this.group = 2;
                         this.color = 'rgba(255, 118, 117, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_upperIntermediate':
                         this.group = 3;
                         this.color = 'rgba(253, 121, 168, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_advanced':
                         this.group = 4;
                         this.color = 'rgba(9, 132, 227, 0.7)';
+                        this.getData();
                         break;
                     case 'level level_proficiency':
                         this.group = 5;
                         this.color = 'rgba(0, 184, 148, 0.7)';
+                        this.getData();
+                        break;
+                    case 'level level_difficult':
+                        this.group = 6;
+                        this.color = 'rgb(162, 155, 254)';
+                        this.getUserDifficultWords();
                         break;
                     default:
                         this.group = 0;
                         this.color = 'rgba(255, 234, 167, 0.7)';
+                        this.getData();
                 }
-                this.getData();
             });
         } catch (e) {
             console.log('Wait for a page load to complete!');

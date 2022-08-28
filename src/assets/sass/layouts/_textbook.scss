@@ -85,9 +85,31 @@
     margin: 1rem;
 }
 .textbook-words__buttons{
-    margin: 1rem;
+    margin: 0.5rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap:1rem;
+}
+.textbook-words__params{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.disabled{
+    color: $color-gray_dark;
+    &:hover {
+        transform: scale(1);
+        background: $color-gray;
+    }
+}
+.textbook-words__difficult {
+    color: $color-light_red;
+}
+.textbook-words__learned {
+    color: $color-light_green;
 }

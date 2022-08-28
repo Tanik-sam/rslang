@@ -1,4 +1,4 @@
-import { IWords, IUser, IID, ILogin } from '../app/interfaces';
+import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord } from '../app/interfaces';
 
 // const wordList = 'https://rs-lang2022.herokuapp.com/words';
 // const userList = 'https://rs-lang2022.herokuapp.com/users';
@@ -60,6 +60,103 @@ export async function loginUser(login: ILogin) {
         (document.querySelector('.incorrect_email') as HTMLElement).innerHTML =
             'Неправильное имя пользователя или пароль!';
     }
+    if (response.status === 404) {
+        (document.querySelector('.incorrect_email') as HTMLElement).innerHTML = 'Такого пользователя не существует!';
+    }
 
+    throw new Error(`${response.status} в логин`);
+}
+export async function refreshUserToken() {
+    console.log('мы туть, в рефреше');
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const refreshToken = `${JSON.parse(localStorage.currentUserToken).refreshToken}`;
+    const response = await fetch(`${userList}/${userId}/tokens`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${refreshToken}`,
+            Accept: 'application/json',
+        },
+    });
+    const content = await response.json();
+    if (content) {
+        localStorage.setItem('currentUserToken', JSON.stringify(content));
+    }
+    throw new Error(`${response.status}`);
+}
+export async function getUserWords(): Promise<IUserGetWord[]> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/words`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
+    if (response.status === 401 || response.status === 402) {
+        console.log('Надо сделать refreshUserToken(), но он не работает! Перелогиньтесь!');
+    }
+    const content = await response.json();
+    return content;
+}
+export async function getUserWord(wordId: string): Promise<IUserGetWord> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
+    const content = await response.json();
+    if (response.status === 401 || response.status === 402) {
+        refreshUserToken();
+    }
+    return content;
+    throw new Error(`${response.status}`);
+}
+export async function createUserWord(wordId: string, word: IUserWord) {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
+    const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(word),
+    });
+    const content = await response.json();
+    console.log(content);
+    throw new Error(`${response.status}`);
+}
+export async function updateUserWord(wordId: string, word: IUserWord) {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
+    const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
+        method: 'PUT',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(word),
+    });
+    const content = await response.json();
+    console.log(content);
+    throw new Error(`${response.status}`);
+}
+export async function deleteUserWord(wordId: string) {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
+        method: 'DELETE',
+    });
+    if (response.status === 200) {
+        console.log('delete ok');
+    }
     throw new Error(`${response.status}`);
 }
