@@ -57,6 +57,7 @@ class Textbook {
     }
 
     drawTextbook(): void {
+        this.paginatePage();
         try {
             (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
         } catch (e) {
@@ -376,18 +377,7 @@ class Textbook {
                     default:
                         this.page = Number((e.target as HTMLElement).innerHTML) - 1;
                 }
-                const pageList = Array.from(document.getElementsByClassName('pagination_page'));
-                if (!pageList.some((item) => Number(item.id.split('_')[1]) === this.page)) {
-                    if (this.page < 4) {
-                        this.startPag();
-                    }
-                    if (this.page > 3 && this.page < 25) {
-                        this.midPag();
-                    }
-                    if (this.page > 24 && this.page < 29) {
-                        this.endPag();
-                    }
-                }
+                this.paginatePage()
                 this.getData();
             });
         } catch (e) {
@@ -416,7 +406,20 @@ class Textbook {
             });
         });
     }
-
+    paginatePage() {
+        const pageList = Array.from(document.getElementsByClassName('pagination_page'));
+        if (!pageList.some((item) => Number(item.id.split('_')[1]) === this.page)) {
+            if (this.page < 4) {
+                this.startPag();
+            }
+            if (this.page > 3 && this.page < 25) {
+                this.midPag();
+            }
+            if (this.page > 24 && this.page < 29) {
+                this.endPag();
+            }
+        }
+    }
     paginateBack() {
         if (Number(this.page <= 0)) {
             this.page = 0;
