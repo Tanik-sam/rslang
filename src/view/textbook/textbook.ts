@@ -14,6 +14,8 @@ class Textbook {
 
     data!: IWords[];
 
+    translate = true;
+
     color = 'rgba(255, 234, 167, 0.7)';
 
     userWords!: IUserGetWord[];
@@ -55,6 +57,7 @@ class Textbook {
     }
 
     drawTextbook(): void {
+        this.paginatePage();
         try {
             (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
         } catch (e) {
@@ -84,15 +87,25 @@ class Textbook {
             (wordClone.querySelector('.textbook-words') as HTMLElement).setAttribute('id', item.id);
             (wordClone.querySelector('.textbook-words__word') as HTMLElement).style.backgroundColor = this.color;
             (wordClone.querySelector('.textbook-words__word-name_red') as HTMLElement).innerHTML = item.word;
-            (wordClone.querySelector(
-                '.textbook-words__word-trans'
-            ) as HTMLElement).innerHTML = ` ${item.transcription} ${item.wordTranslate}`;
-            (wordClone.querySelector('.textbook-word__setence') as HTMLElement).innerHTML = item.textMeaning;
-            (wordClone.querySelector('.textbook-word__setence_tr') as HTMLElement).innerHTML =
-                item.textMeaningTranslate;
-            (wordClone.querySelector('.textbook-word__setence_ex') as HTMLElement).innerHTML = item.textExample;
-            (wordClone.querySelector('.textbook-word__setence_tr_ex') as HTMLElement).innerHTML =
-                item.textExampleTranslate;
+            if (this.translate === true) {
+                (wordClone.querySelector(
+                    '.textbook-words__word-trans'
+                ) as HTMLElement).innerHTML = ` ${item.transcription} ${item.wordTranslate}`;
+                (wordClone.querySelector('.textbook-word__setence') as HTMLElement).innerHTML = item.textMeaning;
+                (wordClone.querySelector('.textbook-word__setence_tr') as HTMLElement).innerHTML =
+                    item.textMeaningTranslate;
+                (wordClone.querySelector('.textbook-word__setence_ex') as HTMLElement).innerHTML = item.textExample;
+                (wordClone.querySelector('.textbook-word__setence_tr_ex') as HTMLElement).innerHTML =
+                    item.textExampleTranslate;
+            } else {
+                (wordClone.querySelector(
+                    '.textbook-words__word-trans'
+                ) as HTMLElement).innerHTML = ` ${item.transcription}`;
+                (wordClone.querySelector('.textbook-word__setence') as HTMLElement).innerHTML = item.textMeaning;
+                (wordClone.querySelector('.textbook-word__setence_tr') as HTMLElement).innerHTML = '';
+                (wordClone.querySelector('.textbook-word__setence_ex') as HTMLElement).innerHTML = item.textExample;
+                (wordClone.querySelector('.textbook-word__setence_tr_ex') as HTMLElement).innerHTML = '';
+            }
             (wordClone.querySelector('.textbook-words__word-btn') as HTMLElement).setAttribute('id', `vol ${item.id}`);
             (wordClone.querySelector(
                 '.textbook-words__image'
@@ -192,6 +205,7 @@ class Textbook {
                         (async () => {
                             const wordUpdated = await updateUserWord(wordId, word);
                             this.userWords = await getUserWords();
+                            this.getData();
                         })();
                     }
                 });
@@ -207,6 +221,7 @@ class Textbook {
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
                         this.userWords = await getUserWords();
+                        this.getData();
                     })();
                 }
             });
@@ -241,6 +256,7 @@ class Textbook {
                         };
                         (async () => {
                             const wordUpdated = await updateUserWord(wordId, word);
+                            this.getData();
                         })();
                     }
                 });
@@ -255,12 +271,76 @@ class Textbook {
                     };
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
+                        this.getData();
                     })();
                 }
                 (async () => {
                     this.userWords = await getUserWords();
                 })();
                 this.getData();
+                this.learnedWords();
+            });
+        });
+        this.learnedWords();
+    }
+
+    learnedWords() {
+        try {
+            if (localStorage.learned) {
+                const pages = JSON.parse(localStorage.learned);
+                pages.forEach((p: number) => {
+                    (document.querySelector(`#p_${p}`) as HTMLElement).classList.add('learnedWord');
+                });
+            }
+        } catch (e) {
+            console.log('Wait for a page load to complete!');
+        }
+        let count = 0;
+        this.data.forEach((item) => {
+            this.userWords.forEach((word) => {
+                if (item.id === word.wordId) {
+                    (async () => {
+                        const userWord = await getUserWord(item.id);
+                        if (userWord.optional.learned === true) {
+                            count += 1;
+                            if (count > 18) {
+                                (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('learnedWord');
+                                (document.querySelector('#audio') as HTMLInputElement).disabled = true;
+                                (document.querySelector('#audio') as HTMLElement).classList.add('disabled');
+                                (document.querySelector('#sprint') as HTMLInputElement).disabled = true;
+                                (document.querySelector('#sprint') as HTMLElement).classList.add('disabled');
+                                (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
+                                    'none';
+                                (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
+                                    'none';
+                                if (localStorage.learned) {
+                                    const pages = JSON.parse(localStorage.learned);
+                                    if (!pages.includes(this.page)) {
+                                        pages.push(this.page);
+                                        localStorage.setItem('learned', JSON.stringify(pages));
+                                    }
+                                } else {
+                                    localStorage.setItem('learned', JSON.stringify([this.page]));
+                                }
+                            } else {
+                                (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove(
+                                    'learnedWord'
+                                );
+                                (document.querySelector('#audio') as HTMLInputElement).disabled = false;
+                                (document.querySelector('#audio') as HTMLElement).classList.remove('disabled');
+                                (document.querySelector('#sprint') as HTMLInputElement).disabled = false;
+                                (document.querySelector('#sprint') as HTMLElement).classList.remove('disabled');
+                                (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
+                                    'auto';
+                                (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
+                                    'auto';
+                                const pages = JSON.parse(localStorage.learned);
+                                const newPages = pages.filter((num: number) => num !== this.page);
+                                localStorage.setItem('learned', JSON.stringify(newPages));
+                            }
+                        }
+                    })();
+                }
             });
         });
     }
@@ -364,22 +444,48 @@ class Textbook {
                     default:
                         this.page = Number((e.target as HTMLElement).innerHTML) - 1;
                 }
-                const pageList = Array.from(document.getElementsByClassName('pagination_page'));
-                if (!pageList.some((item) => Number(item.id.split('_')[1]) === this.page)) {
-                    if (this.page < 4) {
-                        this.startPag();
-                    }
-                    if (this.page > 3 && this.page < 25) {
-                        this.midPag();
-                    }
-                    if (this.page > 24 && this.page < 29) {
-                        this.endPag();
-                    }
-                }
+                this.paginatePage();
                 this.getData();
             });
         } catch (e) {
             console.log('Wait for a page load to complete!');
+        }
+        (document.querySelector('#settings') as HTMLElement).addEventListener('click', () => {
+            const fragment = document.createDocumentFragment() as DocumentFragment;
+            const modal = document.querySelector('#modalSet') as HTMLTemplateElement;
+            const userClone = modal.content.cloneNode(true) as HTMLElement;
+            if (!this.translate) {
+                (userClone.querySelector('#checkbox') as HTMLInputElement).removeAttribute('checked');
+            }
+            fragment.append(userClone);
+            (document.querySelector('.textbook-header') as HTMLElement).append(fragment);
+            (document.querySelector('#exit') as HTMLElement).addEventListener('click', () => {
+                if ((document.querySelector('#checkbox') as HTMLInputElement).checked) {
+                    this.translate = true;
+                    this.getData();
+                } else {
+                    this.translate = false;
+                    this.getData();
+                }
+                (document.querySelector('.textbook-header') as HTMLElement).removeChild(
+                    document.querySelector('.overlay') as HTMLElement
+                );
+            });
+        });
+    }
+
+    paginatePage() {
+        const pageList = Array.from(document.getElementsByClassName('pagination_page'));
+        if (!pageList.some((item) => Number(item.id.split('_')[1]) === this.page)) {
+            if (this.page < 4) {
+                this.startPag();
+            }
+            if (this.page > 3 && this.page < 25) {
+                this.midPag();
+            }
+            if (this.page > 24 && this.page < 29) {
+                this.endPag();
+            }
         }
     }
 
