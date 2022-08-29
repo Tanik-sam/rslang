@@ -6,6 +6,7 @@ export function local() {
             console.log('А ну давай-ка выйдем!?');
             localStorage.removeItem('currentUserName');
             localStorage.removeItem('currentUserEmail');
+            localStorage.removeItem('learned');
             (document.querySelector('#loginButton') as HTMLElement).innerHTML = 'Вход';
         });
     }

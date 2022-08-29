@@ -205,6 +205,7 @@ class Textbook {
                         (async () => {
                             const wordUpdated = await updateUserWord(wordId, word);
                             this.userWords = await getUserWords();
+                            this.getData();
                         })();
                     }
                 });
@@ -220,6 +221,7 @@ class Textbook {
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
                         this.userWords = await getUserWords();
+                        this.getData();
                     })();
                 }
             });
@@ -254,6 +256,7 @@ class Textbook {
                         };
                         (async () => {
                             const wordUpdated = await updateUserWord(wordId, word);
+                            this.getData();
                         })();
                     }
                 });
@@ -268,12 +271,60 @@ class Textbook {
                     };
                     (async () => {
                         const wordCreated = await createUserWord(wordId, word);
+                        this.getData();
                     })();
                 }
                 (async () => {
                     this.userWords = await getUserWords();
                 })();
                 this.getData();
+                this.learnedWords();
+            });
+        });
+        this.learnedWords();
+    }
+
+    learnedWords() {
+        try {
+            if (localStorage.learned) {
+                const pages = JSON.parse(localStorage.learned);
+                pages.forEach((p: number) => {
+                    (document.querySelector(`#p_${p}`) as HTMLElement).classList.add('learnedWord');
+                });
+            }
+        } catch (e) {
+            console.log('Wait for a page load to complete!');
+        }
+        let count = 0;
+        this.data.forEach((item) => {
+            this.userWords.forEach((word) => {
+                if (item.id === word.wordId) {
+                    (async () => {
+                        const userWord = await getUserWord(item.id);
+                        if (userWord.optional.learned === true) {
+                            count += 1;
+                            if (count > 18) {
+                                (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('learnedWord');
+                                if (localStorage.learned) {
+                                    const pages = JSON.parse(localStorage.learned);
+                                    if (!pages.includes(this.page)) {
+                                        pages.push(this.page);
+                                        localStorage.setItem('learned', JSON.stringify(pages));
+                                    }
+                                } else {
+                                    localStorage.setItem('learned', JSON.stringify([this.page]));
+                                }
+                            } else {
+                                (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove(
+                                    'learnedWord'
+                                );
+                                const pages = JSON.parse(localStorage.learned);
+                                const newPages = pages.filter((num: number) => num !== this.page);
+                                localStorage.setItem('learned', JSON.stringify(newPages));
+                            }
+                        }
+                    })();
+                }
             });
         });
     }
@@ -377,7 +428,7 @@ class Textbook {
                     default:
                         this.page = Number((e.target as HTMLElement).innerHTML) - 1;
                 }
-                this.paginatePage()
+                this.paginatePage();
                 this.getData();
             });
         } catch (e) {
@@ -406,6 +457,7 @@ class Textbook {
             });
         });
     }
+
     paginatePage() {
         const pageList = Array.from(document.getElementsByClassName('pagination_page'));
         if (!pageList.some((item) => Number(item.id.split('_')[1]) === this.page)) {
@@ -420,6 +472,7 @@ class Textbook {
             }
         }
     }
+
     paginateBack() {
         if (Number(this.page <= 0)) {
             this.page = 0;

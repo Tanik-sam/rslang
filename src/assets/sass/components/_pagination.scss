@@ -14,6 +14,7 @@
 }
 
 .pagination__item{
+    position: relative;
     @extend %font-prim;
     text-align: center;
     font-size: 1.2rem;
@@ -56,5 +57,22 @@
     &:hover {
         transform: scale(1);
         background: $color-gray;
+    }
+}
+
+.learnedWord {
+    color: $color-light_green;
+    box-sizing: border-box;
+    border:1px solid $color-light_green;
+    box-shadow: 0px 0px 10px $color-light_green;
+    &::after{
+        position:absolute;
+        top:-26px;
+        left:16px;
+        z-index: 100;
+        content:'\2713';
+        color:$color-light_green;
+        font-size: 2.2rem;
+        font-weight:bold;
     }
 }
