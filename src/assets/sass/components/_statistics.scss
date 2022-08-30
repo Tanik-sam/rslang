@@ -4,7 +4,11 @@ h3{
 }
 
 .statistic {
-
+ &__wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ }
   &__container {
     display: flex;
     font-size: 24px;
@@ -12,7 +16,7 @@ h3{
     cursor: default;
     gap: 20px;
     &--main{
-      padding-top: 20px;
+      
       width: 100%;
       align-items: center;
       justify-content: center;
