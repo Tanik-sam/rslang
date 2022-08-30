@@ -10,8 +10,6 @@ class SprintGame {
 
     taken: string[] = [];
 
-    // hearts = 5;
-
     page = 0;
 
     group = 0;
@@ -106,60 +104,14 @@ class SprintGame {
         if (wrap) {
             wrap.appendChild(buttonContainer);
         }
-        // test
-        console.log(await getWords(this.page, this.group));
     }
 
     async drawWords(): Promise<void> {
-        await this.getData();
+        await this.getWordData();
         this.taken = [];
-        const wordBtns: HTMLCollectionOf<Element> = document.getElementsByClassName('button button_white word_button');
-        if (this.currentWord > 19) {
-            this.page += 1;
-            await this.getData();
-            this.currentWord = 0;
-        }
-        for (let i = this.currentWord, j = 0; i < this.currentWord + 5; i += 1, j += 1) {
-            if (wordBtns[j]) {
-                (wordBtns[j] as HTMLButtonElement).style.backgroundColor = '#ffffff';
-                wordBtns[j].textContent = this.data[i].wordTranslate;
-                // wordBtns[j].textContent = this.data[i].id;
-                wordBtns[j].id = this.data[i].id;
-            }
-            if (this.data[i] === undefined) {
-                return;
-            }
-            this.taken.push(this.data[i].id);
-            this.currentWord += 1;
-            if (j === 4) {
-                this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
-                console.log('its right', this.rightWord);
-            }
-        }
-    }
-
-    getRandomNumberFrom0to4(): number {
-        return Math.floor(Math.random() * 5);
-    }
-
-    async drawWordDetails() {
-        const word: IWords = await getWord(this.rightWord);
-        this.correctAnswers.push(word);
-        const index = this.correctAnswers.length - 1;
-        const wordDetailsSection: HTMLElement | null = document.getElementById('word-details');
-        if (wordDetailsSection) {
-            while (wordDetailsSection.firstChild) {
-                wordDetailsSection.removeChild(wordDetailsSection.firstChild);
-            }
-        }
-        const details: HTMLElement = document.createElement('span');
-        if (this.correctAnswers[index] === undefined) {
-            return;
-        }
-        details.innerHTML = `<b>${this.correctAnswers[index].word}</b> ${this.correctAnswers[index].transcription}`;
-        if (wordDetailsSection) {
-            wordDetailsSection.appendChild(details);
-        }
+        const wordLeft: HTMLElement | null = document.getElementById('word-1');
+        const wordRight: HTMLElement | null = document.getElementById('word-2');
+        (wordLeft as HTMLElement).textContent = this.data.;
     }
 }
 
