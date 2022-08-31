@@ -1,6 +1,9 @@
 .promo {
     padding: 2rem 0 2rem 0;
     overflow: hidden;
+    @include screen1200 {
+        padding: 1.2rem 0 1.2rem 0;
+    }
 }
 
 .promo__wrapper {
@@ -8,8 +11,15 @@
     justify-content: space-between;
     gap:8rem;
     align-items: center;
+    @include screen1200 {
+        gap:5rem;
+    }
+    @include screen900 {
+        gap:2rem;
+    }
     @include media-mobile {
         flex-direction: column-reverse;
+        gap:0.5rem;
     }
 }
 
@@ -19,6 +29,7 @@
     }
     @include media-mobile {
         text-align: center;
+        width: auto;
     }
 }
 
@@ -54,11 +65,21 @@
     
     @extend %font-add;
     font-size: 1.8rem;
+    @include screen1200 {
+        font-size: 1.5rem;
+    }
+    @include screen610 {
+        max-width: 240px;
+        font-size: 1.2rem;
+    }
     @include media-tablet {
         width: 380px;
     }
     @include media-mobile {
         width: auto;
+        max-width: 100%;
+        font-size: 1.5rem;
+        text-align: center;
     }
 }
 
@@ -69,7 +90,21 @@
     width: 650px;
     height: 440px;
     margin: 1rem;
-
+    @include screen1200 {
+        width: 450px;
+        height: 240px;
+        margin: 0.6rem;
+    }
+    @include screen900 {
+        min-width: 300px;
+        min-height: 200px;
+        margin: 0.6rem;
+    }
+    @include media-tablet {
+        min-width: 200px;
+        min-height: 150px;
+        margin: 0.4rem;
+    }
     @include media-mobile {
         max-width: 100%;
         margin-bottom: 16px;
@@ -87,6 +122,21 @@
     color: $color-dark;
     span{
       font-weight: 600;
+    }
+    @include screen1200 {
+        font-size: 1rem;
+    }
+    @include media-tablet {
+        max-width: 350px;
+    }
+    @include screen610 {
+        max-width: 240px;
+        font-size: 1rem;
+    }
+    @include media-mobile {
+        max-width: 100%;
+        font-size: 1.1rem;
+        text-align: center;
     }
 }
 .main__wrapper{

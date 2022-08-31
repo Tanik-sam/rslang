@@ -12,7 +12,7 @@
     flex-direction: row;
 
     @include media-tablet {
-        padding-left: 24px;
+        padding-left: 2.2rem;
     }
 }
 .logo__wrapper{
@@ -21,6 +21,12 @@
     justify-content: space-between;
     flex-direction: row;
     gap: 1rem;
+    @include screen1200 {
+        gap:0.6rem;
+    }
+    @include screen900 {
+        gap:0.3rem;
+    }
     &:hover{
       h1{
         transition: 0.3s ;
@@ -36,6 +42,10 @@
     background-size: contain;
     width: 50px;
     height: 50px;
+    @include screen1200 {
+        width: 40px;
+        height: 40px;
+    }
 }
 .logo{
         text-decoration: none;
@@ -52,16 +62,11 @@
     
 }
 
-.header__hamburger {
-    margin-right: 37px;
-
-    @include media-mobile {
-        position: absolute;
-        left: 0;
-    }
-}
-
 .header__buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+
     >.button {
         margin-left: 14px;
 
@@ -70,10 +75,6 @@
             margin-left: 0;
         }
     }
-
-    @include media-mobile {
-        display: none;
-    }
 }
 .div-button {
     display: inline;
@@ -81,4 +82,16 @@
 .button_login {
     text-decoration: none;
     color: inherit;
+}
+.hidden_span{
+    display: inline-block;
+    @include media-tablet {
+        display: none;
+    }
+}
+.hidden_awe {
+    display: none;
+    @include media-tablet {
+        display: inline-block;
+    }
 }

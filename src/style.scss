@@ -4,7 +4,6 @@
 @import "./assets/sass/abstract/mixins";
 @import "./assets/sass/base/normalize";
 @import "./assets/sass/base/buttons";
-@import "./assets/sass/base/hamburger";
 @import "./assets/sass/components/navigation";
 @import "./assets/sass/components/promo";
 @import "./assets/sass/components/features";
@@ -30,6 +29,12 @@ h1 {
     font-weight: bolder;
     color: $color-dark;
     font-family: $font_sansserif;
+    @include screen1200 {
+        font-size: 1.5rem;
+    }
+    @include screen900 {
+        font-size: 1.3rem;
+    }
 }
 
 h2 {
@@ -44,6 +49,9 @@ h2 {
     margin: 0 0 0.5rem 0;
     color: $color-dark;
     line-height: 130%;
+    @include screen1200 {
+        font-size: 1.8rem;
+    }
 }
 
 h3 {
@@ -60,6 +68,10 @@ h3 {
     text-align: left;
     color: $color-additional;
     margin: 1rem 0;
+    @include screen1200 {
+        font-size: 1.5rem;
+        margin: 0.5rem 0;
+    }
 }
 
 h4 {

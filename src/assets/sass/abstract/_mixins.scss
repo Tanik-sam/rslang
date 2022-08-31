@@ -9,6 +9,22 @@
         @content;
     }
 }
+@mixin screen1200 {
+    @media (max-width: $screen1200) {
+        @content;
+    }
+}
+
+@mixin screen900 {
+    @media (max-width: $screen900) {
+        @content;
+    }
+}
+@mixin screen610 {
+    @media (max-width: $screen610) {
+        @content;
+    }
+}
 
 @mixin media-mobile {
     @media (max-width: $mobile-big-width) {
@@ -28,5 +44,8 @@
     justify-content: space-between;
     >* {
         flex-basis: $width;
+    }
+    @include media-mobile{
+    justify-content: center;
     }
 }
