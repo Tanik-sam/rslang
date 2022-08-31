@@ -14,7 +14,32 @@
     <header class="header">
       <div class="wrapper header__wrapper">
         <div class="header__logo-line">
-          <span class="header__hamburger hamburger"><span class="hamburger__line"></span></span>
+          <div class="hamburger-menu">
+            <input id="menu__toggle" type="checkbox" />
+            <label class="menu__btn" for="menu__toggle">
+              <span></span>
+            </label>
+            <ul class="menu__box">
+              <a href="index.html" class="navigation__link">
+                <li class="navigation__link-item navigation__link-item--active">Главная</li>
+              </a>
+              <a href="textbook.html" class="navigation__link">
+                <li class="navigation__link-item">Учебник</li>
+              </a>
+              <a href="audio-challenge.html" class="navigation__link">
+                <li class="navigation__link-item">Аудиовызов</li>
+              </a>
+              <a href="sprint.html" class="navigation__link">
+                <li class="navigation__link-item">Спринт</li>
+              </a>
+              <a href="statistics.html" class="navigation__link">
+                <li class="navigation__link-item">Статистика</li>
+              </a>
+              <a href="about.html" class="navigation__link">
+                <li class="navigation__link-item">О нас</li>
+              </a>
+            </ul>
+          </div>
           <a href="index.html" class="logo">
             <div class="logo__wrapper">
               <div class="logo__image"></div>
@@ -46,11 +71,12 @@
         </nav>
         <div class="header__buttons">
           <a class="button_login" href="registration.html">
-            <div id='registration' class="button button_white div-button">Регистрация</div>
+            <div id='registration' class="button button_white div-button"><span class ='hidden_span' >Регистрация </span><i class="fa-solid fa-user-plus hidden_awe"></i></div>
           </a>
           <a class="button_login" href="login.html">
             <div class="button button_colored div-button" id = 'loginButton'>Вход</div>
           </a>
+
         </div>
       </div>
     </header>
@@ -91,7 +117,7 @@
                 <i class="fa-solid fa-volume-high"></i>
                 <div class="feature__content">
                   <h3 class="feature__name">Аудиовызов</h3>
-                  <p class="tool__text">Тренировка восприятия ангийской
+                  <p class="tool__text">Тренировка восприятия английской
                     речи на слух</p>
                 </div>
               </article>

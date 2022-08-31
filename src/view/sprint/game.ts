@@ -10,21 +10,23 @@ class SprintGame {
 
     taken: string[] = [];
 
-    hearts = 5;
-
     page = 0;
 
     group = 0;
 
     id = '';
 
-    currentWord = 0;
-
     userAnswers: string[] = [];
 
-    correctAnswers: IWords[] = [];
+    correctAnswers: string[] = [];
 
-    rightWord = '';
+    gameVariant = 0;
+
+    score = 0;
+
+    multi = 1;
+
+    rightCount = 0;
 
     getData(): Promise<void> {
         return (async () => {
@@ -39,7 +41,7 @@ class SprintGame {
     }
 
     async draw(value: number): Promise<void> {
-        this.group = value - 1;
+        this.group = value;
         const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
 
         if (wrap) {
@@ -65,8 +67,8 @@ class SprintGame {
         scoreSection.id = 'score-section';
         scoreSection.className = 'score';
         wrap?.appendChild(scoreSection);
-        scoreSection.innerHTML = `<p class="score__box button"> Множитель: <span id="multiplier">0</span></p>
-        <p class="score__box button"> Очки: <span id="score">0</span></p>
+        scoreSection.innerHTML = `<p class="score__box button"> Множитель: <span id="multiplier">${this.multi}</span></p>
+        <p class="score__box button"> Очки:<span id="score">${this.score}</span></p>
         <div class="status__container">
         </div> `;
 
@@ -77,19 +79,19 @@ class SprintGame {
         statusContainer.innerHTML = `
         <div class = "score__box score__box--big">
         <p class="score__arrow">✓</p>
-        <p class="score__box score__box--multi">0</p>
+        <p class="score__box score__box--multi">${this.rightCount}</p>
         </div>
-            
         `;
 
         const wordsContainer: HTMLElement = document.createElement('section');
         wordsContainer.id = 'words-container';
         wordsContainer.className = 'words__container';
         wrap?.appendChild(wordsContainer);
+
         wordsContainer.innerHTML = `
-        <p id="word-1">divide</p>
+        <p id="word-1"></p>
         <p class="words__container--small">это</p>
-        <p id="word-2">делить</p>
+        <p id="word-2"></p>
        `;
 
         if (wrap) {
@@ -105,58 +107,63 @@ class SprintGame {
         if (wrap) {
             wrap.appendChild(buttonContainer);
         }
+        this.drawWords(this.group);
     }
 
-    async drawWords(): Promise<void> {
+    async drawWords(value: number): Promise<void> {
+        this.page = 0;
+        this.group = value;
         await this.getData();
-        this.taken = [];
-        const wordBtns: HTMLCollectionOf<Element> = document.getElementsByClassName('button button_white word_button');
-        if (this.currentWord > 19) {
-            this.page += 1;
-            await this.getData();
-            this.currentWord = 0;
+        this.gameVariant = this.getRandom(2);
+
+        const wordLeft: HTMLElement | null = document.getElementById('word-1');
+        const wordRight: HTMLElement | null = document.getElementById('word-2');
+        const btnRight: HTMLElement | null = document.getElementById('btn-right');
+        const btnWrong: HTMLElement | null = document.getElementById('btn-false');
+        const id: number = this.getRandom(19);
+        let idWrong: number = this.getRandom(19);
+
+        if (id === idWrong) {
+            idWrong = this.getRandom(19);
         }
-        for (let i = this.currentWord, j = 0; i < this.currentWord + 5; i += 1, j += 1) {
-            if (wordBtns[j]) {
-                (wordBtns[j] as HTMLButtonElement).style.backgroundColor = '#ffffff';
-                wordBtns[j].textContent = this.data[i].wordTranslate;
-                // wordBtns[j].textContent = this.data[i].id;
-                wordBtns[j].id = this.data[i].id;
-            }
-            if (this.data[i] === undefined) {
-                return;
-            }
-            this.taken.push(this.data[i].id);
-            this.currentWord += 1;
-            if (j === 4) {
-                this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
-                console.log('its right', this.rightWord);
-            }
+        if (this.gameVariant === 0) {
+            (wordLeft as HTMLElement).textContent = this.data[id].word;
+            (wordRight as HTMLElement).textContent = this.data[id].wordTranslate;
+            btnRight?.addEventListener('click', async () => {
+                this.correctAnswers.push(this.data[id].word);
+                this.userAnswers.push('1');
+                this.rightCount += 1;
+                this.multi += 1;
+                this.score += 1;
+                this.score *= this.multi;
+                this.draw(this.group);
+            });
+            btnWrong?.addEventListener('click', async () => {
+                this.userAnswers.push('0');
+                this.multi = 1;
+                this.draw(this.group);
+            });
+        } else {
+            (wordLeft as HTMLElement).textContent = this.data[id].word;
+            (wordRight as HTMLElement).textContent = this.data[idWrong].wordTranslate;
+            btnWrong?.addEventListener('click', async () => {
+                this.userAnswers.push('1');
+                this.rightCount += 1;
+                this.multi += 1;
+                this.score += 1;
+                this.score *= this.multi;
+                this.draw(this.group);
+            });
+            btnRight?.addEventListener('click', async () => {
+                this.userAnswers.push('0');
+                this.multi = 1;
+                this.draw(this.group);
+            });
         }
     }
 
-    getRandomNumberFrom0to4(): number {
-        return Math.floor(Math.random() * 5);
-    }
-
-    async drawWordDetails() {
-        const word: IWords = await getWord(this.rightWord);
-        this.correctAnswers.push(word);
-        const index = this.correctAnswers.length - 1;
-        const wordDetailsSection: HTMLElement | null = document.getElementById('word-details');
-        if (wordDetailsSection) {
-            while (wordDetailsSection.firstChild) {
-                wordDetailsSection.removeChild(wordDetailsSection.firstChild);
-            }
-        }
-        const details: HTMLElement = document.createElement('span');
-        if (this.correctAnswers[index] === undefined) {
-            return;
-        }
-        details.innerHTML = `<b>${this.correctAnswers[index].word}</b> ${this.correctAnswers[index].transcription}`;
-        if (wordDetailsSection) {
-            wordDetailsSection.appendChild(details);
-        }
+    getRandom(max: number): number {
+        return Math.floor(Math.random() * max);
     }
 }
 
