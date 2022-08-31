@@ -1,11 +1,11 @@
 import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord } from '../app/interfaces';
 
-// const wordList = 'https://rs-lang2022.herokuapp.com/words';
-// const userList = 'https://rs-lang2022.herokuapp.com/users';
-// const userLogin = 'https://rs-lang2022.herokuapp.com/signin';
-const wordList = 'http://localhost:27017/words';
-const userList = 'http://localhost:27017/users';
-const userLogin = 'http://localhost:27017/signin';
+const wordList = 'https://rs-lang2022.herokuapp.com/words';
+const userList = 'https://rs-lang2022.herokuapp.com/users';
+const userLogin = 'https://rs-lang2022.herokuapp.com/signin';
+// const wordList = 'http://localhost:27017/words';
+// const userList = 'http://localhost:27017/users';
+// const userLogin = 'http://localhost:27017/signin';
 
 export async function getWords(page = 0, group = 0): Promise<IWords[]> {
     const response = await fetch(`${wordList}?page=${page}&group=${group}`);

@@ -88,6 +88,7 @@
   #score-section{
     display: flex;
     flex-direction: row;
+    gap: 10px;
   }
   .score__box{
     background: linear-gradient(180deg, rgba(232, 236, 237, 0.17) 0%, rgba(232, 236, 237, 1) 100%);
@@ -118,6 +119,7 @@
   }
   .score__arrow{
     font-size: 6rem;
+    
   }
 .words__container{
   display: flex;
@@ -125,18 +127,21 @@
   align-items: center;
   justify-content: center;
   gap: 30px;
-  font-size: 5rem;
+  font-size: 4rem;
   font-weight: 600;
   height: 150px;
   &--small{
     font-size: 2rem;
   }
+  padding-bottom: 20px;
+  width: 100%;
 }
 .button__container{
   display: flex;
   gap: 30px;
   padding-bottom: 20px;
 }
+
 #start-btn{
   margin-bottom: 20px;
 }
