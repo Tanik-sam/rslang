@@ -27,9 +27,7 @@ class Welcome {
         btnStart.className = 'button button_white btn-start';
         btnStart.textContent = 'Начать игру';
         btnStart.addEventListener('click', async () => {
-            console.log('start');
             this.drawGame(this.selectedLevel);
-            this.game.drawWords();
         });
         wrap?.appendChild(h2);
         wrap?.appendChild(h6);
@@ -45,7 +43,6 @@ class Welcome {
             btn.className = 'button button_white level-btn';
             btn.textContent = langLevel;
             btn.addEventListener('click', () => {
-                console.log(btn.value);
                 this.selectedLevel = +btn.value;
                 document.querySelectorAll('.level-btn').forEach((el) => el.classList.remove('level-btn--active'));
                 btn.classList.toggle('level-btn--active');

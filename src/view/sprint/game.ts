@@ -16,13 +16,17 @@ class SprintGame {
 
     id = '';
 
-    currentWord = 0;
+    userAnswers: string[] = [];
 
-    userAnswers: boolean[] = [];
+    correctAnswers: string[] = [];
 
-    correctAnswers: IWords[] = [];
+    gameVariant = 0;
 
-    rightWord = '';
+    score = 0;
+
+    multi = 1;
+
+    rightCount = 0;
 
     getData(): Promise<void> {
         return (async () => {
@@ -37,7 +41,7 @@ class SprintGame {
     }
 
     async draw(value: number): Promise<void> {
-        this.group = value - 1;
+        this.group = value;
         const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
 
         if (wrap) {
@@ -63,8 +67,8 @@ class SprintGame {
         scoreSection.id = 'score-section';
         scoreSection.className = 'score';
         wrap?.appendChild(scoreSection);
-        scoreSection.innerHTML = `<p class="score__box button"> Множитель: <span id="multiplier">0</span></p>
-        <p class="score__box button"> Очки: <span id="score">0</span></p>
+        scoreSection.innerHTML = `<p class="score__box button"> Множитель: <span id="multiplier">${this.multi}</span></p>
+        <p class="score__box button"> Очки:<span id="score">${this.score}</span></p>
         <div class="status__container">
         </div> `;
 
@@ -75,9 +79,8 @@ class SprintGame {
         statusContainer.innerHTML = `
         <div class = "score__box score__box--big">
         <p class="score__arrow">✓</p>
-        <p class="score__box score__box--multi">0</p>
+        <p class="score__box score__box--multi">${this.rightCount}</p>
         </div>
-            
         `;
 
         const wordsContainer: HTMLElement = document.createElement('section');
@@ -86,9 +89,9 @@ class SprintGame {
         wrap?.appendChild(wordsContainer);
 
         wordsContainer.innerHTML = `
-        <p id="word-1">divide</p>
+        <p id="word-1"></p>
         <p class="words__container--small">это</p>
-        <p id="word-2">делить</p>
+        <p id="word-2"></p>
        `;
 
         if (wrap) {
@@ -104,14 +107,63 @@ class SprintGame {
         if (wrap) {
             wrap.appendChild(buttonContainer);
         }
+        this.drawWords(this.group);
     }
 
-    async drawWords(): Promise<void> {
-        await this.getWordData();
-        this.taken = [];
+    async drawWords(value: number): Promise<void> {
+        this.page = 0;
+        this.group = value;
+        await this.getData();
+        this.gameVariant = this.getRandom(2);
+
         const wordLeft: HTMLElement | null = document.getElementById('word-1');
         const wordRight: HTMLElement | null = document.getElementById('word-2');
-        (wordLeft as HTMLElement).textContent = this.data.;
+        const btnRight: HTMLElement | null = document.getElementById('btn-right');
+        const btnWrong: HTMLElement | null = document.getElementById('btn-false');
+        const id: number = this.getRandom(19);
+        let idWrong: number = this.getRandom(19);
+
+        if (id === idWrong) {
+            idWrong = this.getRandom(19);
+        }
+        if (this.gameVariant === 0) {
+            (wordLeft as HTMLElement).textContent = this.data[id].word;
+            (wordRight as HTMLElement).textContent = this.data[id].wordTranslate;
+            btnRight?.addEventListener('click', async () => {
+                this.correctAnswers.push(this.data[id].word);
+                this.userAnswers.push('1');
+                this.rightCount += 1;
+                this.multi += 1;
+                this.score += 1;
+                this.score *= this.multi;
+                this.draw(this.group);
+            });
+            btnWrong?.addEventListener('click', async () => {
+                this.userAnswers.push('0');
+                this.multi = 1;
+                this.draw(this.group);
+            });
+        } else {
+            (wordLeft as HTMLElement).textContent = this.data[id].word;
+            (wordRight as HTMLElement).textContent = this.data[idWrong].wordTranslate;
+            btnWrong?.addEventListener('click', async () => {
+                this.userAnswers.push('1');
+                this.rightCount += 1;
+                this.multi += 1;
+                this.score += 1;
+                this.score *= this.multi;
+                this.draw(this.group);
+            });
+            btnRight?.addEventListener('click', async () => {
+                this.userAnswers.push('0');
+                this.multi = 1;
+                this.draw(this.group);
+            });
+        }
+    }
+
+    getRandom(max: number): number {
+        return Math.floor(Math.random() * max);
     }
 }
 
