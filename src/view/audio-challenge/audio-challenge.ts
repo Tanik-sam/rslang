@@ -1,16 +1,15 @@
 import '../../style.scss';
-import Welcome from './welcome';
-// import { getWords } from '../../controller/fetch';
+import AudioChallengeGame from './game';
 
 class AudioChallenge {
-    private welcome: Welcome;
+    private game: AudioChallengeGame;
 
     constructor() {
-        this.welcome = new Welcome();
+        this.game = new AudioChallengeGame();
     }
 
     drawWelcome() {
-        this.welcome.drawDefault();
+        this.game.drawDefault();
     }
 }
 
