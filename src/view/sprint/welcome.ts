@@ -47,6 +47,8 @@ class Welcome {
             btn.addEventListener('click', () => {
                 console.log(btn.value);
                 this.selectedLevel = +btn.value;
+                document.querySelectorAll('.level-btn').forEach((el) => el.classList.remove('level-btn--active'));
+                btn.classList.toggle('level-btn--active');
             });
             fragment.appendChild(btn);
         });
