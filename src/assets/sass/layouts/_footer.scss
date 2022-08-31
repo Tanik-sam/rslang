@@ -6,7 +6,7 @@
 
 .footer__wrapper {
     @include media-tablet {
-        padding-left: 24px;
+        padding-left: 1rem;
     }
 }
 .footer-navigation{
@@ -24,8 +24,19 @@
     gap: 0.6rem;
     align-items: center;
     justify-content: right;
+    @include media-tablet {
+      justify-content: center;
+    }
+    @include media-mobile {
+      gap:0.4rem;
+      font-size: 0.8rem;
+      flex-wrap: nowrap;
+      justify-content: center;
+    }
+
 }
 .person-link{
+white-space: nowrap;
 text-decoration: none;
 color: $color-dark;
 font-weight: 600;
@@ -48,8 +59,7 @@ transition: .3s;
   display: block;
   display: flex;
   margin: 0 auto;
-  align-items: center;
-  justify-content: center;
+
 }
 .logo-object:hover{
   transition: .3s;
