@@ -1,16 +1,18 @@
 import '../../style.scss';
-import Welcome from './welcome';
+import SprintGame from './game';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-// import { getWords } from '../../controller/fetch';
+import { local } from '../../controller/local';
 
-class SprintGame {
-    private welcome: Welcome;
+local();
+
+class Sprint {
+    private welcome: SprintGame;
 
     constructor() {
-        this.welcome = new Welcome();
+        this.welcome = new SprintGame();
     }
 
     drawWelcome() {
@@ -19,8 +21,8 @@ class SprintGame {
 }
 
 window.onload = function SprintGameInit(): void {
-    const sprintGame: SprintGame = new SprintGame();
+    const sprintGame: Sprint = new Sprint();
     sprintGame.drawWelcome();
 };
 
-export default SprintGame;
+export default Sprint;

@@ -51,6 +51,7 @@ const baseConfig = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/view/main/main.html'),
+            favicon: '../src/assets/icons/logo_main.png',
             filename: 'index.html',
         }),
         new HtmlWebpackPlugin({
@@ -84,9 +85,9 @@ const baseConfig = {
             chunks: ['about'],
         }),
         new HtmlWebpackPlugin({
-          filename: 'statistics.html',
-          template: path.resolve(__dirname, './src/view/statistics/statistics.html'),
-          chunks: ['statistics'],
+            filename: 'statistics.html',
+            template: path.resolve(__dirname, './src/view/statistics/statistics.html'),
+            chunks: ['statistics'],
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
