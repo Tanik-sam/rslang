@@ -1,20 +1,19 @@
 import '../../style.scss';
+import AudioChallengeGame from './game';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import Welcome from './welcome';
-// import { getWords } from '../../controller/fetch';
 
 class AudioChallenge {
-    private welcome: Welcome;
+    private game: AudioChallengeGame;
 
     constructor() {
-        this.welcome = new Welcome();
+        this.game = new AudioChallengeGame();
     }
 
     drawWelcome() {
-        this.welcome.drawDefault();
+        this.game.drawDefault();
     }
 }
 

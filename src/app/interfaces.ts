@@ -47,3 +47,8 @@ export interface IUserGetWord {
     optional: {attempts: number, successAtempts: number, learned: boolean};
     wordId: string;
 }
+
+export interface IUserAnswers {
+    word: IWords;
+    guessedRight: boolean;
+}

@@ -1,29 +1,16 @@
-import { IWords } from '../../app/interfaces';
+import { IUserAnswers, IWords } from '../../app/interfaces';
 import { getWord, getWords } from '../../controller/fetch';
 
-// const wordList = 'http://localhost:3000/words';
 const serverName = 'https://rs-lang2022.herokuapp.com/';
 // const serverName = 'http://localhost:3000/';
-/*
-export async function getWords(page = 0, group = 0): Promise<IWords[]> {
-    const response: Response = await fetch(`${wordList}?page=${page}&group=${group}`);
-    if (response.status === 200) {
-        const words = await response.json();
-        return words;
-    }
-    throw new Error(`${response.status}`);
-}
 
-export async function getWord(id: string): Promise<IWords> {
-    const response: Response = await fetch(`${wordList}/${id}`);
-    if (response.status === 200) {
-        const word = await response.json();
-        return word;
-    }
-    throw new Error(`${response.status}`);
-}
-*/
 class AudioChallengeGame {
+    langLevels: string[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+    selectedLevel = 0;
+
+    value = 0;
+
     data: IWords[] = [];
 
     wordData!: IWords;
@@ -42,7 +29,7 @@ class AudioChallengeGame {
 
     currentWord = 0;
 
-    userAnswers: string[] = [];
+    userAnswers: IUserAnswers[] = [];
 
     correctAnswers: IWords[] = [];
 
@@ -58,6 +45,48 @@ class AudioChallengeGame {
         return (async () => {
             this.wordData = await getWord(this.id);
         })();
+    }
+
+    drawDefault(): void {
+        const wrap: HTMLElement | null = document.getElementById('audio-challenge__wrapper');
+        const h2: HTMLElement = document.createElement('h2');
+        h2.innerText = 'Аудио-вызов';
+        const h6: HTMLElement = document.createElement('h6');
+        h6.innerText = 'Улучши своё восприятие речи на слух!';
+        const h5: HTMLElement = document.createElement('h5');
+        h5.innerText = 'Выбери уровень сложности:';
+        const btnSection: HTMLElement = document.createElement('section');
+        btnSection.id = 'lang-levels-buttons';
+        btnSection.className = 'lang-levels-buttons__container';
+        const btnStart: HTMLButtonElement = document.createElement('button');
+        btnStart.id = 'start-btn';
+        btnStart.className = 'button button_white btn-start';
+        btnStart.textContent = 'Начать игру';
+        btnStart.addEventListener('click', async () => {
+            // console.log('start');
+            this.draw(this.selectedLevel);
+            this.drawWords();
+        });
+        wrap?.appendChild(h2);
+        wrap?.appendChild(h6);
+        wrap?.appendChild(h5);
+        wrap?.appendChild(btnSection);
+        wrap?.appendChild(btnStart);
+        const fragment: DocumentFragment = document.createDocumentFragment();
+
+        this.langLevels.forEach((langLevel, index) => {
+            const btn: HTMLButtonElement = document.createElement('button');
+            btn.id = `level-btn-${index}`;
+            btn.value = `${index}`;
+            btn.className = 'button button_white level-btn';
+            btn.textContent = langLevel;
+            btn.addEventListener('click', () => {
+                console.log(btn.value);
+                this.selectedLevel = +btn.value;
+            });
+            fragment.appendChild(btn);
+        });
+        btnSection.appendChild(fragment);
     }
 
     async draw(value: number): Promise<void> {
@@ -112,10 +141,26 @@ class AudioChallengeGame {
             btn.id = `word-btn-${i}`;
             btn.classList.add('button', 'button_white', 'word_button');
             btn.addEventListener('click', () => {
-                this.userAnswers.push(btn.id);
+                const word = this.data.find((item) => item.id === this.rightWord);
+                if (word) {
+                    console.log(word);
+                    this.userAnswers.push({ word, guessedRight: false });
+                }
+                // console.log('userAnswers', this.userAnswers);
+                // console.log('btn.id', btn.id);
                 if (this.rightWord === btn.id) {
                     btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
                 } else {
+                    if (this.hearts === 0) {
+                        console.log('gameover');
+                        this.showResults();
+                    } else {
+                        this.hearts -= 1;
+                        const heart = document.getElementById(`heart-${this.hearts}`);
+                        if (heart) {
+                            heart.classList.add('hide');
+                        }
+                    }
                     btn.style.backgroundColor = '#ff405d';
                     const rigthBtn = document.getElementById(this.rightWord);
                     if (rigthBtn) {
@@ -137,6 +182,21 @@ class AudioChallengeGame {
         wordsSection.appendChild(fragment);
         answerBtn.addEventListener('click', () => {
             if (answerBtn.textContent === 'Не знаю :(') {
+                if (this.hearts === 0) {
+                    console.log('gameover');
+                    this.showResults();
+                } else {
+                    this.hearts -= 1;
+                    const heart = document.getElementById(`heart-${this.hearts}`);
+                    if (heart) {
+                        heart.classList.add('hide');
+                    }
+                }
+                this.userAnswers.push({
+                    word: this.correctAnswers[this.correctAnswers.length - 1],
+                    guessedRight: true,
+                });
+                console.log(this.userAnswers);
                 this.drawWordDetails();
                 answerBtn.textContent = 'Дальше';
                 answerBtn.style.backgroundColor = '#ffffff';
@@ -150,6 +210,9 @@ class AudioChallengeGame {
                 for (const elem of btns) {
                     elem.disabled = true;
                 }
+            } else if (this.hearts === 0) {
+                console.log('gameover');
+                this.showResults();
             } else {
                 answerBtn.textContent = 'Не знаю :(';
                 answerBtn.style.backgroundColor = '#ff405d';
@@ -181,6 +244,7 @@ class AudioChallengeGame {
                 wordBtns[j].textContent = this.data[i].wordTranslate;
                 // wordBtns[j].textContent = this.data[i].id;
                 wordBtns[j].id = this.data[i].id;
+                // this.answer = this.data[i];
             }
             if (this.data[i] === undefined) {
                 return;
@@ -238,6 +302,41 @@ class AudioChallengeGame {
     hideWordDetails(): void {
         const wordDetailsSection: HTMLElement | null = document.getElementById('word-details');
         wordDetailsSection?.classList.add('hide');
+    }
+
+    async showResults(): Promise<void> {
+        const wrap: HTMLElement | null = document.getElementById('audio-challenge__wrapper');
+        if (wrap) {
+            while (wrap.firstChild) {
+                wrap.removeChild(wrap.firstChild);
+            }
+        }
+        const resultsWrap: HTMLElement = document.createElement('div');
+        resultsWrap.id = 'results-wrap';
+        wrap?.appendChild(resultsWrap);
+        const playAgainBtn: HTMLButtonElement = document.createElement('button');
+        playAgainBtn.id = 'play-again-btn';
+        playAgainBtn.textContent = 'Ещё раз';
+        playAgainBtn.classList.add('button', 'button_white', 'word_button');
+        playAgainBtn.addEventListener('click', () => {
+            console.log('play again');
+            wrap?.removeChild(resultsWrap);
+            wrap?.removeChild(playAgainBtn);
+            this.drawDefault();
+            this.hearts = 5;
+            this.userAnswers = [];
+        });
+        wrap?.appendChild(playAgainBtn);
+        const resultsList: HTMLElement = document.createElement('ul');
+        resultsList.id = 'results-list';
+        resultsWrap.appendChild(resultsList);
+        for (let i = 0; i < this.userAnswers.length; i += 1) {
+            const resultsItem: HTMLElement = document.createElement('li');
+            resultsItem.classList.add('word-in-list');
+            resultsItem.innerHTML = `<b>${this.userAnswers[i].word.word}</b> - ${this.userAnswers[i].word.wordTranslate}`;
+
+            resultsList.appendChild(resultsItem);
+        }
     }
 }
 
