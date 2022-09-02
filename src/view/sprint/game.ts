@@ -29,6 +29,10 @@ class SprintGame {
 
     rightWord = '';
 
+    currentWord = 0;
+
+    currentTranslate = 0;
+
     gameVariant = 0;
 
     score = 0;
@@ -37,7 +41,15 @@ class SprintGame {
 
     rightCount = 0;
 
-    time = 3;
+    wrongCount = 0;
+
+    time = 30;
+
+    arrowColor = '#fff';
+
+    colorGreen = '#19961f';
+
+    colorRed = '#ff405d';
 
     getData(): Promise<void> {
         return (async () => {
@@ -140,7 +152,7 @@ class SprintGame {
         wrap?.appendChild(statusContainer);
         statusContainer.innerHTML = `
         <div class = "score__box score__box--big">
-        <p class="score__arrow">✓</p>
+        <p class="score__arrow" style="color:${this.arrowColor}">✓</p>
         <p class="score__box score__box--multi">${this.rightCount}</p>
         </div>
         `;
@@ -182,49 +194,67 @@ class SprintGame {
         const wordRight: HTMLElement | null = document.getElementById('word-2');
         const btnRight: HTMLElement | null = document.getElementById('btn-right');
         const btnWrong: HTMLElement | null = document.getElementById('btn-false');
-        const scoreArrow: HTMLElement | null = document.querySelector('.score__arrow');
-        const id: number = this.getRandom(19);
-        let idWrong: number = this.getRandom(19);
 
-        if (id === idWrong) {
-            idWrong = this.getRandom(19);
+        this.currentWord = this.getRandom(19);
+        this.currentTranslate = this.getRandom(19);
+
+        if (this.currentWord === this.currentTranslate) {
+            this.currentTranslate = this.getRandom(19);
         }
         if (this.gameVariant === 0) {
-            (wordLeft as HTMLElement).textContent = this.data[id].word;
-            (wordRight as HTMLElement).textContent = this.data[id].wordTranslate;
+            (wordLeft as HTMLElement).textContent = this.data[this.currentWord].word;
+            (wordRight as HTMLElement).textContent = this.data[this.currentWord].wordTranslate;
+            const word = this.data[this.currentWord];
             btnRight?.addEventListener('click', async () => {
-                //
-                // this.userAnswers.push({ this.data[id].word, guessedRight: "true" });
+                if (word) {
+                    this.userAnswers.push({ word, guessedRight: true });
+                }
                 this.rightCount += 1;
                 // this.multi += 1;
                 // this.score += 1;
                 // this.score *= this.multi;
+                this.arrowColor = this.colorGreen;
                 this.draw(this.group);
-                if (scoreArrow) scoreArrow.style.color = '#19961f';
             });
             btnWrong?.addEventListener('click', async () => {
                 // this.userAnswers.push('0');
                 // this.multi = 1;
+                this.wrongCount += 1;
+                if (word) {
+                    console.log(word);
+                    this.userAnswers.push({ word, guessedRight: false });
+                }
+                this.arrowColor = this.colorRed;
                 this.draw(this.group);
             });
         } else {
-            (wordLeft as HTMLElement).textContent = this.data[id].word;
-            (wordRight as HTMLElement).textContent = this.data[idWrong].wordTranslate;
+            (wordLeft as HTMLElement).textContent = this.data[this.currentWord].word;
+            (wordRight as HTMLElement).textContent = this.data[this.currentTranslate].wordTranslate;
+            const word = this.data[this.currentWord];
             btnWrong?.addEventListener('click', async () => {
                 // this.userAnswers.push('1');
                 this.rightCount += 1;
                 // this.multi += 1;
                 // this.score += 1;
                 // this.score *= this.multi;
+                if (word) {
+                    this.userAnswers.push({ word, guessedRight: true });
+                }
+                this.arrowColor = this.colorGreen;
                 this.draw(this.group);
-                if (scoreArrow) scoreArrow.style.color = '#19961f';
             });
             btnRight?.addEventListener('click', async () => {
                 // this.userAnswers.push('0');
                 // this.multi = 1;
+                this.wrongCount += 1;
+                if (word) {
+                    this.userAnswers.push({ word, guessedRight: false });
+                }
+                this.arrowColor = this.colorRed;
                 this.draw(this.group);
             });
         }
+        console.log(this.userAnswers);
     }
 
     getRandom(max: number): number {
@@ -260,22 +290,39 @@ class SprintGame {
         const playAgainBtn: HTMLButtonElement = document.createElement('button');
         playAgainBtn.id = 'play-again-btn';
         playAgainBtn.textContent = 'Ещё раз';
-        playAgainBtn.classList.add('button', 'button_white', 'word_button');
+        playAgainBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
         playAgainBtn.addEventListener('click', () => {
-            console.log('play again');
-            wrap?.removeChild(resultsWrap);
-            wrap?.removeChild(playAgainBtn);
-            this.drawDefault();
-            this.userAnswers = [];
+            document.location.reload();
         });
         wrap?.appendChild(playAgainBtn);
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
         resultsWrap.appendChild(resultsList);
+
+        const countWrapper: HTMLElement = document.createElement('div');
+        const rightCount: HTMLElement = document.createElement('div');
+        const wrongCount: HTMLElement = document.createElement('div');
+        countWrapper.classList.add('count__wrapper');
+        rightCount.classList.add('count__right');
+        wrongCount.classList.add('count__wrong');
+        rightCount.innerHTML = `<span style = "font-weight:300">Знаю:</span> ${this.rightCount.toString()}`;
+        wrongCount.innerHTML = `<span style = "font-weight:300">Ошибок</span>: ${this.wrongCount.toString()}`;
+        resultsList.appendChild(countWrapper);
+        countWrapper.appendChild(rightCount);
+        countWrapper.appendChild(wrongCount);
+
         for (let i = 0; i < this.userAnswers.length; i += 1) {
+            let guessed: number;
             const resultsItem: HTMLElement = document.createElement('li');
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            this.userAnswers[i].guessedRight === true ? (guessed = 1) : (guessed = 0);
             resultsItem.classList.add('word-in-list');
-            // resultsItem.innerHTML = `<b>${this.userAnswers[i].word.word}</b> - ${this.userAnswers[i].word.wordTranslate}`;
+
+            if (guessed === 1) {
+                resultsItem.innerHTML = `<b style = "color:${this.colorGreen}">${this.userAnswers[i].word.word}</b> <span style = "font-weight:300"> - ${this.userAnswers[i].word.wordTranslate}</span>`;
+            } else {
+                resultsItem.innerHTML = `<b style = "color:${this.colorRed}">${this.userAnswers[i].word.word}</b> <span style = "font-weight:300"> - ${this.userAnswers[i].word.wordTranslate}</span>`;
+            }
 
             resultsList.appendChild(resultsItem);
         }

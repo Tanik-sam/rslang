@@ -155,3 +155,20 @@
 #btn-right{
   background-color: $color-green;
 }    
+.reload_button{
+margin-top: 20px;
+}
+.count{
+  &__wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    color: #000;
+    border-bottom: 1px solid $color-gray;
+  }
+  &__right,
+  &__left{
+    text-align: center;
+  }
+}

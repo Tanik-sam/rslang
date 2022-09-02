@@ -51,7 +51,6 @@ const baseConfig = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/view/main/main.html'),
-            favicon: '../src/assets/icons/logo_main.png',
             filename: 'index.html',
         }),
         new HtmlWebpackPlugin({
