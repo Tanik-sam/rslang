@@ -31,6 +31,8 @@
         "eslint-plugin-import": "^2.23.3",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-webpack-plugin": "^3.2.0",
+        "favicons": "^7.0.0-beta.5",
+        "favicons-webpack-plugin": "^5.0.2",
         "html-webpack-plugin": "^5.2.0",
         "mini-css-extract-plugin": "^2.6.1",
         "node-sass": "^7.0.1",

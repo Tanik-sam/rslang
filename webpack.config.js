@@ -1,5 +1,6 @@
 const path = require('path');
 const { merge } = require('webpack-merge');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
@@ -58,36 +59,100 @@ const baseConfig = {
             template: path.resolve(__dirname, './src/view/textbook/textbook.html'),
             chunks: ['textbook'],
         }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'textbook.html',
+        }),
         new HtmlWebpackPlugin({
             filename: 'audio-challenge.html',
             template: path.resolve(__dirname, './src/view/audio-challenge/audio-challenge.html'),
             chunks: ['audio-challenge'],
+        }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'audio-challenge.html',
         }),
         new HtmlWebpackPlugin({
             filename: 'registration.html',
             template: path.resolve(__dirname, './src/view/registration/registration.html'),
             chunks: ['registration'],
         }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'registration.html',
+        }),
         new HtmlWebpackPlugin({
             filename: 'login.html',
             template: path.resolve(__dirname, './src/view/login/login.html'),
             chunks: ['login'],
+        }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'login.html',
         }),
         new HtmlWebpackPlugin({
             filename: 'sprint.html',
             template: path.resolve(__dirname, './src/view/sprint/sprint.html'),
             chunks: ['sprint'],
         }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'sprint.html',
+        }),
         new HtmlWebpackPlugin({
             filename: 'about.html',
             template: path.resolve(__dirname, './src/view/about/about.html'),
             chunks: ['about'],
+        }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'about.html',
         }),
         new HtmlWebpackPlugin({
           filename: 'statistics.html',
           template: path.resolve(__dirname, './src/view/statistics/statistics.html'),
           chunks: ['statistics'],
         }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'astatistics.html',
+        }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, './src/assets/icons/favicon.png'),
+            prefix: '',
+            publicPath: '../favicons',
+            outputPath: path.resolve(__dirname, 'dist/favicons'),
+            inject: (htmlPlugin) => 
+              path.basename(htmlPlugin.options.filename) === 'index.html',
+          }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
     ],
