@@ -84,9 +84,9 @@ const baseConfig = {
             chunks: ['about'],
         }),
         new HtmlWebpackPlugin({
-          filename: 'statistics.html',
-          template: path.resolve(__dirname, './src/view/statistics/statistics.html'),
-          chunks: ['statistics'],
+            filename: 'statistics.html',
+            template: path.resolve(__dirname, './src/view/statistics/statistics.html'),
+            chunks: ['statistics'],
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),

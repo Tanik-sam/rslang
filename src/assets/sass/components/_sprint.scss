@@ -1,5 +1,9 @@
 .spint__container{
   display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
     width: 100%;
     background: linear-gradient(180deg, rgba(70, 200, 175, 1) 0%, $color-blue 100%);
     min-height: calc(100vh - 145px);
@@ -151,3 +155,20 @@
 #btn-right{
   background-color: $color-green;
 }    
+.reload_button{
+margin-top: 20px;
+}
+.count{
+  &__wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    color: #000;
+    border-bottom: 1px solid $color-gray;
+  }
+  &__right,
+  &__left{
+    text-align: center;
+  }
+}
