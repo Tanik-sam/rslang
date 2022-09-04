@@ -249,6 +249,8 @@ class AudioChallengeGame {
         }
         const maxWords = this.currentWord + 5;
         for (let i = this.currentWord, j = 0; i < maxWords; i += 1, j += 1) {
+            // console.log('this.currentWord', this.currentWord);
+            // console.log('this.page', this.page);
             if (wordBtns[j]) {
                 (wordBtns[j] as HTMLButtonElement).style.backgroundColor = '#ffffff';
                 wordBtns[j].textContent = this.data[i].wordTranslate;
@@ -260,6 +262,9 @@ class AudioChallengeGame {
             this.taken.push(this.data[i].id);
             this.currentWord += 1;
             if (i === 4 || i === 9 || i === 14 || i === 19) {
+                // console.log('this.currentWord2', this.currentWord);
+                // console.log('this.page2', this.page);
+                // console.log('i2', i);
                 this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
                 const word = this.data.find((item) => item.id === this.rightWord);
                 if (word) {
@@ -269,7 +274,7 @@ class AudioChallengeGame {
                     this.page -= 1;
                     this.currentWord = 0;
                     if (this.page < 0) {
-                        this.hearts = 1;
+                        this.hearts = 0;
                     }
                 }
                 this.playAudio();
@@ -338,11 +343,11 @@ class AudioChallengeGame {
         exitBtn.textContent = 'Закончить';
         exitBtn.classList.add('button', 'button_white', 'word_button');
         playAgainBtn.addEventListener('click', () => {
-            console.log('play again');
+            // console.log('play again');
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(playAgainBtn);
             wrap?.removeChild(exitBtn);
-            console.log(this.userAnswers);
+            // console.log(this.userAnswers);
             this.checkAndAddUserWord(this.userAnswers);
             this.hearts = 5;
             this.userAnswers = [];
@@ -352,12 +357,12 @@ class AudioChallengeGame {
             this.drawWords();
         });
         exitBtn.addEventListener('click', () => {
-            console.log('exit');
+            // console.log('exit');
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(playAgainBtn);
             wrap?.removeChild(exitBtn);
             this.drawDefault();
-            console.log(this.userAnswers);
+            // console.log(this.userAnswers);
             this.checkAndAddUserWord(this.userAnswers);
             this.hearts = 5;
             this.userAnswers = [];
@@ -369,6 +374,13 @@ class AudioChallengeGame {
         });
         wrap?.appendChild(playAgainBtn);
         wrap?.appendChild(exitBtn);
+        this.userAnswers.forEach((item) => {
+            if (item.guessedRight === false) {
+                this.rightAnswersCounter += 1;
+            } else {
+                this.wrongAnswersCounter += 1;
+            }
+        });
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
         resultsList.innerHTML = `Ошибки: <b style = "color:#ff405d">${this.wrongAnswersCounter}</b> Слов изучено: <b style = "color:#19961f">${this.rightAnswersCounter}</b><hr>`;
@@ -418,13 +430,13 @@ class AudioChallengeGame {
                 item.guessedRight === false
                     ? this.updateUserWord(item.word.id, true)
                     : this.updateUserWord(item.word.id, false);
-                console.log('update', item.word.id);
+                // console.log('update', item.word.id);
             } else {
                 /* eslint-disable-next-line */
                 item.guessedRight === false
                     ? this.addUserWord(item.word.id, true)
                     : this.addUserWord(item.word.id, false);
-                console.log('add', item.word.id);
+                // console.log('add', item.word.id);
             }
         });
     }
