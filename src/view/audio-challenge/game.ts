@@ -92,6 +92,11 @@ class AudioChallengeGame {
             btn.className = 'button button_white level-btn';
             btn.textContent = langLevel;
             btn.addEventListener('click', () => {
+                const btns = document.getElementsByClassName('level-btn');
+                for (let i = 0; i < btns.length; i += 1) {
+                    (btns[i] as HTMLButtonElement).style.backgroundColor = 'transparent';
+                }
+                btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
                 this.selectedLevel = +btn.value + 1;
             });
             fragment.appendChild(btn);
@@ -348,7 +353,9 @@ class AudioChallengeGame {
             wrap?.removeChild(playAgainBtn);
             wrap?.removeChild(exitBtn);
             // console.log(this.userAnswers);
-            this.checkAndAddUserWord(this.userAnswers);
+            if (localStorage.currentUserName) {
+                this.checkAndAddUserWord(this.userAnswers);
+            }
             this.hearts = 5;
             this.userAnswers = [];
             this.rightAnswersCounter = 0;
@@ -363,7 +370,9 @@ class AudioChallengeGame {
             wrap?.removeChild(exitBtn);
             this.drawDefault();
             // console.log(this.userAnswers);
-            this.checkAndAddUserWord(this.userAnswers);
+            if (localStorage.currentUserName) {
+                this.checkAndAddUserWord(this.userAnswers);
+            }
             this.hearts = 5;
             this.userAnswers = [];
             this.rightAnswersCounter = 0;

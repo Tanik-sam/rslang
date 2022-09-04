@@ -37,4 +37,8 @@ window.onload = function audioChallengeInit(): void {
     }
 };
 
+window.onunload = function audioChallengeClose(): void {
+    localStorage.removeItem('flag');
+};
+
 export default AudioChallenge;
