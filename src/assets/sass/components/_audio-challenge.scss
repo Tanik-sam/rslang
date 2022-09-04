@@ -1,6 +1,11 @@
 @import './sprint';
 
 .audio-challenge__container {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
   width: 100%;
   background: linear-gradient(180deg, rgba(253, 121, 168, 0.5) 0%, #0984E3 100%);
   min-height: calc(100vh - 145px);
@@ -11,6 +16,7 @@
     align-items: center;
     padding-top: 20px;
     max-width: 1000px;
+    margin: 0 auto;
   }
 
   h2 {
@@ -44,6 +50,7 @@
 #hearts {
   display: flex;
   gap: 10px;
+  margin: 20px;
 }
 
 .hide {
@@ -54,6 +61,11 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
+  &:hover {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    transform: scale(1.1);
+    cursor: pointer;
+  }
 }
 
 #word-details {
@@ -70,11 +82,11 @@
 }
 
 #results-wrap {
-  width: 500px;
-  min-height: 500px;
+  width: 600px;
+  min-height: 650px;
   background-color: #fff;
   margin-bottom: 20px;
-  padding: 30px 20px;
+  padding: 5px 50px;
   margin-top: 20px;
   font-weight: 600;
   font-size: 1.5rem;
@@ -87,4 +99,47 @@
   font-size: 24px;
   margin: 5px;
   color: #000;
+}
+
+.word_button {
+  &:hover{
+    color: #000;
+  }
+}
+
+#btns-wrap {
+  display: flex;
+  width: 600px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  button {
+    margin: 10px;
+  }
+
+  #exit-btn{
+    &:hover {
+      background-color: $color-light_red;
+    }
+  }
+
+  #play-again-btn {
+    &:hover {
+      background-color: rgb(0, 184, 148);
+    }
+  }
+}
+
+.counters-wrap {
+  display: flex;
+  justify-content: space-around;
+  span {
+    // margin: 5px 5px;
+    .counter-wrong {
+      color: #ff405d;
+    }
+    .counter-right {
+      color: #19961f;
+    }
+  }
 }
