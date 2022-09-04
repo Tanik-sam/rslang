@@ -133,6 +133,7 @@ class Textbook {
                 (wordClone.querySelector('.difficult') as HTMLInputElement).disabled = false;
                 (wordClone.querySelector('.learned') as HTMLElement).classList.remove('disabled');
                 (wordClone.querySelector('.difficult') as HTMLElement).classList.remove('disabled');
+
             }
             fragment1.append(wordClone);
             container.append(fragment1);
@@ -141,6 +142,8 @@ class Textbook {
                     if (wrd.wordId === item.id) {
                         (async () => {
                             const userWord = await getUserWord(item.id);
+                            (container.querySelector('.stat_true') as HTMLElement).innerHTML = `${userWord.optional.successAtempts || 0}`;
+                            (container.querySelector('.stat_false') as HTMLElement).innerHTML =`${userWord.optional.attempts - userWord.optional.successAtempts || 0}`;
                             if (userWord.difficulty === 'hard') {
                                 (container.querySelector(`#difcheck_${item.id}`) as HTMLElement).innerHTML =
                                     '<i class="fa-solid fa-check"></i>';
