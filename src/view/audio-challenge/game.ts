@@ -1,5 +1,5 @@
-import { IUserAnswers, IWords } from '../../app/interfaces';
-import { getWord, getWords } from '../../controller/fetch';
+import { IUserAnswers, IUserGetWord, IUserWord, IWords } from '../../app/interfaces';
+import { createUserWord, getUserWords, getWord, getWords, updateUserWord } from '../../controller/fetch';
 
 const serverName = 'https://rs-lang2022.herokuapp.com/';
 // const serverName = 'http://localhost:3000/';
@@ -7,7 +7,7 @@ const serverName = 'https://rs-lang2022.herokuapp.com/';
 class AudioChallengeGame {
     langLevels: string[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
-    selectedLevel = 0;
+    selectedLevel = 1;
 
     value = 0;
 
@@ -35,6 +35,12 @@ class AudioChallengeGame {
 
     rightWord = '';
 
+    wrongAnswersCounter = 0;
+
+    rightAnswersCounter = 0;
+
+    userWords!: IUserGetWord[];
+
     getData(): Promise<void> {
         return (async () => {
             this.data = await getWords(this.page, this.group);
@@ -44,6 +50,12 @@ class AudioChallengeGame {
     getWordData(): Promise<void> {
         return (async () => {
             this.wordData = await getWord(this.id);
+        })();
+    }
+
+    getUserWordsData() {
+        return (async () => {
+            this.userWords = await getUserWords();
         })();
     }
 
@@ -63,7 +75,6 @@ class AudioChallengeGame {
         btnStart.className = 'button button_white btn-start';
         btnStart.textContent = 'Начать игру';
         btnStart.addEventListener('click', async () => {
-            // console.log('start');
             this.draw(this.selectedLevel);
             this.drawWords();
         });
@@ -81,8 +92,7 @@ class AudioChallengeGame {
             btn.className = 'button button_white level-btn';
             btn.textContent = langLevel;
             btn.addEventListener('click', () => {
-                console.log(btn.value);
-                this.selectedLevel = +btn.value;
+                this.selectedLevel = +btn.value + 1;
             });
             fragment.appendChild(btn);
         });
@@ -91,6 +101,9 @@ class AudioChallengeGame {
 
     async draw(value: number): Promise<void> {
         this.group = value - 1;
+        if (localStorage.flag === 'game') {
+            this.page = Number(localStorage.getItem('page'));
+        }
         const wrap: HTMLElement | null = document.getElementById('audio-challenge__wrapper');
         if (wrap) {
             while (wrap.firstChild) {
@@ -142,17 +155,16 @@ class AudioChallengeGame {
             btn.classList.add('button', 'button_white', 'word_button');
             btn.addEventListener('click', () => {
                 const word = this.data.find((item) => item.id === this.rightWord);
-                if (word) {
-                    console.log(word);
-                    this.userAnswers.push({ word, guessedRight: false });
-                }
-                // console.log('userAnswers', this.userAnswers);
-                // console.log('btn.id', btn.id);
                 if (this.rightWord === btn.id) {
                     btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
+                    if (word) {
+                        this.userAnswers.push({ word, guessedRight: false });
+                    }
                 } else {
+                    if (word) {
+                        this.userAnswers.push({ word, guessedRight: true });
+                    }
                     if (this.hearts === 0) {
-                        console.log('gameover');
                         this.showResults();
                     } else {
                         this.hearts -= 1;
@@ -183,7 +195,6 @@ class AudioChallengeGame {
         answerBtn.addEventListener('click', () => {
             if (answerBtn.textContent === 'Не знаю :(') {
                 if (this.hearts === 0) {
-                    console.log('gameover');
                     this.showResults();
                 } else {
                     this.hearts -= 1;
@@ -196,7 +207,6 @@ class AudioChallengeGame {
                     word: this.correctAnswers[this.correctAnswers.length - 1],
                     guessedRight: true,
                 });
-                console.log(this.userAnswers);
                 this.drawWordDetails();
                 answerBtn.textContent = 'Дальше';
                 answerBtn.style.backgroundColor = '#ffffff';
@@ -211,7 +221,6 @@ class AudioChallengeGame {
                     elem.disabled = true;
                 }
             } else if (this.hearts === 0) {
-                console.log('gameover');
                 this.showResults();
             } else {
                 answerBtn.textContent = 'Не знаю :(';
@@ -238,24 +247,35 @@ class AudioChallengeGame {
             await this.getData();
             this.currentWord = 0;
         }
-        for (let i = this.currentWord, j = 0; i < this.currentWord + 5; i += 1, j += 1) {
+        const maxWords = this.currentWord + 5;
+        for (let i = this.currentWord, j = 0; i < maxWords; i += 1, j += 1) {
+            // console.log('this.currentWord', this.currentWord);
+            // console.log('this.page', this.page);
             if (wordBtns[j]) {
                 (wordBtns[j] as HTMLButtonElement).style.backgroundColor = '#ffffff';
                 wordBtns[j].textContent = this.data[i].wordTranslate;
-                // wordBtns[j].textContent = this.data[i].id;
                 wordBtns[j].id = this.data[i].id;
-                // this.answer = this.data[i];
             }
             if (this.data[i] === undefined) {
                 return;
             }
             this.taken.push(this.data[i].id);
             this.currentWord += 1;
-            if (j === 4) {
+            if (i === 4 || i === 9 || i === 14 || i === 19) {
+                // console.log('this.currentWord2', this.currentWord);
+                // console.log('this.page2', this.page);
+                // console.log('i2', i);
                 this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
                 const word = this.data.find((item) => item.id === this.rightWord);
                 if (word) {
                     this.correctAnswers.push(word);
+                }
+                if (i === 19 && localStorage.flag === 'game') {
+                    this.page -= 1;
+                    this.currentWord = 0;
+                    if (this.page < 0) {
+                        this.hearts = 0;
+                    }
                 }
                 this.playAudio();
             }
@@ -318,25 +338,107 @@ class AudioChallengeGame {
         playAgainBtn.id = 'play-again-btn';
         playAgainBtn.textContent = 'Ещё раз';
         playAgainBtn.classList.add('button', 'button_white', 'word_button');
+        const exitBtn: HTMLButtonElement = document.createElement('button');
+        exitBtn.id = 'exit-btn';
+        exitBtn.textContent = 'Закончить';
+        exitBtn.classList.add('button', 'button_white', 'word_button');
         playAgainBtn.addEventListener('click', () => {
-            console.log('play again');
+            // console.log('play again');
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(playAgainBtn);
-            this.drawDefault();
+            wrap?.removeChild(exitBtn);
+            // console.log(this.userAnswers);
+            this.checkAndAddUserWord(this.userAnswers);
             this.hearts = 5;
             this.userAnswers = [];
+            this.rightAnswersCounter = 0;
+            this.wrongAnswersCounter = 0;
+            this.draw(Number(localStorage.getItem('group')) + 1);
+            this.drawWords();
+        });
+        exitBtn.addEventListener('click', () => {
+            // console.log('exit');
+            wrap?.removeChild(resultsWrap);
+            wrap?.removeChild(playAgainBtn);
+            wrap?.removeChild(exitBtn);
+            this.drawDefault();
+            // console.log(this.userAnswers);
+            this.checkAndAddUserWord(this.userAnswers);
+            this.hearts = 5;
+            this.userAnswers = [];
+            this.rightAnswersCounter = 0;
+            this.wrongAnswersCounter = 0;
+            localStorage.removeItem('flag');
+            this.page = 0;
+            this.group = 0;
         });
         wrap?.appendChild(playAgainBtn);
+        wrap?.appendChild(exitBtn);
+        this.userAnswers.forEach((item) => {
+            if (item.guessedRight === false) {
+                this.rightAnswersCounter += 1;
+            } else {
+                this.wrongAnswersCounter += 1;
+            }
+        });
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
+        resultsList.innerHTML = `Ошибки: <b style = "color:#ff405d">${this.wrongAnswersCounter}</b> Слов изучено: <b style = "color:#19961f">${this.rightAnswersCounter}</b><hr>`;
         resultsWrap.appendChild(resultsList);
         for (let i = 0; i < this.userAnswers.length; i += 1) {
             const resultsItem: HTMLElement = document.createElement('li');
             resultsItem.classList.add('word-in-list');
-            resultsItem.innerHTML = `<b>${this.userAnswers[i].word.word}</b> - ${this.userAnswers[i].word.wordTranslate}`;
-
+            if (this.userAnswers[i].guessedRight === false) {
+                resultsItem.innerHTML = `<b style = "color:#19961f">${this.userAnswers[i].word.word}</b> ${this.userAnswers[i].word.transcription} <span style = "font-weight:300"> - ${this.userAnswers[i].word.wordTranslate}</span>`;
+            } else {
+                resultsItem.innerHTML = `<b style = "color:#ff405d">${this.userAnswers[i].word.word}</b> ${this.userAnswers[i].word.transcription} <span style = "font-weight:300"> - ${this.userAnswers[i].word.wordTranslate}</span>`;
+            }
             resultsList.appendChild(resultsItem);
         }
+    }
+
+    async addUserWord(wordId: string, status: boolean) {
+        const userWord: IUserWord = {
+            difficulty: 'easy',
+            optional: {
+                attempts: 0,
+                successAtempts: 0,
+                learned: status,
+            },
+        };
+        await createUserWord(wordId, userWord);
+    }
+
+    async updateUserWord(wordId: string, status: boolean) {
+        const userWord: IUserWord = {
+            difficulty: 'easy',
+            optional: {
+                attempts: 0,
+                successAtempts: 0,
+                learned: status,
+            },
+        };
+        await updateUserWord(wordId, userWord);
+    }
+
+    async checkAndAddUserWord(userAnswers: IUserAnswers[]) {
+        await this.getUserWordsData();
+        userAnswers.forEach((item) => {
+            const word = this.userWords.find((userWordsItem) => userWordsItem.wordId === item.word.id);
+            if (word) {
+                /* eslint-disable-next-line */
+                item.guessedRight === false
+                    ? this.updateUserWord(item.word.id, true)
+                    : this.updateUserWord(item.word.id, false);
+                // console.log('update', item.word.id);
+            } else {
+                /* eslint-disable-next-line */
+                item.guessedRight === false
+                    ? this.addUserWord(item.word.id, true)
+                    : this.addUserWord(item.word.id, false);
+                // console.log('add', item.word.id);
+            }
+        });
     }
 }
 
