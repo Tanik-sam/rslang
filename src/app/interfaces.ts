@@ -52,3 +52,8 @@ export interface IUserAnswers {
     word: IWords;
     guessedRight: boolean;
 }
+
+export interface IUserStat {
+    learnedWords: number,
+    optional: { sprintSeria: number; sprintSuc: number; sprintAll: number; audioSeria: number; audioSuc: number; audioAll: number;};
+}
