@@ -1,5 +1,13 @@
-import { IUserAnswers, IUserGetWord, IUserWord, IWords } from '../../app/interfaces';
-import { createUserWord, getUserWords, getWord, getWords, updateUserWord } from '../../controller/fetch';
+import { IUserAnswers, IUserGetWord, IUserStat, IUserWord, IWords } from '../../app/interfaces';
+import {
+    createUserWord,
+    getUserStatistics,
+    getUserWords,
+    getWord,
+    getWords,
+    updateUserWord,
+    upsertUserStatistics,
+} from '../../controller/fetch';
 
 const serverName = 'https://rs-lang2022.herokuapp.com/';
 // const serverName = 'http://localhost:3000/';
@@ -39,7 +47,17 @@ class AudioChallengeGame {
 
     rightAnswersCounter = 0;
 
-    userWords!: IUserGetWord[];
+    userWords: IUserGetWord[] = [];
+
+    currentSeries = 0;
+
+    maxSeries = 0;
+
+    successAttempts = 0;
+
+    allAttempts = 0;
+
+    userStats!: IUserStat;
 
     getData(): Promise<void> {
         return (async () => {
@@ -56,6 +74,14 @@ class AudioChallengeGame {
     getUserWordsData() {
         return (async () => {
             this.userWords = await getUserWords();
+            console.log(this.userWords);
+        })();
+    }
+
+    getUserStatisticsData() {
+        return (async () => {
+            this.userStats = await getUserStatistics();
+            console.log(this.userStats);
         })();
     }
 
@@ -163,10 +189,16 @@ class AudioChallengeGame {
                     btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
                     if (word) {
                         this.userAnswers.push({ word, guessedRight: false });
+                        this.successAttempts += 1;
+                        this.currentSeries += 1;
                     }
                 } else {
                     if (word) {
                         this.userAnswers.push({ word, guessedRight: true });
+                        if (this.currentSeries > this.maxSeries) {
+                            this.maxSeries = this.currentSeries;
+                        }
+                        this.currentSeries = 0;
                     }
                     if (this.hearts === 0) {
                         this.showResults();
@@ -198,6 +230,10 @@ class AudioChallengeGame {
         wordsSection.appendChild(fragment);
         answerBtn.addEventListener('click', () => {
             if (answerBtn.textContent === 'Не знаю :(') {
+                if (this.currentSeries > this.maxSeries) {
+                    this.maxSeries = this.currentSeries;
+                }
+                this.currentSeries = 0;
                 if (this.hearts === 0) {
                     this.showResults();
                 } else {
@@ -354,8 +390,10 @@ class AudioChallengeGame {
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(btnsWrap);
             // console.log(this.userAnswers);
+            this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
                 this.checkAndAddUserWord(this.userAnswers);
+                this.checkAndUpdateStatistics();
             }
             this.hearts = 5;
             this.userAnswers = [];
@@ -372,6 +410,7 @@ class AudioChallengeGame {
             // console.log(this.userAnswers);
             if (localStorage.currentUserName) {
                 this.checkAndAddUserWord(this.userAnswers);
+                this.checkAndUpdateStatistics();
             }
             this.hearts = 5;
             this.userAnswers = [];
@@ -410,20 +449,20 @@ class AudioChallengeGame {
         const userWord: IUserWord = {
             difficulty: 'easy',
             optional: {
-                attempts: 0,
-                successAtempts: 0,
+                attempts: 1,
+                successAtempts: status ? 1 : 0,
                 learned: status,
             },
         };
         await createUserWord(wordId, userWord);
     }
 
-    async updateUserWord(wordId: string, status: boolean) {
+    async updateUserWord(wordId: string, status: boolean, attempts: number, successAtempts: number) {
         const userWord: IUserWord = {
             difficulty: 'easy',
             optional: {
-                attempts: 0,
-                successAtempts: 0,
+                attempts,
+                successAtempts,
                 learned: status,
             },
         };
@@ -437,17 +476,58 @@ class AudioChallengeGame {
             if (word) {
                 /* eslint-disable-next-line */
                 item.guessedRight === false
-                    ? this.updateUserWord(item.word.id, true)
-                    : this.updateUserWord(item.word.id, false);
-                // console.log('update', item.word.id);
+                    ? this.updateUserWord(
+                          item.word.id,
+                          true,
+                          word.optional.attempts + 1,
+                          word.optional.successAtempts + 1
+                      )
+                    : this.updateUserWord(
+                          item.word.id,
+                          false,
+                          word.optional.attempts + 1,
+                          word.optional.successAtempts
+                      );
+                console.log('update', item.word.id);
             } else {
                 /* eslint-disable-next-line */
                 item.guessedRight === false
                     ? this.addUserWord(item.word.id, true)
                     : this.addUserWord(item.word.id, false);
-                // console.log('add', item.word.id);
+                console.log('add', item.word.id);
             }
         });
+    }
+
+    async checkAndUpdateStatistics() {
+        await this.getUserStatisticsData();
+        let maxSeries = 0;
+        let successAttempts = 0;
+        let allAttempts = 0;
+        if (this.userStats.optional.audioSeria) {
+            if (this.maxSeries > this.userStats.optional.audioSeria) {
+                maxSeries = this.maxSeries;
+            } else {
+                maxSeries = this.userStats.optional.audioSeria;
+            }
+        }
+        if (this.userStats.optional.audioSuc && this.userStats.optional.audioAll) {
+            successAttempts = this.userStats.optional.audioSuc + this.successAttempts;
+            allAttempts = this.userStats.optional.audioAll + this.allAttempts;
+        }
+        this.addUserStatistic(77, maxSeries, successAttempts, allAttempts);
+    }
+
+    async addUserStatistic(learnedWords: number, maxSeries: number, successAttempts: number, allAttempts: number) {
+        const stats: IUserStat = {
+            learnedWords,
+            optional: {
+                audioSeria: maxSeries,
+                audioSuc: successAttempts,
+                audioAll: allAttempts,
+            },
+        };
+        await upsertUserStatistics(stats);
     }
 }
 
