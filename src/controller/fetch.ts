@@ -1,4 +1,4 @@
-import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord } from '../app/interfaces';
+import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord, IUserStat } from '../app/interfaces';
 
 const wordList = 'https://rs-lang2022.herokuapp.com/words';
 const userList = 'https://rs-lang2022.herokuapp.com/users';
@@ -173,4 +173,25 @@ export async function deleteUserWord(wordId: string) {
         console.log('delete ok');
     }
     throw new Error(`${response.status}`);
+}
+
+export async function upsertUserStatistics(stat: IUserStat) {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/statistics`, {
+        method: 'PUT',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(stat),
+    });
+    // const content = await response.json();
+    if (response.status === 200) {
+        // console.log('update ok');
+        // console.log(content);
+    } else {
+        throw new Error(`${response.status}`);
+    }
 }

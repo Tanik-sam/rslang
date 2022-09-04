@@ -295,56 +295,60 @@ class Textbook {
         } catch (e) {
             console.log('Wait for a page load to complete!');
         }
-        let count = 0;
-        this.data.forEach((item) => {
-            this.userWords.forEach((word) => {
-                if (item.id === word.wordId) {
-                    (async () => {
-                        const userWord = await getUserWord(item.id);
-                        if (userWord.optional.learned === true) {
-                            count += 1;
-                            if (count > 18) {
-                                (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('learnedWord');
-                                (document.querySelector('#audio') as HTMLInputElement).disabled = true;
-                                (document.querySelector('#audio') as HTMLElement).classList.add('disabled');
-                                (document.querySelector('#sprint') as HTMLInputElement).disabled = true;
-                                (document.querySelector('#sprint') as HTMLElement).classList.add('disabled');
-                                (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
-                                    'none';
-                                (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
-                                    'none';
-                                if (localStorage.learned) {
-                                    const pages = JSON.parse(localStorage.learned);
-                                    if (!pages.includes(this.page)) {
-                                        pages.push(this.page);
-                                        localStorage.setItem('learned', JSON.stringify(pages));
+        if (localStorage.learned) {
+            let count = 0;
+            this.data.forEach((item) => {
+                this.userWords.forEach((word) => {
+                    if (item.id === word.wordId) {
+                        (async () => {
+                            const userWord = await getUserWord(item.id);
+                            if (userWord.optional.learned === true) {
+                                count += 1;
+                                if (count > 18) {
+                                    (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add(
+                                        'learnedWord'
+                                    );
+                                    (document.querySelector('#audio') as HTMLInputElement).disabled = true;
+                                    (document.querySelector('#audio') as HTMLElement).classList.add('disabled');
+                                    (document.querySelector('#sprint') as HTMLInputElement).disabled = true;
+                                    (document.querySelector('#sprint') as HTMLElement).classList.add('disabled');
+                                    (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
+                                        'none';
+                                    (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
+                                        'none';
+                                    if (localStorage.learned) {
+                                        const pages = JSON.parse(localStorage.learned);
+                                        if (!pages.includes(this.page)) {
+                                            pages.push(this.page);
+                                            localStorage.setItem('learned', JSON.stringify(pages));
+                                        }
+                                    } else {
+                                        localStorage.setItem('learned', JSON.stringify([this.page]));
                                     }
                                 } else {
-                                    localStorage.setItem('learned', JSON.stringify([this.page]));
-                                }
-                            } else {
-                                (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove(
-                                    'learnedWord'
-                                );
-                                (document.querySelector('#audio') as HTMLInputElement).disabled = false;
-                                (document.querySelector('#audio') as HTMLElement).classList.remove('disabled');
-                                (document.querySelector('#sprint') as HTMLInputElement).disabled = false;
-                                (document.querySelector('#sprint') as HTMLElement).classList.remove('disabled');
-                                (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
-                                    'auto';
-                                (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
-                                    'auto';
-                                if (localStorage.learned) {
-                                    const pages = JSON.parse(localStorage.learned);
-                                    const newPages = pages.filter((num: number) => num !== this.page);
-                                    localStorage.setItem('learned', JSON.stringify(newPages));
+                                    (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove(
+                                        'learnedWord'
+                                    );
+                                    (document.querySelector('#audio') as HTMLInputElement).disabled = false;
+                                    (document.querySelector('#audio') as HTMLElement).classList.remove('disabled');
+                                    (document.querySelector('#sprint') as HTMLInputElement).disabled = false;
+                                    (document.querySelector('#sprint') as HTMLElement).classList.remove('disabled');
+                                    (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
+                                        'auto';
+                                    (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
+                                        'auto';
+                                    if (localStorage.learned) {
+                                        const pages = JSON.parse(localStorage.learned);
+                                        const newPages = pages.filter((num: number) => num !== this.page);
+                                        localStorage.setItem('learned', JSON.stringify(newPages));
+                                    }
                                 }
                             }
-                        }
-                    })();
-                }
+                        })();
+                    }
+                });
             });
-        });
+        }
     }
 
     asideColor() {
