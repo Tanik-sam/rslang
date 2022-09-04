@@ -207,7 +207,14 @@ export async function upsertUserStatistics(stat: IUserStat) {
 
 export async function getUserStatistics(): Promise<IUserStat> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
-    const response = await fetch(`${userList}/${userId}/statistics`);
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/statistics`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
     if (response.status === 200) {
         const stats = await response.json();
         return stats;
