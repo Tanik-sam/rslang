@@ -305,7 +305,9 @@ class Textbook {
                             if (userWord.optional.learned === true) {
                                 count += 1;
                                 if (count > 18) {
-                                    (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('learnedWord');
+                                    (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add(
+                                        'learnedWord'
+                                    );
                                     (document.querySelector('#audio') as HTMLInputElement).disabled = true;
                                     (document.querySelector('#audio') as HTMLElement).classList.add('disabled');
                                     (document.querySelector('#sprint') as HTMLInputElement).disabled = true;
