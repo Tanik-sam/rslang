@@ -94,9 +94,9 @@ class AudioChallengeGame {
             btn.addEventListener('click', () => {
                 const btns = document.getElementsByClassName('level-btn');
                 for (let i = 0; i < btns.length; i += 1) {
-                    (btns[i] as HTMLButtonElement).style.backgroundColor = 'transparent';
+                    btns[i].classList.remove('level-btn--active');
                 }
-                btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
+                btn.classList.toggle('level-btn--active');
                 this.selectedLevel = +btn.value + 1;
             });
             fragment.appendChild(btn);
@@ -156,7 +156,6 @@ class AudioChallengeGame {
         answerBtn.textContent = 'Не знаю :(';
         for (let i = 0; i < 5; i += 1) {
             const btn: HTMLButtonElement = document.createElement('button');
-            btn.id = `word-btn-${i}`;
             btn.classList.add('button', 'button_white', 'word_button');
             btn.addEventListener('click', () => {
                 const word = this.data.find((item) => item.id === this.rightWord);
@@ -339,19 +338,21 @@ class AudioChallengeGame {
         const resultsWrap: HTMLElement = document.createElement('div');
         resultsWrap.id = 'results-wrap';
         wrap?.appendChild(resultsWrap);
+        const btnsWrap: HTMLElement = document.createElement('div');
+        btnsWrap.id = 'btns-wrap';
+        wrap?.appendChild(btnsWrap);
         const playAgainBtn: HTMLButtonElement = document.createElement('button');
         playAgainBtn.id = 'play-again-btn';
         playAgainBtn.textContent = 'Ещё раз';
-        playAgainBtn.classList.add('button', 'button_white', 'word_button');
+        playAgainBtn.classList.add('button', 'button_white');
         const exitBtn: HTMLButtonElement = document.createElement('button');
         exitBtn.id = 'exit-btn';
         exitBtn.textContent = 'Закончить';
-        exitBtn.classList.add('button', 'button_white', 'word_button');
+        exitBtn.classList.add('button', 'button_white');
         playAgainBtn.addEventListener('click', () => {
             // console.log('play again');
             wrap?.removeChild(resultsWrap);
-            wrap?.removeChild(playAgainBtn);
-            wrap?.removeChild(exitBtn);
+            wrap?.removeChild(btnsWrap);
             // console.log(this.userAnswers);
             if (localStorage.currentUserName) {
                 this.checkAndAddUserWord(this.userAnswers);
@@ -366,8 +367,7 @@ class AudioChallengeGame {
         exitBtn.addEventListener('click', () => {
             // console.log('exit');
             wrap?.removeChild(resultsWrap);
-            wrap?.removeChild(playAgainBtn);
-            wrap?.removeChild(exitBtn);
+            wrap?.removeChild(btnsWrap);
             this.drawDefault();
             // console.log(this.userAnswers);
             if (localStorage.currentUserName) {
@@ -381,8 +381,8 @@ class AudioChallengeGame {
             this.page = 0;
             this.group = 0;
         });
-        wrap?.appendChild(playAgainBtn);
-        wrap?.appendChild(exitBtn);
+        btnsWrap.appendChild(playAgainBtn);
+        btnsWrap.appendChild(exitBtn);
         this.userAnswers.forEach((item) => {
             if (item.guessedRight === false) {
                 this.rightAnswersCounter += 1;
@@ -392,7 +392,7 @@ class AudioChallengeGame {
         });
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
-        resultsList.innerHTML = `Ошибки: <b style = "color:#ff405d">${this.wrongAnswersCounter}</b> Слов изучено: <b style = "color:#19961f">${this.rightAnswersCounter}</b><hr>`;
+        resultsList.innerHTML = `<div class="counters-wrap"><span>Ошибки: <span class="counter-wrong">${this.wrongAnswersCounter}</span></span><span>Слов изучено: <span class="counter-right">${this.rightAnswersCounter}</span></span></div><hr>`;
         resultsWrap.appendChild(resultsList);
         for (let i = 0; i < this.userAnswers.length; i += 1) {
             const resultsItem: HTMLElement = document.createElement('li');
