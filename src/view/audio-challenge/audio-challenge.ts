@@ -4,6 +4,7 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
+import { local } from '../../controller/local';
 
 class AudioChallenge {
     private game: AudioChallengeGame;
@@ -27,6 +28,7 @@ class AudioChallenge {
 
 window.onload = function audioChallengeInit(): void {
     const audioChallenge: AudioChallenge = new AudioChallenge();
+    local();
     if (localStorage.flag === 'game') {
         audioChallenge.draw(Number(localStorage.getItem('group')) + 1);
         audioChallenge.drawWords();

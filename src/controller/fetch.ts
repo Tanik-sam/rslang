@@ -116,13 +116,16 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     if (response.status === 401 || response.status === 402) {
         refreshUserToken();
     }
-    return content;
+    if (response.status === 200) {
+        return content;
+        // console.log('create ok');
+    }
     throw new Error(`${response.status}`);
 }
 export async function createUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
-    console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
+    // console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
         method: 'POST',
         headers: {
@@ -132,14 +135,18 @@ export async function createUserWord(wordId: string, word: IUserWord) {
         },
         body: JSON.stringify(word),
     });
-    const content = await response.json();
-    console.log(content);
-    throw new Error(`${response.status}`);
+    // const content = await response.json();
+    if (response.status === 200) {
+        // console.log('create ok');
+        // console.log(content);
+    } else {
+        throw new Error(`${response.status}`);
+    }
 }
 export async function updateUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
-    console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
+    // console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
         method: 'PUT',
         headers: {
@@ -149,9 +156,13 @@ export async function updateUserWord(wordId: string, word: IUserWord) {
         },
         body: JSON.stringify(word),
     });
-    const content = await response.json();
-    console.log(content);
-    throw new Error(`${response.status}`);
+    // const content = await response.json();
+    if (response.status === 200) {
+        // console.log('update ok');
+        // console.log(content);
+    } else {
+        throw new Error(`${response.status}`);
+    }
 }
 export async function deleteUserWord(wordId: string) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
