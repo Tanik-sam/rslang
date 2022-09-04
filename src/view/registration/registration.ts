@@ -4,7 +4,7 @@ import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import { createUser } from '../../controller/fetch';
-import { IID, IUser } from '../../app/interfaces';
+import { IUser } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
 class Registration {
@@ -59,7 +59,7 @@ class Registration {
                 password: this.password,
             };
             (async () => {
-                const userId: IID = await createUser(user);
+                await createUser(user);
                 this.modal(user);
             })();
         } else {
