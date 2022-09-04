@@ -203,7 +203,7 @@ class Textbook {
                             },
                         };
                         (async () => {
-                            const wordUpdated = await updateUserWord(wordId, word);
+                            await updateUserWord(wordId, word);
                             this.userWords = await getUserWords();
                             this.getData();
                         })();
@@ -219,7 +219,7 @@ class Textbook {
                         },
                     };
                     (async () => {
-                        const wordCreated = await createUserWord(wordId, word);
+                        await createUserWord(wordId, word);
                         this.userWords = await getUserWords();
                         this.getData();
                     })();
@@ -255,7 +255,7 @@ class Textbook {
                             },
                         };
                         (async () => {
-                            const wordUpdated = await updateUserWord(wordId, word);
+                            await updateUserWord(wordId, word);
                             this.getData();
                         })();
                     }
@@ -270,7 +270,7 @@ class Textbook {
                         },
                     };
                     (async () => {
-                        const wordCreated = await createUserWord(wordId, word);
+                        await createUserWord(wordId, word);
                         this.getData();
                     })();
                 }
@@ -334,9 +334,11 @@ class Textbook {
                                     'auto';
                                 (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
                                     'auto';
-                                const pages = JSON.parse(localStorage.learned);
-                                const newPages = pages.filter((num: number) => num !== this.page);
-                                localStorage.setItem('learned', JSON.stringify(newPages));
+                                if (localStorage.learned) {
+                                    const pages = JSON.parse(localStorage.learned);
+                                    const newPages = pages.filter((num: number) => num !== this.page);
+                                    localStorage.setItem('learned', JSON.stringify(newPages));
+                                }
                             }
                         }
                     })();
