@@ -195,3 +195,17 @@ export async function upsertUserStatistics(stat: IUserStat) {
         throw new Error(`${response.status}`);
     }
 }
+
+export async function getUserStatistics(): Promise<IUserStat | undefined> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/statistics`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
+    const stats = await response.json();
+    return stats;
+}
