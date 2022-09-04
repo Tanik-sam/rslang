@@ -151,7 +151,12 @@ export async function updateUserWord(wordId: string, word: IUserWord) {
     });
     const content = await response.json();
     console.log(content);
-    throw new Error(`${response.status}`);
+    if (response.status === 200) {
+        // console.log('create ok');
+        // console.log(content);
+    } else {
+        throw new Error(`${response.status}`);
+    }
 }
 export async function deleteUserWord(wordId: string) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
