@@ -1,8 +1,13 @@
-import { IUserAnswers, IWords } from '../../app/interfaces';
-import { getWord, getWords } from '../../controller/fetch';
-import { local } from '../../controller/local';
-
-local();
+import { IUserAnswers, IUserGetWord, IUserStat, IUserWord, IWords } from '../../app/interfaces';
+import {
+    createUserWord,
+    getUserStatistics,
+    getUserWords,
+    getWord,
+    getWords,
+    updateUserWord,
+    upsertUserStatistics,
+} from '../../controller/fetch';
 
 class SprintGame {
     langLevels: string[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -43,13 +48,25 @@ class SprintGame {
 
     wrongCount = 0;
 
-    time = 30;
+    time = 10;
+
+    userWords: IUserGetWord[] = [];
 
     arrowColor = '#fff';
 
     colorGreen = '#19961f';
 
     colorRed = '#ff405d';
+
+    allAttempts = 0;
+
+    userStats!: IUserStat;
+
+    maxSeries = 0;
+
+    successAttempts = 0;
+
+    currentSeries = 0;
 
     getData(): Promise<void> {
         return (async () => {
@@ -63,7 +80,20 @@ class SprintGame {
         })();
     }
 
-    drawDefault(): void {
+    getUserWordsData() {
+        return (async () => {
+            this.userWords = await getUserWords();
+        })();
+    }
+
+    getUserStatisticsData() {
+        return (async () => {
+            this.userStats = await getUserStatistics();
+            console.log(this.userStats);
+        })();
+    }
+
+    drawDefault(level: number): void {
         const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
         const h2: HTMLElement = document.createElement('h2');
         h2.innerText = 'Спринт';
@@ -82,7 +112,7 @@ class SprintGame {
         btnStart.addEventListener('click', async () => {
             this.drawTimer();
             this.countTime(this.time);
-            this.draw(this.selectedLevel);
+            this.draw(level);
         });
         wrap?.appendChild(h2);
         wrap?.appendChild(h6);
@@ -210,6 +240,7 @@ class SprintGame {
                     this.userAnswers.push({ word, guessedRight: true });
                 }
                 this.rightCount += 1;
+                this.successAttempts += 1;
                 // this.multi += 1;
                 // this.score += 1;
                 // this.score *= this.multi;
@@ -220,8 +251,8 @@ class SprintGame {
                 // this.userAnswers.push('0');
                 // this.multi = 1;
                 this.wrongCount += 1;
+                this.currentSeries = 0;
                 if (word) {
-                    console.log(word);
                     this.userAnswers.push({ word, guessedRight: false });
                 }
                 this.arrowColor = this.colorRed;
@@ -239,6 +270,7 @@ class SprintGame {
                 // this.score *= this.multi;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
+                    this.successAttempts += 1;
                 }
                 this.arrowColor = this.colorGreen;
                 this.draw(this.group);
@@ -247,6 +279,7 @@ class SprintGame {
                 // this.userAnswers.push('0');
                 // this.multi = 1;
                 this.wrongCount += 1;
+                this.currentSeries = 0;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: false });
                 }
@@ -254,7 +287,6 @@ class SprintGame {
                 this.draw(this.group);
             });
         }
-        console.log(this.userAnswers);
     }
 
     getRandom(max: number): number {
@@ -286,15 +318,42 @@ class SprintGame {
         }
         const resultsWrap: HTMLElement = document.createElement('div');
         resultsWrap.id = 'results-wrap';
+        const btnWrap: HTMLElement = document.createElement('div');
+        btnWrap.id = 'btns-wrap';
+        btnWrap.classList.add('btn-wrap');
         wrap?.appendChild(resultsWrap);
-        const playAgainBtn: HTMLButtonElement = document.createElement('button');
-        playAgainBtn.id = 'play-again-btn';
-        playAgainBtn.textContent = 'Ещё раз';
-        playAgainBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
-        playAgainBtn.addEventListener('click', () => {
+        wrap?.appendChild(btnWrap);
+        const endBtn: HTMLButtonElement = document.createElement('button');
+        endBtn.id = 'play-again-btn';
+        endBtn.textContent = 'Закончить';
+        endBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
+        endBtn.addEventListener('click', () => {
+            this.allAttempts = this.userAnswers.length;
+            if (localStorage.currentUserName) {
+                console.log(this.userAnswers);
+                this.checkAndAddUserWord(this.userAnswers);
+                this.checkAndUpdateStatistics();
+            }
+            // document.location.reload();
+        });
+        btnWrap?.appendChild(endBtn);
+
+        // TODO ADD BUTTON
+        const moreBtn: HTMLButtonElement = document.createElement('button');
+        moreBtn.id = 'play-more-btn';
+        moreBtn.textContent = 'Ещё раз';
+        moreBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
+        moreBtn.addEventListener('click', () => {
+            this.allAttempts = this.userAnswers.length;
+            if (localStorage.currentUserName) {
+                console.log(this.userAnswers);
+                this.checkAndAddUserWord(this.userAnswers);
+                this.checkAndUpdateStatistics();
+            }
             document.location.reload();
         });
-        wrap?.appendChild(playAgainBtn);
+        btnWrap?.appendChild(moreBtn);
+
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
         resultsWrap.appendChild(resultsList);
@@ -326,6 +385,90 @@ class SprintGame {
 
             resultsList.appendChild(resultsItem);
         }
+    }
+
+    async addUserWord(wordId: string, status: boolean) {
+        const userWord: IUserWord = {
+            difficulty: 'easy',
+            optional: {
+                attempts: 1,
+                successAtempts: status ? 1 : 0,
+                learned: status,
+            },
+        };
+        await createUserWord(wordId, userWord);
+    }
+
+    async updateUserWord(wordId: string, status: boolean, attempts: number, successAtempts: number) {
+        const userWord: IUserWord = {
+            difficulty: 'easy',
+            optional: {
+                attempts,
+                successAtempts,
+                learned: status,
+            },
+        };
+        await updateUserWord(wordId, userWord);
+    }
+
+    async checkAndAddUserWord(userAnswers: IUserAnswers[]) {
+        await this.getUserWordsData();
+        userAnswers.forEach((item) => {
+            const word = this.userWords.find((userWordsItem) => userWordsItem.wordId === item.word.id);
+            if (word) {
+                console.log('wordupdated');
+                /* eslint-disable-next-line */
+              item.guessedRight === true
+                    ? this.updateUserWord(
+                          item.word.id,
+                          true,
+                          word.optional.attempts + 1,
+                          word.optional.successAtempts + 1
+                      )
+                    : this.updateUserWord(
+                          item.word.id,
+                          false,
+                          word.optional.attempts + 1,
+                          word.optional.successAtempts
+                      );
+            } else {
+                /* eslint-disable-next-line */
+              item.guessedRight === true
+                    ? this.addUserWord(item.word.id, true)
+                    : this.addUserWord(item.word.id, false);
+            }
+        });
+    }
+
+    async checkAndUpdateStatistics() {
+        await this.getUserStatisticsData();
+        let maxSeries = 0;
+        let rightCount = 0;
+        let allAttempts = 0;
+        if (this.userStats.optional.audioSeria) {
+            if (this.maxSeries > this.userStats.optional.audioSeria) {
+                maxSeries = this.maxSeries;
+            } else {
+                maxSeries = this.userStats.optional.audioSeria;
+            }
+        }
+        if (this.userStats.optional.audioSuc && this.userStats.optional.audioAll) {
+            rightCount = this.userStats.optional.audioSuc + this.rightCount;
+            allAttempts = this.userStats.optional.audioAll + this.allAttempts;
+        }
+        this.addUserStatistic(77, maxSeries, rightCount, allAttempts);
+    }
+
+    async addUserStatistic(learnedWords: number, maxSeries: number, successAttempts: number, allAttempts: number) {
+        const stats: IUserStat = {
+            learnedWords,
+            optional: {
+                sprintSeria: maxSeries,
+                sprintSuc: successAttempts,
+                sprintAll: allAttempts,
+            },
+        };
+        await upsertUserStatistics(stats);
     }
 }
 

@@ -35,6 +35,7 @@
     padding-bottom: 20px;
   }
 }
+
 .lang-levels-buttons__container{
   display: flex;
   flex-direction: row;
@@ -155,8 +156,8 @@
 #btn-right{
   background-color: $color-green;
 }    
-.reload_button{
-margin-top: 20px;
+.btn-wrap{
+order: -1;
 }
 .count{
   &__wrapper{
