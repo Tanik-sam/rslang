@@ -9,8 +9,8 @@ import {
     upsertUserStatistics,
 } from '../../controller/fetch';
 
-// const serverName = 'https://rs-lang2022.herokuapp.com/';
-const serverName = 'http://localhost:3000/';
+const serverName = 'https://rs-lang2022.herokuapp.com/';
+// const serverName = 'http://localhost:3000/';
 
 class AudioChallengeGame {
     langLevels: string[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
