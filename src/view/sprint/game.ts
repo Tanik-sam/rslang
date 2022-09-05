@@ -339,9 +339,9 @@ class SprintGame {
         wrap?.appendChild(resultsWrap);
         wrap?.appendChild(btnWrap);
         const endBtn: HTMLButtonElement = document.createElement('button');
-        endBtn.id = 'play-again-btn';
+        endBtn.id = 'exit-btn';
         endBtn.textContent = 'Закончить';
-        endBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
+        endBtn.classList.add('button', 'button_white');
         endBtn.addEventListener('click', () => {
             this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
@@ -350,12 +350,11 @@ class SprintGame {
             }
             document.location.reload();
         });
-        btnWrap?.appendChild(endBtn);
 
         const moreBtn: HTMLButtonElement = document.createElement('button');
-        moreBtn.id = 'play-more-btn';
+        moreBtn.id = 'play-again-btn';
         moreBtn.textContent = 'Ещё раз';
-        moreBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
+        moreBtn.classList.add('button', 'button_white');
         moreBtn.addEventListener('click', () => {
             this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
@@ -364,11 +363,13 @@ class SprintGame {
             }
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(btnWrap);
+            this.rightCount += 0;
             this.time = 31;
             this.countTime(this.time);
             this.draw(this.group);
         });
         btnWrap?.appendChild(moreBtn);
+        btnWrap?.appendChild(endBtn);
 
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
