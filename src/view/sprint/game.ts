@@ -48,7 +48,7 @@ class SprintGame {
 
     wrongCount = 0;
 
-    time = 10;
+    time = 31;
 
     userWords: IUserGetWord[] = [];
 
@@ -89,7 +89,6 @@ class SprintGame {
     getUserStatisticsData() {
         return (async () => {
             this.userStats = await getUserStatistics();
-            console.log(this.userStats);
         })();
     }
 
@@ -141,8 +140,7 @@ class SprintGame {
 
     async drawTimer() {
         const wrap: HTMLElement | null = document.getElementById('sprint-container');
-
-        const timeSection: HTMLElement = document.createElement('section');
+        const timeSection: HTMLElement = document.createElement('div');
         timeSection.id = 'time-section';
         const timer: HTMLElement = document.createElement('div');
         timer.innerHTML = `
@@ -158,7 +156,7 @@ class SprintGame {
 
     async draw(value: number): Promise<void> {
         this.group = value;
-        const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
+        const wrap: HTMLElement | null = document.getElementById('sprint-container');
 
         if (wrap) {
             while (wrap.firstChild) {
@@ -186,31 +184,7 @@ class SprintGame {
         <p class="score__box score__box--multi">${this.rightCount}</p>
         </div>
         `;
-
-        const wordsContainer: HTMLElement = document.createElement('section');
-        wordsContainer.id = 'words-container';
-        wordsContainer.className = 'words__container';
-        wrap?.appendChild(wordsContainer);
-
-        wordsContainer.innerHTML = `
-        <p id="word-1"></p>
-        <p class="words__container--small">это</p>
-        <p id="word-2"></p>
-       `;
-
-        if (wrap) {
-            wrap.appendChild(wordsContainer);
-        }
-
-        const buttonContainer: HTMLElement = document.createElement('section');
-        buttonContainer.id = 'button-container';
-        buttonContainer.className = 'button__container';
-        buttonContainer.innerHTML = `<button id="btn-right" class="button button_colored button--right">Верно</button>
-        <button id="btn-false" class="button button_colored button--right">Неверно</button> `;
-
-        if (wrap) {
-            wrap.appendChild(buttonContainer);
-        }
+        this.drawTimer();
         this.drawWords(this.group, this.page);
     }
 
@@ -220,10 +194,46 @@ class SprintGame {
         await this.getData();
         this.gameVariant = this.getRandom(2);
 
-        const wordLeft: HTMLElement | null = document.getElementById('word-1');
-        const wordRight: HTMLElement | null = document.getElementById('word-2');
-        const btnRight: HTMLElement | null = document.getElementById('btn-right');
-        const btnWrong: HTMLElement | null = document.getElementById('btn-false');
+        const wrap: HTMLElement | null = document.getElementById('sprint-container');
+
+        const wordsContainer: HTMLElement = document.createElement('section');
+        wordsContainer.id = 'words-container';
+        wordsContainer.className = 'words__container';
+        wrap?.appendChild(wordsContainer);
+        const wordLeft: HTMLElement = document.createElement('p');
+        wordLeft.id = 'word-1';
+        wordsContainer.appendChild(wordLeft);
+        const thisTranslate: HTMLElement = document.createElement('p');
+        thisTranslate.classList.add('words__container--small');
+        thisTranslate.innerText = 'это';
+        wordsContainer.appendChild(thisTranslate);
+        const wordRight: HTMLElement = document.createElement('p');
+        wordRight.id = 'word-2';
+        wordsContainer.appendChild(wordRight);
+
+        if (wrap) {
+            wrap.appendChild(wordsContainer);
+        }
+
+        const buttonContainer: HTMLElement = document.createElement('section');
+        buttonContainer.id = 'button-container';
+        wordsContainer.className = 'words__container';
+        buttonContainer.className = 'button__container';
+        wrap?.appendChild(buttonContainer);
+        const btnRight: HTMLElement = document.createElement('button');
+        btnRight.id = 'btn-right';
+        btnRight.classList.add('button', 'button_colored', 'button--right');
+        btnRight.textContent = 'Верно';
+        buttonContainer.appendChild(btnRight);
+        const btnWrong: HTMLElement = document.createElement('button');
+        btnWrong.id = 'btn-false';
+        btnWrong.classList.add('button', 'button_colored', 'button--right');
+        btnWrong.textContent = 'Неверно';
+        buttonContainer.appendChild(btnWrong);
+
+        if (wrap) {
+            wrap.appendChild(buttonContainer);
+        }
 
         this.currentWord = this.getRandom(19);
         this.currentTranslate = this.getRandom(19);
@@ -232,8 +242,8 @@ class SprintGame {
             this.currentTranslate = this.getRandom(19);
         }
         if (this.gameVariant === 0) {
-            (wordLeft as HTMLElement).textContent = this.data[this.currentWord].word;
-            (wordRight as HTMLElement).textContent = this.data[this.currentWord].wordTranslate;
+            wordLeft.textContent = this.data[this.currentWord].word;
+            wordRight.textContent = this.data[this.currentWord].wordTranslate;
             const word = this.data[this.currentWord];
             btnRight?.addEventListener('click', async () => {
                 if (word) {
@@ -259,8 +269,8 @@ class SprintGame {
                 this.draw(this.group);
             });
         } else {
-            (wordLeft as HTMLElement).textContent = this.data[this.currentWord].word;
-            (wordRight as HTMLElement).textContent = this.data[this.currentTranslate].wordTranslate;
+            wordLeft.textContent = this.data[this.currentWord].word;
+            wordRight.textContent = this.data[this.currentTranslate].wordTranslate;
             const word = this.data[this.currentWord];
             btnWrong?.addEventListener('click', async () => {
                 // this.userAnswers.push('1');
@@ -330,15 +340,13 @@ class SprintGame {
         endBtn.addEventListener('click', () => {
             this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
-                console.log(this.userAnswers);
                 this.checkAndAddUserWord(this.userAnswers);
                 this.checkAndUpdateStatistics();
             }
-            // document.location.reload();
+            document.location.reload();
         });
         btnWrap?.appendChild(endBtn);
 
-        // TODO ADD BUTTON
         const moreBtn: HTMLButtonElement = document.createElement('button');
         moreBtn.id = 'play-more-btn';
         moreBtn.textContent = 'Ещё раз';
@@ -346,11 +354,14 @@ class SprintGame {
         moreBtn.addEventListener('click', () => {
             this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
-                console.log(this.userAnswers);
                 this.checkAndAddUserWord(this.userAnswers);
                 this.checkAndUpdateStatistics();
             }
-            document.location.reload();
+            wrap?.removeChild(resultsWrap);
+            wrap?.removeChild(btnWrap);
+            this.time = 31;
+            this.countTime(this.time);
+            this.draw(this.group);
         });
         btnWrap?.appendChild(moreBtn);
 
@@ -416,7 +427,6 @@ class SprintGame {
         userAnswers.forEach((item) => {
             const word = this.userWords.find((userWordsItem) => userWordsItem.wordId === item.word.id);
             if (word) {
-                console.log('wordupdated');
                 /* eslint-disable-next-line */
               item.guessedRight === true
                     ? this.updateUserWord(

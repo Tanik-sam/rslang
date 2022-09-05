@@ -37,7 +37,7 @@ window.onload = function SprintGameInit(): void {
     if (localStorage.flag === 'game') {
         sprintGame.drawTimer();
         sprintGame.draw(localGroup);
-        sprintGame.countTime(10);
+        sprintGame.countTime(30);
     } else {
         sprintGame.drawWelcome();
     }
