@@ -89,6 +89,7 @@ class SprintGame {
     getUserStatisticsData() {
         return (async () => {
             this.userStats = await getUserStatistics();
+            console.log(this.userStats);
         })();
     }
 
@@ -453,29 +454,41 @@ class SprintGame {
     async checkAndUpdateStatistics() {
         await this.getUserStatisticsData();
         let maxSeries = 0;
-        let rightCount = 0;
-        let allAttempts = 0;
-        if (this.userStats.optional.audioSeria) {
-            if (this.maxSeries > this.userStats.optional.audioSeria) {
+        const rightCount = this.userStats.optional.sprintSuc + this.rightCount;
+        const allAttempts = this.userStats.optional.sprintAll + this.allAttempts;
+        const newLearnedWords = 33;
+        if (this.userStats.optional.sprintSeria) {
+            if (this.maxSeries > this.userStats.optional.sprintSeria) {
                 maxSeries = this.maxSeries;
             } else {
-                maxSeries = this.userStats.optional.audioSeria;
+                maxSeries = this.userStats.optional.sprintSeria;
             }
         }
-        if (this.userStats.optional.audioSuc && this.userStats.optional.audioAll) {
-            rightCount = this.userStats.optional.audioSuc + this.rightCount;
-            allAttempts = this.userStats.optional.audioAll + this.allAttempts;
-        }
-        this.addUserStatistic(77, maxSeries, rightCount, allAttempts);
+        const { audioSuc } = this.userStats.optional;
+        const { audioAll } = this.userStats.optional;
+        const { audioSeria } = this.userStats.optional;
+        this.addUserStatistic(newLearnedWords, maxSeries, rightCount, allAttempts, audioSeria, audioSuc, audioAll);
     }
 
-    async addUserStatistic(learnedWords: number, maxSeries: number, successAttempts: number, allAttempts: number) {
+    async addUserStatistic(
+        newLearnedWords: number,
+        maxSeries: number,
+        rightCount: number,
+        allAttempts: number,
+        audioSeria: number,
+        audioSuc: number,
+        audioAll: number
+    ) {
         const stats: IUserStat = {
-            learnedWords,
+            learnedWords: newLearnedWords,
             optional: {
+                date: new Date(),
                 sprintSeria: maxSeries,
-                sprintSuc: successAttempts,
+                sprintSuc: rightCount,
                 sprintAll: allAttempts,
+                audioSeria,
+                audioSuc,
+                audioAll,
             },
         };
         await upsertUserStatistics(stats);

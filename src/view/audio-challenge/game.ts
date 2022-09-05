@@ -3,7 +3,6 @@ import {
     createUserWord,
     getUserStatistics,
     getUserWords,
-    getUserWord,
     getWord,
     getWords,
     updateUserWord,
@@ -50,6 +49,8 @@ class AudioChallengeGame {
 
     userWords: IUserGetWord[] = [];
 
+    newLearnedWords = 0;
+
     currentSeries = 0;
 
     maxSeries = 0;
@@ -72,13 +73,13 @@ class AudioChallengeGame {
         })();
     }
 
-    getUserWordsData() {
+    getUserWordsData(): Promise<void> {
         return (async () => {
             this.userWords = await getUserWords();
         })();
     }
 
-    getUserStatisticsData() {
+    getUserStatisticsData(): Promise<void> {
         return (async () => {
             this.userStats = await getUserStatistics();
             console.log(this.userStats);
@@ -163,7 +164,7 @@ class AudioChallengeGame {
         }
         const audioSection: HTMLElement = document.createElement('section');
         audioSection.id = 'play';
-        const audio = document.createElement('audio');
+        const audio: HTMLAudioElement = document.createElement('audio');
         const audioSrc: HTMLSourceElement = document.createElement('source');
         audioSrc.id = 'audio-src';
         audioSrc.src = '';
@@ -184,7 +185,7 @@ class AudioChallengeGame {
             const btn: HTMLButtonElement = document.createElement('button');
             btn.classList.add('button', 'button_white', 'word_button');
             btn.addEventListener('click', () => {
-                const word = this.data.find((item) => item.id === this.rightWord);
+                const word: IWords | undefined = this.data.find((item) => item.id === this.rightWord);
                 if (this.rightWord === btn.id) {
                     btn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
                     if (word) {
@@ -204,13 +205,13 @@ class AudioChallengeGame {
                         this.showResults();
                     } else {
                         this.hearts -= 1;
-                        const heart = document.getElementById(`heart-${this.hearts}`);
+                        const heart: HTMLElement | null = document.getElementById(`heart-${this.hearts}`);
                         if (heart) {
                             heart.classList.add('hide');
                         }
                     }
                     btn.style.backgroundColor = '#ff405d';
-                    const rigthBtn = document.getElementById(this.rightWord);
+                    const rigthBtn: HTMLElement | null = document.getElementById(this.rightWord);
                     if (rigthBtn) {
                         rigthBtn.style.backgroundColor = 'rgba(0, 184, 148, 1)';
                     }
@@ -238,7 +239,7 @@ class AudioChallengeGame {
                     this.showResults();
                 } else {
                     this.hearts -= 1;
-                    const heart = document.getElementById(`heart-${this.hearts}`);
+                    const heart: HTMLElement | null = document.getElementById(`heart-${this.hearts}`);
                     if (heart) {
                         heart.classList.add('hide');
                     }
@@ -287,7 +288,7 @@ class AudioChallengeGame {
             await this.getData();
             this.currentWord = 0;
         }
-        const maxWords = this.currentWord + 5;
+        const maxWords: number = this.currentWord + 5;
         for (let i = this.currentWord, j = 0; i < maxWords; i += 1, j += 1) {
             // console.log('this.currentWord', this.currentWord);
             // console.log('this.page', this.page);
@@ -306,7 +307,7 @@ class AudioChallengeGame {
                 // console.log('this.page2', this.page);
                 // console.log('i2', i);
                 this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
-                const word = this.data.find((item) => item.id === this.rightWord);
+                const word: IWords | undefined = this.data.find((item) => item.id === this.rightWord);
                 if (word) {
                     this.correctAnswers.push(word);
                 }
@@ -445,7 +446,7 @@ class AudioChallengeGame {
         }
     }
 
-    async addUserWord(wordId: string, status: boolean) {
+    async addUserWord(wordId: string, status: boolean): Promise<void> {
         const userWord: IUserWord = {
             difficulty: 'easy',
             optional: {
@@ -457,7 +458,7 @@ class AudioChallengeGame {
         await createUserWord(wordId, userWord);
     }
 
-    async updateUserWord(wordId: string, status: boolean, attempts: number, successAtempts: number) {
+    async updateUserWord(wordId: string, status: boolean, attempts: number, successAtempts: number): Promise<void> {
         const userWord: IUserWord = {
             difficulty: 'easy',
             optional: {
@@ -469,10 +470,12 @@ class AudioChallengeGame {
         await updateUserWord(wordId, userWord);
     }
 
-    async checkAndAddUserWord(userAnswers: IUserAnswers[]) {
+    async checkAndAddUserWord(userAnswers: IUserAnswers[]): Promise<void> {
         await this.getUserWordsData();
         userAnswers.forEach((item) => {
-            const word = this.userWords.find((userWordsItem) => userWordsItem.wordId === item.word.id);
+            const word: IUserGetWord | undefined = this.userWords.find(
+                (userWordsItem) => userWordsItem.wordId === item.word.id
+            );
             if (word) {
                 /* eslint-disable-next-line */
                 item.guessedRight === false
@@ -488,80 +491,63 @@ class AudioChallengeGame {
                           word.optional.attempts + 1,
                           word.optional.successAtempts
                       );
+            } else if (item.guessedRight === false) {
+                this.addUserWord(item.word.id, true);
+                this.newLearnedWords += 1;
             } else {
-                /* eslint-disable-next-line */
-                item.guessedRight === false
-                    ? this.addUserWord(item.word.id, true)
-                    : this.addUserWord(item.word.id, false);
+                this.addUserWord(item.word.id, false);
             }
         });
     }
 
-    async checkAndUpdateStatistics() {
+    async checkAndUpdateStatistics(): Promise<void> {
         let maxSeries = 0;
-        let successAttempts = 0;
-        let allAttempts = 0;
         await this.getUserStatisticsData();
         if (this.maxSeries > this.userStats.optional.audioSeria) {
             maxSeries = this.maxSeries;
         } else {
             maxSeries = this.userStats.optional.audioSeria;
         }
-        successAttempts = this.userStats.optional.audioSuc + this.successAttempts;
-        allAttempts = this.userStats.optional.audioAll + this.allAttempts;
-        const sucSprint = this.userStats.optional.sprintSuc;
-        const allSprint = this.userStats.optional.sprintAll;
-        const serSprint = this.userStats.optional.sprintSeria;
+        const newLearnedWords = this.userStats.learnedWords + this.newLearnedWords;
+        const successAttempts = this.userStats.optional.audioSuc + this.successAttempts;
+        const allAttempts = this.userStats.optional.audioAll + this.allAttempts;
+        const { sprintSuc } = this.userStats.optional;
+        const { sprintAll } = this.userStats.optional;
+        const { sprintSeria } = this.userStats.optional;
         await this.getUserWordsData();
-        let count = 0;
-        this.data.forEach((item, i) => {
-            this.userWords.forEach((word) => {
-                if (item.id === word.wordId) {
-                    (async () => {
-                        const userWord = await getUserWord(item.id);
-                        if (userWord.optional.learned === true) {
-                            count += 1;
-                            if (i === this.data.length - 1) {
-                                this.addUserStatistic(
-                                    count,
-                                    maxSeries,
-                                    successAttempts,
-                                    allAttempts,
-                                    sucSprint,
-                                    allSprint,
-                                    serSprint
-                                );
-                            }
-                        }
-                    })();
-                }
-            });
-        });
+        this.addUserStatistic(
+            newLearnedWords,
+            sprintSeria,
+            sprintSuc,
+            sprintAll,
+            maxSeries,
+            successAttempts,
+            allAttempts
+        );
     }
 
     async addUserStatistic(
-        learnedWords: number,
+        newLearnedWords: number,
+        sprintSeria: number,
+        sprintSuc: number,
+        sprintAll: number,
         maxSeries: number,
         successAttempts: number,
-        allAttempts: number,
-        sucSprint: number,
-        allSprint: number,
-        serSprint: number
+        allAttempts: number
     ) {
         const stats: IUserStat = {
-            learnedWords,
+            learnedWords: newLearnedWords,
             optional: {
                 date: new Date(),
-                sprintSeria: serSprint,
-                sprintSuc: sucSprint,
-                sprintAll: allSprint,
+                sprintSeria,
+                sprintSuc,
+                sprintAll,
                 audioSeria: maxSeries,
                 audioSuc: successAttempts,
                 audioAll: allAttempts,
             },
         };
         await upsertUserStatistics(stats);
-        await this.getUserStatisticsData();
     }
 }
 
