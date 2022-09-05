@@ -119,7 +119,7 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     throw new Error(`${response.status}`);
 }
 
-export async function createUserWord(wordId: string, word: IUserWord) {
+export async function createUserWord(wordId: string, word: IUserWord): Promise<void> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
@@ -136,7 +136,7 @@ export async function createUserWord(wordId: string, word: IUserWord) {
     }
 }
 
-export async function updateUserWord(wordId: string, word: IUserWord) {
+export async function updateUserWord(wordId: string, word: IUserWord): Promise<void> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
@@ -156,7 +156,7 @@ export async function updateUserWord(wordId: string, word: IUserWord) {
     }
 }
 
-export async function deleteUserWord(wordId: string) {
+export async function deleteUserWord(wordId: string): Promise<void> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
         method: 'DELETE',
@@ -165,6 +165,7 @@ export async function deleteUserWord(wordId: string) {
         throw new Error(`${response.status}`);
     }
 }
+
 
 export async function upsertUserStatistics(stat: IUserStat) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
@@ -193,24 +194,23 @@ export async function getUserStatistics(): Promise<IUserStat> {
             Accept: 'application/json',
         },
     });
+    if (response.status === 404) {
+        upsertUserStatistics({
+            learnedWords: 0,
+            optional: {
+                date: new Date(),
+                sprintSeria: 0,
+                sprintSuc: 0,
+                sprintAll: 0,
+                audioSeria: 0,
+                audioSuc: 0,
+                audioAll: 0,
+            },
+        });
+    }
     const stats = await response.json();
     if (response.status !== 200) {
-        throw new Error(`${response.status}`);
-    } else {
-        return stats;
+        console.log(response.status);
     }
-}
-
-/* export async function getUserStatistics2(): Promise<IUserStat | undefined> {
-    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
-    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
-    const response = await fetch(`${userList}/${userId}/statistics`, {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-        },
-    });
-    const stats = await response.json();
     return stats;
-} */
+}

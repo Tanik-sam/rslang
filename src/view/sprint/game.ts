@@ -91,7 +91,6 @@ class SprintGame {
     getUserStatisticsData() {
         return (async () => {
             this.userStats = await getUserStatistics();
-            console.log(this.userStats);
         })();
     }
 
@@ -497,6 +496,7 @@ class SprintGame {
             },
         };
         await upsertUserStatistics(stats);
+        await this.getUserStatisticsData();
     }
 }
 

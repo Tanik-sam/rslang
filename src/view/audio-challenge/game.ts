@@ -82,7 +82,6 @@ class AudioChallengeGame {
     getUserStatisticsData(): Promise<void> {
         return (async () => {
             this.userStats = await getUserStatistics();
-            console.log(this.userStats);
         })();
     }
 
@@ -290,8 +289,6 @@ class AudioChallengeGame {
         }
         const maxWords: number = this.currentWord + 5;
         for (let i = this.currentWord, j = 0; i < maxWords; i += 1, j += 1) {
-            // console.log('this.currentWord', this.currentWord);
-            // console.log('this.page', this.page);
             if (wordBtns[j]) {
                 (wordBtns[j] as HTMLButtonElement).style.backgroundColor = '#ffffff';
                 wordBtns[j].textContent = this.data[i].wordTranslate;
@@ -303,9 +300,6 @@ class AudioChallengeGame {
             this.taken.push(this.data[i].id);
             this.currentWord += 1;
             if (i === 4 || i === 9 || i === 14 || i === 19) {
-                // console.log('this.currentWord2', this.currentWord);
-                // console.log('this.page2', this.page);
-                // console.log('i2', i);
                 this.rightWord = this.taken[this.getRandomNumberFrom0to4()];
                 const word: IWords | undefined = this.data.find((item) => item.id === this.rightWord);
                 if (word) {
@@ -387,10 +381,8 @@ class AudioChallengeGame {
         exitBtn.textContent = 'Закончить';
         exitBtn.classList.add('button', 'button_white');
         playAgainBtn.addEventListener('click', () => {
-            // console.log('play again');
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(btnsWrap);
-            // console.log(this.userAnswers);
             this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
                 this.checkAndAddUserWord(this.userAnswers);
@@ -404,11 +396,9 @@ class AudioChallengeGame {
             this.drawWords();
         });
         exitBtn.addEventListener('click', () => {
-            // console.log('exit');
             wrap?.removeChild(resultsWrap);
             wrap?.removeChild(btnsWrap);
             this.drawDefault();
-            // console.log(this.userAnswers);
             if (localStorage.currentUserName) {
                 this.checkAndAddUserWord(this.userAnswers);
                 this.checkAndUpdateStatistics();
@@ -515,6 +505,7 @@ class AudioChallengeGame {
         const { sprintAll } = this.userStats.optional;
         const { sprintSeria } = this.userStats.optional;
         await this.getUserWordsData();
+        console.log(newLearnedWords, sprintSeria, sprintSuc, sprintAll, maxSeries, successAttempts, allAttempts);
         this.addUserStatistic(
             newLearnedWords,
             sprintSeria,
@@ -548,6 +539,7 @@ class AudioChallengeGame {
             },
         };
         await upsertUserStatistics(stats);
+        await this.getUserStatisticsData();
     }
 }
 
