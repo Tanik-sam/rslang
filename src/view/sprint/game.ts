@@ -1,8 +1,13 @@
-import { IUserAnswers, IWords } from '../../app/interfaces';
-import { getWord, getWords } from '../../controller/fetch';
-import { local } from '../../controller/local';
-
-local();
+import { IUserAnswers, IUserGetWord, IUserStat, IUserWord, IWords } from '../../app/interfaces';
+import {
+    createUserWord,
+    getUserStatistics,
+    getUserWords,
+    getWord,
+    getWords,
+    updateUserWord,
+    upsertUserStatistics,
+} from '../../controller/fetch';
 
 class SprintGame {
     langLevels: string[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -43,13 +48,25 @@ class SprintGame {
 
     wrongCount = 0;
 
-    time = 30;
+    time = 31;
+
+    userWords: IUserGetWord[] = [];
 
     arrowColor = '#fff';
 
     colorGreen = '#19961f';
 
     colorRed = '#ff405d';
+
+    allAttempts = 0;
+
+    userStats!: IUserStat;
+
+    maxSeries = 0;
+
+    successAttempts = 0;
+
+    currentSeries = 0;
 
     getData(): Promise<void> {
         return (async () => {
@@ -63,7 +80,19 @@ class SprintGame {
         })();
     }
 
-    drawDefault(): void {
+    getUserWordsData() {
+        return (async () => {
+            this.userWords = await getUserWords();
+        })();
+    }
+
+    getUserStatisticsData() {
+        return (async () => {
+            this.userStats = await getUserStatistics();
+        })();
+    }
+
+    drawDefault(level: number): void {
         const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
         const h2: HTMLElement = document.createElement('h2');
         h2.innerText = 'Спринт';
@@ -82,7 +111,7 @@ class SprintGame {
         btnStart.addEventListener('click', async () => {
             this.drawTimer();
             this.countTime(this.time);
-            this.draw(this.selectedLevel);
+            this.draw(level);
         });
         wrap?.appendChild(h2);
         wrap?.appendChild(h6);
@@ -111,8 +140,7 @@ class SprintGame {
 
     async drawTimer() {
         const wrap: HTMLElement | null = document.getElementById('sprint-container');
-
-        const timeSection: HTMLElement = document.createElement('section');
+        const timeSection: HTMLElement = document.createElement('div');
         timeSection.id = 'time-section';
         const timer: HTMLElement = document.createElement('div');
         timer.innerHTML = `
@@ -128,7 +156,7 @@ class SprintGame {
 
     async draw(value: number): Promise<void> {
         this.group = value;
-        const wrap: HTMLElement | null = document.getElementById('sprint__wrapper');
+        const wrap: HTMLElement | null = document.getElementById('sprint-container');
 
         if (wrap) {
             while (wrap.firstChild) {
@@ -156,31 +184,7 @@ class SprintGame {
         <p class="score__box score__box--multi">${this.rightCount}</p>
         </div>
         `;
-
-        const wordsContainer: HTMLElement = document.createElement('section');
-        wordsContainer.id = 'words-container';
-        wordsContainer.className = 'words__container';
-        wrap?.appendChild(wordsContainer);
-
-        wordsContainer.innerHTML = `
-        <p id="word-1"></p>
-        <p class="words__container--small">это</p>
-        <p id="word-2"></p>
-       `;
-
-        if (wrap) {
-            wrap.appendChild(wordsContainer);
-        }
-
-        const buttonContainer: HTMLElement = document.createElement('section');
-        buttonContainer.id = 'button-container';
-        buttonContainer.className = 'button__container';
-        buttonContainer.innerHTML = `<button id="btn-right" class="button button_colored button--right">Верно</button>
-        <button id="btn-false" class="button button_colored button--right">Неверно</button> `;
-
-        if (wrap) {
-            wrap.appendChild(buttonContainer);
-        }
+        this.drawTimer();
         this.drawWords(this.group, this.page);
     }
 
@@ -190,10 +194,46 @@ class SprintGame {
         await this.getData();
         this.gameVariant = this.getRandom(2);
 
-        const wordLeft: HTMLElement | null = document.getElementById('word-1');
-        const wordRight: HTMLElement | null = document.getElementById('word-2');
-        const btnRight: HTMLElement | null = document.getElementById('btn-right');
-        const btnWrong: HTMLElement | null = document.getElementById('btn-false');
+        const wrap: HTMLElement | null = document.getElementById('sprint-container');
+
+        const wordsContainer: HTMLElement = document.createElement('section');
+        wordsContainer.id = 'words-container';
+        wordsContainer.className = 'words__container';
+        wrap?.appendChild(wordsContainer);
+        const wordLeft: HTMLElement = document.createElement('p');
+        wordLeft.id = 'word-1';
+        wordsContainer.appendChild(wordLeft);
+        const thisTranslate: HTMLElement = document.createElement('p');
+        thisTranslate.classList.add('words__container--small');
+        thisTranslate.innerText = 'это';
+        wordsContainer.appendChild(thisTranslate);
+        const wordRight: HTMLElement = document.createElement('p');
+        wordRight.id = 'word-2';
+        wordsContainer.appendChild(wordRight);
+
+        if (wrap) {
+            wrap.appendChild(wordsContainer);
+        }
+
+        const buttonContainer: HTMLElement = document.createElement('section');
+        buttonContainer.id = 'button-container';
+        wordsContainer.className = 'words__container';
+        buttonContainer.className = 'button__container';
+        wrap?.appendChild(buttonContainer);
+        const btnRight: HTMLElement = document.createElement('button');
+        btnRight.id = 'btn-right';
+        btnRight.classList.add('button', 'button_colored', 'button--right');
+        btnRight.textContent = 'Верно';
+        buttonContainer.appendChild(btnRight);
+        const btnWrong: HTMLElement = document.createElement('button');
+        btnWrong.id = 'btn-false';
+        btnWrong.classList.add('button', 'button_colored', 'button--right');
+        btnWrong.textContent = 'Неверно';
+        buttonContainer.appendChild(btnWrong);
+
+        if (wrap) {
+            wrap.appendChild(buttonContainer);
+        }
 
         this.currentWord = this.getRandom(19);
         this.currentTranslate = this.getRandom(19);
@@ -202,14 +242,15 @@ class SprintGame {
             this.currentTranslate = this.getRandom(19);
         }
         if (this.gameVariant === 0) {
-            (wordLeft as HTMLElement).textContent = this.data[this.currentWord].word;
-            (wordRight as HTMLElement).textContent = this.data[this.currentWord].wordTranslate;
+            wordLeft.textContent = this.data[this.currentWord].word;
+            wordRight.textContent = this.data[this.currentWord].wordTranslate;
             const word = this.data[this.currentWord];
             btnRight?.addEventListener('click', async () => {
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
                 }
                 this.rightCount += 1;
+                this.successAttempts += 1;
                 // this.multi += 1;
                 // this.score += 1;
                 // this.score *= this.multi;
@@ -220,16 +261,16 @@ class SprintGame {
                 // this.userAnswers.push('0');
                 // this.multi = 1;
                 this.wrongCount += 1;
+                this.currentSeries = 0;
                 if (word) {
-                    console.log(word);
                     this.userAnswers.push({ word, guessedRight: false });
                 }
                 this.arrowColor = this.colorRed;
                 this.draw(this.group);
             });
         } else {
-            (wordLeft as HTMLElement).textContent = this.data[this.currentWord].word;
-            (wordRight as HTMLElement).textContent = this.data[this.currentTranslate].wordTranslate;
+            wordLeft.textContent = this.data[this.currentWord].word;
+            wordRight.textContent = this.data[this.currentTranslate].wordTranslate;
             const word = this.data[this.currentWord];
             btnWrong?.addEventListener('click', async () => {
                 // this.userAnswers.push('1');
@@ -239,6 +280,7 @@ class SprintGame {
                 // this.score *= this.multi;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
+                    this.successAttempts += 1;
                 }
                 this.arrowColor = this.colorGreen;
                 this.draw(this.group);
@@ -247,6 +289,7 @@ class SprintGame {
                 // this.userAnswers.push('0');
                 // this.multi = 1;
                 this.wrongCount += 1;
+                this.currentSeries = 0;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: false });
                 }
@@ -254,7 +297,6 @@ class SprintGame {
                 this.draw(this.group);
             });
         }
-        console.log(this.userAnswers);
     }
 
     getRandom(max: number): number {
@@ -286,15 +328,43 @@ class SprintGame {
         }
         const resultsWrap: HTMLElement = document.createElement('div');
         resultsWrap.id = 'results-wrap';
+        const btnWrap: HTMLElement = document.createElement('div');
+        btnWrap.id = 'btns-wrap';
+        btnWrap.classList.add('btn-wrap');
         wrap?.appendChild(resultsWrap);
-        const playAgainBtn: HTMLButtonElement = document.createElement('button');
-        playAgainBtn.id = 'play-again-btn';
-        playAgainBtn.textContent = 'Ещё раз';
-        playAgainBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
-        playAgainBtn.addEventListener('click', () => {
+        wrap?.appendChild(btnWrap);
+        const endBtn: HTMLButtonElement = document.createElement('button');
+        endBtn.id = 'play-again-btn';
+        endBtn.textContent = 'Закончить';
+        endBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
+        endBtn.addEventListener('click', () => {
+            this.allAttempts = this.userAnswers.length;
+            if (localStorage.currentUserName) {
+                this.checkAndAddUserWord(this.userAnswers);
+                this.checkAndUpdateStatistics();
+            }
             document.location.reload();
         });
-        wrap?.appendChild(playAgainBtn);
+        btnWrap?.appendChild(endBtn);
+
+        const moreBtn: HTMLButtonElement = document.createElement('button');
+        moreBtn.id = 'play-more-btn';
+        moreBtn.textContent = 'Ещё раз';
+        moreBtn.classList.add('button', 'button_white', 'word_button', 'reload_button');
+        moreBtn.addEventListener('click', () => {
+            this.allAttempts = this.userAnswers.length;
+            if (localStorage.currentUserName) {
+                this.checkAndAddUserWord(this.userAnswers);
+                this.checkAndUpdateStatistics();
+            }
+            wrap?.removeChild(resultsWrap);
+            wrap?.removeChild(btnWrap);
+            this.time = 31;
+            this.countTime(this.time);
+            this.draw(this.group);
+        });
+        btnWrap?.appendChild(moreBtn);
+
         const resultsList: HTMLElement = document.createElement('ul');
         resultsList.id = 'results-list';
         resultsWrap.appendChild(resultsList);
@@ -326,6 +396,89 @@ class SprintGame {
 
             resultsList.appendChild(resultsItem);
         }
+    }
+
+    async addUserWord(wordId: string, status: boolean) {
+        const userWord: IUserWord = {
+            difficulty: 'easy',
+            optional: {
+                attempts: 1,
+                successAtempts: status ? 1 : 0,
+                learned: status,
+            },
+        };
+        await createUserWord(wordId, userWord);
+    }
+
+    async updateUserWord(wordId: string, status: boolean, attempts: number, successAtempts: number) {
+        const userWord: IUserWord = {
+            difficulty: 'easy',
+            optional: {
+                attempts,
+                successAtempts,
+                learned: status,
+            },
+        };
+        await updateUserWord(wordId, userWord);
+    }
+
+    async checkAndAddUserWord(userAnswers: IUserAnswers[]) {
+        await this.getUserWordsData();
+        userAnswers.forEach((item) => {
+            const word = this.userWords.find((userWordsItem) => userWordsItem.wordId === item.word.id);
+            if (word) {
+                /* eslint-disable-next-line */
+              item.guessedRight === true
+                    ? this.updateUserWord(
+                          item.word.id,
+                          true,
+                          word.optional.attempts + 1,
+                          word.optional.successAtempts + 1
+                      )
+                    : this.updateUserWord(
+                          item.word.id,
+                          false,
+                          word.optional.attempts + 1,
+                          word.optional.successAtempts
+                      );
+            } else {
+                /* eslint-disable-next-line */
+              item.guessedRight === true
+                    ? this.addUserWord(item.word.id, true)
+                    : this.addUserWord(item.word.id, false);
+            }
+        });
+    }
+
+    async checkAndUpdateStatistics() {
+        await this.getUserStatisticsData();
+        let maxSeries = 0;
+        let rightCount = 0;
+        let allAttempts = 0;
+        if (this.userStats.optional.audioSeria) {
+            if (this.maxSeries > this.userStats.optional.audioSeria) {
+                maxSeries = this.maxSeries;
+            } else {
+                maxSeries = this.userStats.optional.audioSeria;
+            }
+        }
+        if (this.userStats.optional.audioSuc && this.userStats.optional.audioAll) {
+            rightCount = this.userStats.optional.audioSuc + this.rightCount;
+            allAttempts = this.userStats.optional.audioAll + this.allAttempts;
+        }
+        this.addUserStatistic(77, maxSeries, rightCount, allAttempts);
+    }
+
+    async addUserStatistic(learnedWords: number, maxSeries: number, successAttempts: number, allAttempts: number) {
+        const stats: IUserStat = {
+            learnedWords,
+            optional: {
+                sprintSeria: maxSeries,
+                sprintSuc: successAttempts,
+                sprintAll: allAttempts,
+            },
+        };
+        await upsertUserStatistics(stats);
     }
 }
 
