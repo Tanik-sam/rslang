@@ -3,6 +3,7 @@ import {
     createUserWord,
     getUserStatistics,
     getUserWords,
+    getUserWord,
     getWord,
     getWords,
     updateUserWord,
@@ -74,7 +75,6 @@ class AudioChallengeGame {
     getUserWordsData() {
         return (async () => {
             this.userWords = await getUserWords();
-            console.log(this.userWords);
         })();
     }
 
@@ -488,46 +488,80 @@ class AudioChallengeGame {
                           word.optional.attempts + 1,
                           word.optional.successAtempts
                       );
-                console.log('update', item.word.id);
             } else {
                 /* eslint-disable-next-line */
                 item.guessedRight === false
                     ? this.addUserWord(item.word.id, true)
                     : this.addUserWord(item.word.id, false);
-                console.log('add', item.word.id);
             }
         });
     }
 
     async checkAndUpdateStatistics() {
-        await this.getUserStatisticsData();
         let maxSeries = 0;
         let successAttempts = 0;
         let allAttempts = 0;
-        if (this.userStats.optional.audioSeria) {
-            if (this.maxSeries > this.userStats.optional.audioSeria) {
-                maxSeries = this.maxSeries;
-            } else {
-                maxSeries = this.userStats.optional.audioSeria;
-            }
+        await this.getUserStatisticsData();
+        if (this.maxSeries > this.userStats.optional.audioSeria) {
+            maxSeries = this.maxSeries;
+        } else {
+            maxSeries = this.userStats.optional.audioSeria;
         }
-        if (this.userStats.optional.audioSuc && this.userStats.optional.audioAll) {
-            successAttempts = this.userStats.optional.audioSuc + this.successAttempts;
-            allAttempts = this.userStats.optional.audioAll + this.allAttempts;
-        }
-        this.addUserStatistic(77, maxSeries, successAttempts, allAttempts);
+        successAttempts = this.userStats.optional.audioSuc + this.successAttempts;
+        allAttempts = this.userStats.optional.audioAll + this.allAttempts;
+        const sucSprint = this.userStats.optional.sprintSuc;
+        const allSprint = this.userStats.optional.sprintAll;
+        const serSprint = this.userStats.optional.sprintSeria;
+        await this.getUserWordsData();
+        let count = 0;
+        this.data.forEach((item, i) => {
+            this.userWords.forEach((word) => {
+                if (item.id === word.wordId) {
+                    (async () => {
+                        const userWord = await getUserWord(item.id);
+                        if (userWord.optional.learned === true) {
+                            count += 1;
+                            if (i === this.data.length - 1) {
+                                this.addUserStatistic(
+                                    count,
+                                    maxSeries,
+                                    successAttempts,
+                                    allAttempts,
+                                    sucSprint,
+                                    allSprint,
+                                    serSprint
+                                );
+                            }
+                        }
+                    })();
+                }
+            });
+        });
     }
 
-    async addUserStatistic(learnedWords: number, maxSeries: number, successAttempts: number, allAttempts: number) {
+    async addUserStatistic(
+        learnedWords: number,
+        maxSeries: number,
+        successAttempts: number,
+        allAttempts: number,
+        sucSprint: number,
+        allSprint: number,
+        serSprint: number
+    ) {
         const stats: IUserStat = {
             learnedWords,
             optional: {
+                date: new Date(),
+                sprintSeria: serSprint,
+                sprintSuc: sucSprint,
+                sprintAll: allSprint,
                 audioSeria: maxSeries,
                 audioSuc: successAttempts,
                 audioAll: allAttempts,
             },
         };
         await upsertUserStatistics(stats);
+        await this.getUserStatisticsData();
     }
 }
 
