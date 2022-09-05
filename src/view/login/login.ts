@@ -72,7 +72,7 @@ class Login {
                 );
             });
         } catch (e) {
-            console.log('little shortcoming');
+            throw new Error(`Error`);
         }
     }
 }

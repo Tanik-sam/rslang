@@ -61,7 +61,7 @@ class Textbook {
         try {
             (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
         } catch (e) {
-            console.log('Wait for a page load to complete!');
+            throw new Error(`Error`);
         }
         if (this.page === 0) {
             (document.querySelector('.pagination_back') as HTMLElement).classList.add('inactive');
@@ -299,7 +299,7 @@ class Textbook {
                 });
             }
         } catch (e) {
-            console.log('Wait for a page load to complete!');
+            throw new Error(`Error`);
         }
         if (localStorage.learned) {
             let count = 0;
@@ -431,7 +431,7 @@ class Textbook {
                 }
             });
         } catch (e) {
-            console.log('Wait for a page load to complete!');
+            throw new Error(`Error`);
         }
         try {
             (document.querySelector('#sprint') as HTMLElement).addEventListener('click', () => {
@@ -441,7 +441,7 @@ class Textbook {
                 localStorage.setItem('flag', 'game');
             });
         } catch (e) {
-            console.log('Wait for a page load to complete!');
+            throw new Error(`Error`);
         }
         try {
             (document.querySelector('.pagination') as HTMLElement).addEventListener('click', (e) => {
@@ -460,7 +460,7 @@ class Textbook {
                 this.getData();
             });
         } catch (e) {
-            console.log('Wait for a page load to complete!');
+            throw new Error(`Error`);
         }
         (document.querySelector('#settings') as HTMLElement).addEventListener('click', () => {
             const fragment = document.createDocumentFragment() as DocumentFragment;
