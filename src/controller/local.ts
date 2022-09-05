@@ -3,7 +3,6 @@ export function local() {
         (document.querySelector('#loginButton') as HTMLElement).innerHTML =
             '<i class="fa-solid fa-right-from-bracket"></i>';
         (document.querySelector('#loginButton') as HTMLElement).addEventListener('click', () => {
-            console.log('А ну давай-ка выйдем!?');
             localStorage.removeItem('currentUserName');
             localStorage.removeItem('currentUserEmail');
             localStorage.removeItem('learned');
@@ -12,6 +11,4 @@ export function local() {
     }
 }
 
-export function local2() {
-    console.log('мы туть');
-}
+export function local2() {}

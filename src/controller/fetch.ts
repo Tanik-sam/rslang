@@ -3,12 +3,6 @@ import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord, IUserStat } from '
 const wordList = 'https://rs-lang2022.herokuapp.com/words';
 const userList = 'https://rs-lang2022.herokuapp.com/users';
 const userLogin = 'https://rs-lang2022.herokuapp.com/signin';
-// const wordList = 'http://localhost:27017/words';
-// const userList = 'http://localhost:27017/users';
-// const userLogin = 'http://localhost:27017/signin';
-// const wordList = 'http://localhost:3000/words';
-// const userList = 'http://localhost:3000/users';
-// const userLogin = 'http://localhost:3000/signin';
 
 export async function getWords(page = 0, group = 0): Promise<IWords[]> {
     const response = await fetch(`${wordList}?page=${page}&group=${group}`);
@@ -74,7 +68,6 @@ export async function loginUser(login: ILogin) {
 }
 
 export async function refreshUserToken() {
-    console.log('мы туть, в рефреше');
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const refreshToken = `${JSON.parse(localStorage.currentUserToken).refreshToken}`;
     const response = await fetch(`${userList}/${userId}/tokens`, {
@@ -101,9 +94,7 @@ export async function getUserWords(): Promise<IUserGetWord[]> {
             Accept: 'application/json',
         },
     });
-    if (response.status === 401 || response.status === 402) {
-        console.log('Надо сделать refreshUserToken(), но он не работает! Перелогиньтесь!');
-    }
+
     const content = await response.json();
     return content;
 }
@@ -124,7 +115,6 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     }
     if (response.status === 200) {
         return content;
-        // console.log('create ok');
     }
     throw new Error(`${response.status}`);
 }
@@ -132,7 +122,6 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
 export async function createUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
-    // console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
         method: 'POST',
         headers: {
@@ -142,11 +131,7 @@ export async function createUserWord(wordId: string, word: IUserWord) {
         },
         body: JSON.stringify(word),
     });
-    // const content = await response.json();
-    if (response.status === 200) {
-        // console.log('create ok');
-        // console.log(content);
-    } else {
+    if (response.status !== 200) {
         throw new Error(`${response.status}`);
     }
 }
@@ -154,7 +139,6 @@ export async function createUserWord(wordId: string, word: IUserWord) {
 export async function updateUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
-    // console.log('wordId ', wordId, 'word ', word, 'userId ', userId, 'token ', token);
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
         method: 'PUT',
         headers: {
@@ -165,9 +149,8 @@ export async function updateUserWord(wordId: string, word: IUserWord) {
         body: JSON.stringify(word),
     });
     // const content = await response.json();
+    // eslint-disable-next-line no-empty
     if (response.status === 200) {
-        // console.log('update ok');
-        // console.log(content);
     } else {
         throw new Error(`${response.status}`);
     }
@@ -178,14 +161,12 @@ export async function deleteUserWord(wordId: string) {
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
         method: 'DELETE',
     });
-    if (response.status === 200) {
-        console.log('delete ok');
+    if (response.status !== 200) {
+        throw new Error(`${response.status}`);
     }
-    throw new Error(`${response.status}`);
 }
 
 export async function upsertUserStatistics(stat: IUserStat) {
-    console.log(`мы тут`);
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/statistics`, {
@@ -197,7 +178,9 @@ export async function upsertUserStatistics(stat: IUserStat) {
         },
         body: JSON.stringify(stat),
     });
-    console.log(`${response.status}`);
+    if (response.status !== 200) {
+        throw new Error(`${response.status}`);
+    }
 }
 
 export async function getUserStatistics(): Promise<IUserStat> {

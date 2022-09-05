@@ -14,7 +14,6 @@ class Statistics {
         (async () => {
             if (localStorage.currentUserName && localStorage.currentUserEmail) {
                 this.userStatistics = await getUserStatistics();
-                console.log(this.userStatistics);
             }
             try {
                 (document.querySelector(
@@ -46,9 +45,8 @@ class Statistics {
                 (document.querySelector('#statAllSer') as HTMLElement).innerHTML = `${
                     (this.userStatistics.optional.sprintSeria || 0) + (this.userStatistics.optional.audioSeria || 0)
                 }`;
-                console.log('refghre');
             } catch (e) {
-                console.log('Wait for a page load to complete!');
+                throw new Error(`Error`);
             }
         })();
     }

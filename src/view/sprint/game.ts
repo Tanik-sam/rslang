@@ -68,6 +68,8 @@ class SprintGame {
 
     currentSeries = 0;
 
+    newLearnedWords = 33;
+
     getData(): Promise<void> {
         return (async () => {
             this.data = await getWords(this.page, this.group);
@@ -249,6 +251,7 @@ class SprintGame {
             btnRight?.addEventListener('click', async () => {
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
+                    this.newLearnedWords += 1;
                 }
                 this.rightCount += 1;
                 this.successAttempts += 1;
@@ -281,6 +284,7 @@ class SprintGame {
                 // this.score *= this.multi;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
+                    this.newLearnedWords += 1;
                     this.successAttempts += 1;
                 }
                 this.arrowColor = this.colorGreen;

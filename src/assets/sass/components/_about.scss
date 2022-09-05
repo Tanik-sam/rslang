@@ -70,3 +70,18 @@
       gap: 20px;
 		}
 }
+.name__container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  .person-link{
+    display: flex;
+    align-items: center;
+    transition: .3s;
+    &:hover{
+      filter: invert(46%) sepia(37%) saturate(1001%) hue-rotate(323deg) brightness(111%) contrast(76%);
+      color: rgb(255, 2, 2);
+    }
+  }
+}
