@@ -55,5 +55,5 @@ export interface IUserAnswers {
 
 export interface IUserStat {
     learnedWords: number,
-    optional: { date?: Date, sprintSeria?: number; sprintSuc?: number; sprintAll?: number; audioSeria?: number; audioSuc?: number; audioAll?: number;};
+    optional: { date: Date, sprintSeria: number; sprintSuc: number; sprintAll: number; audioSeria: number; audioSuc: number; audioAll: number;};
 }

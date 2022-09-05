@@ -1,11 +1,11 @@
 import { IWords, IUser, IID, ILogin, IUserWord, IUserGetWord, IUserStat } from '../app/interfaces';
 
-const wordList = 'https://rs-lang2022.herokuapp.com/words';
-const userList = 'https://rs-lang2022.herokuapp.com/users';
-const userLogin = 'https://rs-lang2022.herokuapp.com/signin';
-// const wordList = 'http://localhost:27017/words';
-// const userList = 'http://localhost:27017/users';
-// const userLogin = 'http://localhost:27017/signin';
+// const wordList = 'https://rs-lang2022.herokuapp.com/words';
+// const userList = 'https://rs-lang2022.herokuapp.com/users';
+// const userLogin = 'https://rs-lang2022.herokuapp.com/signin';
+const wordList = 'http://localhost:27017/words';
+const userList = 'http://localhost:27017/users';
+const userLogin = 'http://localhost:27017/signin';
 // const wordList = 'http://localhost:3000/words';
 // const userList = 'http://localhost:3000/users';
 // const userLogin = 'http://localhost:3000/signin';
@@ -185,6 +185,7 @@ export async function deleteUserWord(wordId: string) {
 }
 
 export async function upsertUserStatistics(stat: IUserStat) {
+    console.log(`мы тут`);
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
     const response = await fetch(`${userList}/${userId}/statistics`, {
@@ -196,13 +197,7 @@ export async function upsertUserStatistics(stat: IUserStat) {
         },
         body: JSON.stringify(stat),
     });
-    // const content = await response.json();
-    if (response.status === 200) {
-        // console.log('update ok');
-        // console.log(content);
-    } else {
-        throw new Error(`${response.status}`);
-    }
+    console.log(`${response.status}`);
 }
 
 export async function getUserStatistics(): Promise<IUserStat> {
@@ -215,9 +210,24 @@ export async function getUserStatistics(): Promise<IUserStat> {
             Accept: 'application/json',
         },
     });
-    if (response.status === 200) {
-        const stats = await response.json();
+    const stats = await response.json();
+    if (response.status !== 200) {
+        throw new Error(`${response.status}`);
+    } else {
         return stats;
     }
-    throw new Error(`${response.status}`);
 }
+
+/* export async function getUserStatistics2(): Promise<IUserStat | undefined> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/statistics`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
+    const stats = await response.json();
+    return stats;
+} */
