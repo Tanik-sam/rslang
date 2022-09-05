@@ -166,7 +166,6 @@ export async function deleteUserWord(wordId: string): Promise<void> {
     }
 }
 
-
 export async function upsertUserStatistics(stat: IUserStat) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;

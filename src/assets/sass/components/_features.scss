@@ -1,125 +1,163 @@
 .features {
-    padding: 2rem 0;
-    @include screen1200 {
-        padding: 1.2rem 0;
-    }
-    @include media-tablet {
-        text-align: center;
-    }
+  padding: 2rem 0;
+
+  @include screen1200 {
+    padding: 1.2rem 0;
+  }
+
+  @include media-tablet {
+    text-align: center;
+  }
 }
+
 .feature {
-    min-height: 17rem;
-    @include screen1200 {
-        min-height: 14rem;
-    }
+  min-height: 17rem;
+
+  @include screen1200 {
+    min-height: 14rem;
+  }
 }
 
 .features__title {
-    margin: 0 0 0.2rem;
+  margin: 0 0 0.2rem;
 }
 
 .features__description {
-    margin: 0 0 0.5rem;
+  margin: 0 0 0.5rem;
 }
 
 .features__tags {
-    margin-bottom: 0.5rem;
-    @include media-tablet {
-        justify-content: center;
-    }
+  margin-bottom: 0.5rem;
+
+  @include media-tablet {
+    justify-content: center;
+  }
 }
+
 .feature__link {
-    text-decoration: none;
-    color: $color-dark;
+  text-decoration: none;
+  color: $color-dark;
 }
-.fa-book, .fa-volume-high, .fa-clock, .fa-chart-line {
-    font-size: 2rem;
-    color:$color-light_red;
-    @extend %transition;
-    &:hover {
-        color: $color-light_blue;
-        transform: scale(1.2);
-    }
-    @include screen1200 {
-        font-size: 1.5rem;
-    }
+
+.fa-book,
+.fa-volume-high,
+.fa-clock,
+.fa-chart-line {
+  font-size: 2rem;
+  color: $color-light_red;
+  @extend %transition;
+
+  &:hover {
+    color: $color-light_blue;
+    transform: scale(1.2);
+  }
+
+  @include screen1200 {
+    font-size: 1.5rem;
+  }
 }
+
 .feature-wrapper {
-    >* {
-        margin-bottom: 1.8rem;
-        @include screen1200 {
-            margin-bottom: 1rem;
-        }
-        @include media-tablet {
-            flex-basis: 48%;
-        }
-        @include media-mobile {
-            flex-basis: 100%;
-            justify-content: center;
-        }
+  >* {
+    margin-bottom: 1.8rem;
+
+    @include screen1200 {
+      margin-bottom: 1rem;
     }
+
+    @include media-tablet {
+      flex-basis: 48%;
+    }
+
+    @include media-mobile {
+      flex-basis: 100%;
+      justify-content: center;
+    }
+  }
 }
 
 .feature {
-    padding-top: 2rem;
-    padding-bottom: 1rem;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    @extend %transition;
-    &:hover {
-        background: $color-primary;
-        transform: scale(1.1);
-    }
-    @include media-tablet {
-        overflow: hidden;
-        padding-top: 200px;
-        width:190px;
-    }
-    @include media-mobile {
-        overflow: hidden;
-        padding-top: 200px;
-        min-width:290px;
-    }
-    @include screen1200 {
-        padding-top: 1rem;
-        padding-bottom: 0.8rem;
-    }
-    
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  @extend %transition;
+
+  &:hover {
+    background: $color-primary;
+    transform: scale(1.1);
+  }
+
+  @include media-tablet {
+    overflow: hidden;
+    padding-top: 200px;
+    width: 190px;
+  }
+
+  @include media-mobile {
+    overflow: hidden;
+    padding-top: 200px;
+    min-width: 290px;
+  }
+
+  @include screen1200 {
+    padding-top: 1rem;
+    padding-bottom: 0.8rem;
+  }
+
 }
 
 .feature__content {
-    padding: 0.4rem 1rem 0.5rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    @include screen1200 {
-        padding: 0.3rem 0.6rem 0.4rem;
-    }
+  padding: 0.4rem 1rem 0.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  @include screen1200 {
+    padding: 0.3rem 0.6rem 0.4rem;
+  }
 }
 
 .feature__name {
-    text-align: center;
-    flex-grow: 1;
-    color: $color-light_blue;
+  text-align: center;
+  flex-grow: 1;
+  color: $color-light_blue;
 }
 
 .feature__image {
-    @include media-tablet {
-        position: absolute;
-        top: 0;
-    }
+  @include media-tablet {
+    position: absolute;
+    top: 0;
+  }
 }
-.tool__text{
-    font-size: 1rem;
-    margin:auto;
-    margin-top: 0.5rem;
-    margin-bottom:0.5rem;
-    @include screen1200 {
-        font-size: 0.9rem;
-        margin-top: 0.3rem;
-        margin-bottom:0.3rem;
-    }
+
+.tool__text {
+  font-size: 1rem;
+  margin: auto;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  @include screen1200 {
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+  }
+}
+
+#video-wrapper {
+  transition: .3s;
+  width: 50%;
+  height: 50%;
+  margin: 0 auto;
+
+  .show {
+    display: flex;
+  }
+
+  .hide {
+    display: none;
+  }
 }
