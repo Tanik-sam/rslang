@@ -20,6 +20,7 @@ export async function getWords(page = 0, group = 0): Promise<IWords[]> {
     }
     throw new Error(`${response.status}`);
 }
+
 export async function getWord(id: string): Promise<IWords> {
     const response = await fetch(`${wordList}/${id}`);
     if (response.status === 200) {
@@ -28,6 +29,7 @@ export async function getWord(id: string): Promise<IWords> {
     }
     throw new Error(`${response.status}`);
 }
+
 export async function createUser(user: IUser): Promise<IID> {
     const response = await fetch(`${userList}`, {
         method: 'POST',
@@ -46,6 +48,7 @@ export async function createUser(user: IUser): Promise<IID> {
     }
     throw new Error(`${response.status}`);
 }
+
 export async function loginUser(login: ILogin) {
     const response = await fetch(`${userLogin}`, {
         method: 'POST',
@@ -69,6 +72,7 @@ export async function loginUser(login: ILogin) {
 
     throw new Error(`${response.status} в логин`);
 }
+
 export async function refreshUserToken() {
     console.log('мы туть, в рефреше');
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
@@ -86,6 +90,7 @@ export async function refreshUserToken() {
     }
     throw new Error(`${response.status}`);
 }
+
 export async function getUserWords(): Promise<IUserGetWord[]> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
@@ -102,6 +107,7 @@ export async function getUserWords(): Promise<IUserGetWord[]> {
     const content = await response.json();
     return content;
 }
+
 export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
@@ -122,6 +128,7 @@ export async function getUserWord(wordId: string): Promise<IUserGetWord> {
     }
     throw new Error(`${response.status}`);
 }
+
 export async function createUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
@@ -143,6 +150,7 @@ export async function createUserWord(wordId: string, word: IUserWord) {
         throw new Error(`${response.status}`);
     }
 }
+
 export async function updateUserWord(wordId: string, word: IUserWord) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const token = `${JSON.parse(localStorage.currentUserToken).token}`;
@@ -164,6 +172,7 @@ export async function updateUserWord(wordId: string, word: IUserWord) {
         throw new Error(`${response.status}`);
     }
 }
+
 export async function deleteUserWord(wordId: string) {
     const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
     const response = await fetch(`${userList}/${userId}/words/${wordId}`, {
@@ -194,4 +203,21 @@ export async function upsertUserStatistics(stat: IUserStat) {
     } else {
         throw new Error(`${response.status}`);
     }
+}
+
+export async function getUserStatistics(): Promise<IUserStat> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(`${userList}/${userId}/statistics`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+        },
+    });
+    if (response.status === 200) {
+        const stats = await response.json();
+        return stats;
+    }
+    throw new Error(`${response.status}`);
 }
