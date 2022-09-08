@@ -37,11 +37,11 @@ class Statistics {
                 (document.querySelector(
                     '#statAllLearned'
                 ) as HTMLElement).innerHTML = `${this.userStatistics.learnedWords}`;
-                (document.querySelector('#statAllSuc') as HTMLElement).innerHTML = `${
+                (document.querySelector('#statAllSuc') as HTMLElement).innerHTML = `${Math.round(
                     (this.userStatistics.optional.sprintSuc || 0) +
-                    (this.userStatistics.optional.audioSuc || 0) /
-                        ((this.userStatistics.optional.sprintAll || 0) + (this.userStatistics.optional.audioAll || 1))
-                }%`;
+                        (this.userStatistics.optional.audioSuc || 0) /
+                            ((this.userStatistics.optional.sprintAll || 0) + this.userStatistics.optional.audioAll || 1)
+                )}%`;
                 (document.querySelector('#statAllSer') as HTMLElement).innerHTML = `${
                     (this.userStatistics.optional.sprintSeria || 0) + (this.userStatistics.optional.audioSeria || 0)
                 }`;

@@ -93,7 +93,10 @@ const baseConfig = {
         new EslingPlugin({ extensions: 'ts' }),
         new CopyPlugin({
             patterns: [{ from: './src/assets/icons/favicon', to: './' }],
-          }),
+        }),
+        new CopyPlugin({
+            patterns: [{ from: './src/assets/mp4/demo.mp4', to: './' }],
+        }),
     ],
 };
 module.exports = ({ mode }) => {

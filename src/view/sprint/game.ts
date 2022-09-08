@@ -166,16 +166,6 @@ class SprintGame {
             }
         }
 
-        // Score section
-        // const scoreSection: HTMLElement = document.createElement('section');
-        // scoreSection.id = 'score-section';
-        // scoreSection.className = 'score';
-        // wrap?.appendChild(scoreSection);
-        // scoreSection.innerHTML = `<p class="score__box button"> Множитель: <span id="multiplier">${this.multi}</span></p>
-        // <p class="score__box button"> Очки:<span id="score">${this.score}</span></p>
-        // <div class="status__container">
-        // </div> `;
-
         const statusContainer: HTMLElement = document.createElement('section');
         statusContainer.id = 'status-container';
         statusContainer.className = 'words__container';
@@ -254,15 +244,10 @@ class SprintGame {
                 }
                 this.rightCount += 1;
                 this.successAttempts += 1;
-                // this.multi += 1;
-                // this.score += 1;
-                // this.score *= this.multi;
                 this.arrowColor = this.colorGreen;
                 this.draw(this.group);
             });
             btnWrong?.addEventListener('click', async () => {
-                // this.userAnswers.push('0');
-                // this.multi = 1;
                 this.wrongCount += 1;
                 this.currentSeries = 0;
                 if (word) {
@@ -276,11 +261,7 @@ class SprintGame {
             wordRight.textContent = this.data[this.currentTranslate].wordTranslate;
             const word = this.data[this.currentWord];
             btnWrong?.addEventListener('click', async () => {
-                // this.userAnswers.push('1');
                 this.rightCount += 1;
-                // this.multi += 1;
-                // this.score += 1;
-                // this.score *= this.multi;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
                     this.newLearnedWords += 1;
@@ -290,8 +271,6 @@ class SprintGame {
                 this.draw(this.group);
             });
             btnRight?.addEventListener('click', async () => {
-                // this.userAnswers.push('0');
-                // this.multi = 1;
                 this.wrongCount += 1;
                 this.currentSeries = 0;
                 if (word) {
