@@ -8,8 +8,8 @@
   flex-wrap: nowrap;
   width: 100%;
   background: linear-gradient(180deg, rgba(253, 121, 168, 0.5) 0%, #0984E3 100%);
-  min-height: calc(100vh - 145px);
-
+  //min-height: calc(100vh - 145px);
+  min-height:calc(100vh - 80px);
   .wrapper {
     display: flex;
     flex-direction: column;

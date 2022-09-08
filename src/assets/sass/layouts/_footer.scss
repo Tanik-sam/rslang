@@ -2,6 +2,10 @@
     background: $color-primary;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
     padding: 0.4rem 0 0.5rem 0;
+
+    &--game{
+      display: none;
+    }
 }
 
 .footer__wrapper {
