@@ -9,6 +9,9 @@ h3{
   display: flex;
   flex-direction: column;
   align-items: center;
+  &>* {
+    text-align: center;
+  }
  }
   &__container {
     display: flex;
@@ -16,6 +19,7 @@ h3{
     font-weight: 600;
     cursor: default;
     gap: 20px;
+
     &--main{
       
       width: 100%;
@@ -23,11 +27,16 @@ h3{
       justify-content: center;
     }
   }
+
   &__header {
     color: #0072C2;
     text-align: center;
     font-size: 24px;
     cursor: default;
+    @include media-mobile {
+      font-size: 1rem;
+      font-weight: 600;
+    }
   }
 
   &__item {
@@ -43,6 +52,13 @@ h3{
     align-items: center;
     padding: 20px;
     gap: 2    0px;
+    @include media-mobile {
+      height: auto;
+      padding: 0.8rem;
+      font-size: 1rem;
+      font-weight: 400;
+      max-width: 300px;
+    }
   }
 
   &__image {
@@ -66,6 +82,10 @@ h3{
   &--item{
     font-size: 1.2rem;
   }
+  @include media-mobile {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
   }
   &__container--left {
     min-width: 220px;
@@ -74,4 +94,12 @@ h3{
     justify-content: space-around;
   }
   
+}
+.statistic__container--games {
+@include media-tablet {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 }
