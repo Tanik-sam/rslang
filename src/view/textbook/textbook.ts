@@ -59,6 +59,9 @@ class Textbook {
     drawTextbook(): void {
         this.paginatePage();
         try {
+            if (this.page < 0) {
+                this.page = 0;
+            }
             (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('chosen-page');
         } catch (e) {
             throw new Error(`Error`);
@@ -454,7 +457,11 @@ class Textbook {
                         this.paginateFront();
                         break;
                     default:
-                        this.page = Number((e.target as HTMLElement).innerHTML) - 1;
+                        if ((e.target as HTMLElement).className !== 'pagination') {
+                            this.page = Number((e.target as HTMLElement).innerHTML) - 1;
+                        } else {
+                            this.page = Number((e.target as HTMLElement).closest('.pagination__item')) - 1;
+                        }
                 }
                 this.paginatePage();
                 this.getData();
