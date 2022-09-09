@@ -29,6 +29,7 @@
     background-color: $color-primary;
     width: 30%;
     top: 14vw;
+    min-width: 320px;
     min-height: 200px;
     margin: auto;
     display: flex;
@@ -39,8 +40,16 @@
     font-style: normal;
     font-weight: 600;
     font-size: 1.5rem;
-    line-height: 1.5;
+    line-height: 1.5rem;
     color: $color-dark;
+    @include screen610 {
+        top: 20vw;
+        min-width: 270px;
+        font-weight: 600;
+        font-size: 1rem;
+        line-height: 1rem;
+        gap:1rem;
+    }
 }
 .modal-window__img>.fa-user{
     font-size: 10rem;
@@ -56,6 +65,10 @@
     font-size: 2rem;
     line-height: 2.2rem;
     color: $color-dark;
+    @include screen610 {
+        font-size: 1rem;
+        line-height: 1.2rem;
+    }
 }
 .modal-window_name {
     margin-bottom: 3rem;

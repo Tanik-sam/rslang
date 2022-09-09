@@ -3,7 +3,15 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
-import { getWords, getWord, getUserWords, getUserWord, createUserWord, updateUserWord } from '../../controller/fetch';
+import {
+    getWords,
+    getWord,
+    getUserWords,
+    getUserWord,
+    createUserWord,
+    updateUserWord,
+    getAggregatedLearnedWords,
+} from '../../controller/fetch';
 import { IWords, IUserGetWord } from '../../app/interfaces';
 import { local } from '../../controller/local';
 
@@ -19,6 +27,8 @@ class Textbook {
     color = 'rgba(255, 234, 167, 0.7)';
 
     userWords!: IUserGetWord[];
+
+    learned!: IUserGetWord[];
 
     getData(): void {
         (async () => {
@@ -58,6 +68,7 @@ class Textbook {
 
     drawTextbook(): void {
         this.paginatePage();
+        this.learnedWords();
         try {
             if (this.page < 0) {
                 this.page = 0;
@@ -195,8 +206,6 @@ class Textbook {
                 let attempts = 0;
                 let successAtempts = 0;
                 const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
-                (document.querySelector(`#delcheck_${wordId}`) as HTMLElement).innerHTML =
-                    '<i class="fa-solid fa-check"></i>';
                 this.userWords.forEach((w) => {
                     if (w.wordId === wordId) {
                         flag = true;
@@ -213,7 +222,6 @@ class Textbook {
                         };
                         (async () => {
                             await updateUserWord(wordId, word);
-                            this.userWords = await getUserWords();
                             this.getData();
                         })();
                     }
@@ -229,10 +237,10 @@ class Textbook {
                     };
                     (async () => {
                         await createUserWord(wordId, word);
-                        this.userWords = await getUserWords();
                         this.getData();
                     })();
                 }
+                this.learnedWords();
             });
         });
         const difficultList = Array.from(document.getElementsByClassName('difficult'));
@@ -247,10 +255,8 @@ class Textbook {
                     dif = 'easy';
                 }
                 const wordId = (e.target as HTMLElement).getAttribute('id')?.split(' ')[1] || '';
-                (document.querySelector(`#difcheck_${wordId}`) as HTMLElement).innerHTML =
-                    '<i class="fa-solid fa-check"></i>';
                 this.userWords.forEach((w) => {
-                    if (w.wordId === wordId || this.group === 6) {
+                    if (w.wordId === wordId) {
                         flag = true;
                         learned = w.optional.learned;
                         attempts = w.optional.attempts;
@@ -283,80 +289,49 @@ class Textbook {
                         this.getData();
                     })();
                 }
-                (async () => {
-                    this.userWords = await getUserWords();
-                })();
-                this.getData();
-                this.learnedWords();
             });
         });
-        this.learnedWords();
     }
 
-    learnedWords() {
+    async learnedWords() {
         try {
             if (localStorage.learned) {
                 const pages = JSON.parse(localStorage.learned);
                 pages.forEach((p: number) => {
-                    (document.querySelector(`#p_${p}`) as HTMLElement).classList.add('learnedWord');
+                    if (document.querySelector(`#p_${p}`) as HTMLElement) {
+                        (document.querySelector(`#p_${p}`) as HTMLElement).classList.add('learnedWord');
+                    }
                 });
             }
         } catch (e) {
             throw new Error(`Error`);
         }
-        if (localStorage.learned) {
-            let count = 0;
-            this.data.forEach((item) => {
-                this.userWords.forEach((word) => {
-                    if (item.id === word.wordId) {
-                        (async () => {
-                            const userWord = await getUserWord(item.id);
-                            if (userWord.optional.learned === true) {
-                                count += 1;
-                                if (count > 18) {
-                                    (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add(
-                                        'learnedWord'
-                                    );
-                                    (document.querySelector('#audio') as HTMLInputElement).disabled = true;
-                                    (document.querySelector('#audio') as HTMLElement).classList.add('disabled');
-                                    (document.querySelector('#sprint') as HTMLInputElement).disabled = true;
-                                    (document.querySelector('#sprint') as HTMLElement).classList.add('disabled');
-                                    (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
-                                        'none';
-                                    (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
-                                        'none';
-                                    if (localStorage.learned) {
-                                        const pages = JSON.parse(localStorage.learned);
-                                        if (!pages.includes(this.page)) {
-                                            pages.push(this.page);
-                                            localStorage.setItem('learned', JSON.stringify(pages));
-                                        }
-                                    } else {
-                                        localStorage.setItem('learned', JSON.stringify([this.page]));
-                                    }
-                                } else {
-                                    (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove(
-                                        'learnedWord'
-                                    );
-                                    (document.querySelector('#audio') as HTMLInputElement).disabled = false;
-                                    (document.querySelector('#audio') as HTMLElement).classList.remove('disabled');
-                                    (document.querySelector('#sprint') as HTMLInputElement).disabled = false;
-                                    (document.querySelector('#sprint') as HTMLElement).classList.remove('disabled');
-                                    (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents =
-                                        'auto';
-                                    (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents =
-                                        'auto';
-                                    if (localStorage.learned) {
-                                        const pages = JSON.parse(localStorage.learned);
-                                        const newPages = pages.filter((num: number) => num !== this.page);
-                                        localStorage.setItem('learned', JSON.stringify(newPages));
-                                    }
-                                }
-                            }
-                        })();
-                    }
-                });
-            });
+        const learned = await getAggregatedLearnedWords(this.page, this.group);
+        if (learned[0].paginatedResults.length === 20) {
+            (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.add('learnedWord');
+            (document.querySelector('#audio') as HTMLInputElement).disabled = true;
+            (document.querySelector('#audio') as HTMLElement).classList.add('disabled');
+            (document.querySelector('#sprint') as HTMLInputElement).disabled = true;
+            (document.querySelector('#sprint') as HTMLElement).classList.add('disabled');
+            (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents = 'none';
+            (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents = 'none';
+            if (localStorage.learned) {
+                const pages = JSON.parse(localStorage.learned);
+                if (!pages.includes(this.page)) {
+                    pages.push(this.page);
+                    localStorage.setItem('learned', JSON.stringify(pages));
+                }
+            } else {
+                localStorage.setItem('learned', JSON.stringify([this.page]));
+            }
+        } else {
+            (document.querySelector(`#p_${this.page}`) as HTMLElement).classList.remove('learnedWord');
+            (document.querySelector('#audio') as HTMLInputElement).disabled = false;
+            (document.querySelector('#audio') as HTMLElement).classList.remove('disabled');
+            (document.querySelector('#sprint') as HTMLInputElement).disabled = false;
+            (document.querySelector('#sprint') as HTMLElement).classList.remove('disabled');
+            (document.querySelector('.link-audio') as HTMLInputElement).style.pointerEvents = 'auto';
+            (document.querySelector('.link-sprint') as HTMLInputElement).style.pointerEvents = 'auto';
         }
     }
 
@@ -391,6 +366,7 @@ class Textbook {
     eventListen() {
         try {
             (document.querySelector('.levels') as HTMLElement).addEventListener('click', (e) => {
+                localStorage.removeItem('learned');
                 switch ((e.target as HTMLElement).className) {
                     case 'level level_elementary':
                         this.group = 0;

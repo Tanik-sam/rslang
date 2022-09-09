@@ -213,3 +213,44 @@ export async function getUserStatistics(): Promise<IUserStat> {
     }
     return stats;
 }
+
+export async function getAggregatedHardWords(): Promise<IUserGetWord> {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(
+        `${userList}/${userId}/aggregatedWords?filter={"$and":[{"userWord.difficulty":"${'hard'}"}]}`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        }
+    );
+    const word = await response.json();
+    if (response.status !== 200) {
+        console.log(response.status);
+    }
+    return word;
+}
+
+export async function getAggregatedLearnedWords(page: number, group: number) {
+    const userId = `${JSON.parse(localStorage.currentUserToken).userId}`;
+    const token = `${JSON.parse(localStorage.currentUserToken).token}`;
+    const response = await fetch(
+        `${userList}/${userId}/aggregatedWords?wordsPerPage=600&filter={
+        "$and":[{"page":${page}}, {"group":${group}}, {"userWord.optional.learned":true}]}`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        }
+    );
+    const word = await response.json();
+    if (response.status !== 200) {
+        console.log(response.status);
+    }
+    return word;
+}
