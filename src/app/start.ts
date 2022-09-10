@@ -10,6 +10,9 @@ class App {
 
     start(): void {
         local();
+        if (localStorage.flag) {
+            localStorage.removeItem('flag');
+        }
     }
 }
 

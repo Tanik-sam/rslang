@@ -86,6 +86,9 @@ class Registration {
 }
 window.onload = function registrInit() {
     local();
+    if (localStorage.flag) {
+        localStorage.removeItem('flag');
+    }
     const registration = new Registration();
     const registrationName = document.querySelector('.registration__name') as HTMLElement;
     registrationName.addEventListener('blur', (e) => {

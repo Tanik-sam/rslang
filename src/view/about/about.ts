@@ -6,3 +6,6 @@ import '@fortawesome/fontawesome-free/js/brands';
 import { local } from '../../controller/local';
 
 local();
+if (localStorage.flag) {
+    localStorage.removeItem('flag');
+}

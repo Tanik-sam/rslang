@@ -78,6 +78,9 @@ class Login {
 }
 window.onload = function loginInit() {
     local();
+    if (localStorage.flag) {
+        localStorage.removeItem('flag');
+    }
     const login = new Login();
     const loginName = document.querySelector('.registration__name') as HTMLElement;
     loginName.addEventListener('blur', (e) => {

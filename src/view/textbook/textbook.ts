@@ -617,6 +617,9 @@ window.onload = function textbookInit() {
     textbook.getData();
     textbook.eventListen();
     local();
+    if (localStorage.flag) {
+        localStorage.removeItem('flag');
+    }
     const goTopBtn = document.querySelector('.back_to_top') as HTMLElement;
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;

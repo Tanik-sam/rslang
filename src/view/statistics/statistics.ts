@@ -76,5 +76,8 @@ class Statistics {
 window.onload = function textbookInit() {
     const statistics = new Statistics();
     statistics.getStatistics();
+    if (localStorage.flag) {
+        localStorage.removeItem('flag');
+    }
     local();
 };
