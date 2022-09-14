@@ -7,6 +7,7 @@
   }
 
 }
+
 .about__wrapper{
   display: flex;
   flex-direction: column;
@@ -15,6 +16,11 @@
   padding: 0;
   width: 1000px;
   font-weight: 600;
+  &>h2 {
+    @include media-mobile {
+      text-align: center;
+    }
+  }
 }
 .members {
 		&__container {
@@ -33,6 +39,10 @@
       display: flex;
       padding: 1rem;
       gap: 30px;
+      @include media-mobile {
+        flex-direction: column;
+        align-items: center;
+      }
 		}
 }
 .item {
@@ -53,6 +63,7 @@
       background-image: url("./assets/img/about_1.jpg");
       background-size:cover;
       background-repeat: no-repeat;
+
 		&--2{
       background-image: url("./assets/img/about_2.jpg");
     }
