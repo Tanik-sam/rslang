@@ -12,7 +12,6 @@ export function local() {
                     item.classList.remove('learnedWors');
                 });
             }
-            localStorage.removeItem('flag');
             (document.querySelector('#loginButton') as HTMLElement).innerHTML = 'Вход';
         });
     }
