@@ -1,5 +1,7 @@
 # RSLANG - приложение для изучения английского языка
 
+[**Figma**](https://www.figma.com/file/4jPiyo9YJfTs91ZpBBgq55/RSS-Lang-prototype)
+
 [**Deploy**](https://rslang-tanik-sam.netlify.app/)
 
 ## Для сборки проекта использовался Webpack
