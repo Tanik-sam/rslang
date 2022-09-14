@@ -5,7 +5,14 @@ export function local() {
         (document.querySelector('#loginButton') as HTMLElement).addEventListener('click', () => {
             localStorage.removeItem('currentUserName');
             localStorage.removeItem('currentUserEmail');
+            localStorage.removeItem('currentUserToken');
             localStorage.removeItem('learned');
+            if (document.querySelectorAll('.learnedWors')) {
+                Array.from(document.querySelectorAll('.learnedWors')).forEach((item) => {
+                    item.classList.remove('learnedWors');
+                });
+            }
+            localStorage.removeItem('flag');
             (document.querySelector('#loginButton') as HTMLElement).innerHTML = 'Вход';
         });
     }
