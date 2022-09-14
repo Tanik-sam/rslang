@@ -241,6 +241,7 @@ class SprintGame {
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: true });
                     this.newLearnedWords += 1;
+                    this.currentSeries += 1;
                 }
                 this.rightCount += 1;
                 this.successAttempts += 1;
@@ -249,9 +250,12 @@ class SprintGame {
             });
             btnWrong?.addEventListener('click', async () => {
                 this.wrongCount += 1;
-                this.currentSeries = 0;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: false });
+                    if (this.currentSeries > this.maxSeries) {
+                        this.maxSeries = this.currentSeries;
+                    }
+                    this.currentSeries = 0;
                 }
                 this.arrowColor = this.colorRed;
                 this.draw(this.group);
@@ -266,15 +270,19 @@ class SprintGame {
                     this.userAnswers.push({ word, guessedRight: true });
                     this.newLearnedWords += 1;
                     this.successAttempts += 1;
+                    this.currentSeries += 1;
                 }
                 this.arrowColor = this.colorGreen;
                 this.draw(this.group);
             });
             btnRight?.addEventListener('click', async () => {
                 this.wrongCount += 1;
-                this.currentSeries = 0;
                 if (word) {
                     this.userAnswers.push({ word, guessedRight: false });
+                    if (this.currentSeries > this.maxSeries) {
+                        this.maxSeries = this.currentSeries;
+                    }
+                    this.currentSeries = 0;
                 }
                 this.arrowColor = this.colorRed;
                 this.draw(this.group);
@@ -323,10 +331,14 @@ class SprintGame {
         endBtn.addEventListener('click', () => {
             this.allAttempts = this.userAnswers.length;
             if (localStorage.currentUserName) {
-                this.checkAndAddUserWord(this.userAnswers);
-                this.checkAndUpdateStatistics();
+                (async () => {
+                    await this.checkAndAddUserWord(this.userAnswers);
+                    await this.checkAndUpdateStatistics();
+                    document.location.reload();
+                })();
+            } else {
+                document.location.reload();
             }
-            document.location.reload();
         });
 
         const moreBtn: HTMLButtonElement = document.createElement('button');
@@ -446,6 +458,8 @@ class SprintGame {
             } else {
                 maxSeries = this.userStats.optional.sprintSeria;
             }
+        } else {
+            maxSeries = this.maxSeries;
         }
         const { audioSuc } = this.userStats.optional;
         const { audioAll } = this.userStats.optional;
