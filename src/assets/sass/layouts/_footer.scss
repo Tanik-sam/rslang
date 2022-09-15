@@ -1,0 +1,72 @@
+.footer {
+    background: $color-primary;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 0.4rem 0 0.5rem 0;
+
+    &--game{
+      display: none;
+    }
+}
+
+.footer__wrapper {
+    @include media-tablet {
+        padding-left: 1rem;
+    }
+}
+.footer-navigation{
+    align-items: center;  
+    &__title{
+      color: #000;
+    }
+   
+}
+
+.footer__link{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: right;
+    @include media-tablet {
+      justify-content: center;
+    }
+    @include media-mobile {
+      gap:0.4rem;
+      font-size: 0.8rem;
+      flex-wrap: nowrap;
+      justify-content: center;
+    }
+
+}
+.person-link{
+white-space: nowrap;
+text-decoration: none;
+color: $color-dark;
+font-weight: 600;
+transition: .3s;
+&:hover{
+  color: $color-additional;
+}
+}
+.logo-object{
+    background-image: url("./assets/icons/logo_rss.svg");
+    width: 136px;
+    height: 50px;
+    background-size: auto;
+}
+.fa-github-alt {
+    font-size: 2rem;
+    color: $color-dark;
+}
+.footer-navigation__column{
+  display: block;
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+
+}
+.logo-object:hover{
+  transition: .3s;
+  filter: invert(100);
+}

@@ -1,0 +1,135 @@
+.textbook-body{
+    background-color: $color-light;
+    width: 100%;
+}
+.textbook-body_wrapper{
+    display:flex;
+    flex-direction:row;
+    margin: auto;
+}
+.textbook-article{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:0.5rem 1rem 1rem 1rem;
+    background-color: white;
+    @include screen610 {
+        padding:0.5rem 0.3rem 0.3rem 0.3rem;
+    }
+}
+.textbook-words {
+    width:100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.textbook-words__word {
+    margin-top: 0.5rem;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $color-ivory;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding: 1.8rem 2.4rem 1.8rem 2.4rem;
+    @include screen610 {
+        flex-direction: column-reverse;
+        padding: 0.7rem 0.8rem 0.7rem 0.8rem;
+    }
+    @extend %transition;
+    &:hover {
+        background-color: $color-ivory-hover;
+    }
+}
+.textbook-words__word-name, .textbook-words__word-vol{
+    display: inline;
+    @extend %font-prim;
+    font-size: 1.6rem;
+    color: $color-dark;
+    font-weight: 300;
+    padding-right:0.5rem;
+    &_red{
+        color:red;
+        font-weight: 600;
+    }
+    @include screen610 {
+        font-size: 1.1rem;
+    }
+}
+.transparent-btn {
+    background-color: transparent;
+    border: none;
+}
+.textbook-word__setence, .textbook-word__setence_tr, textbook-words__word-btn{
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 550;
+    font-size: 1.2rem;
+    color: $color-dark;
+    &_ex{
+        font-weight: 400;
+        font-size: 1.2rem;
+        @include screen610 {
+            font-size: 0.8rem;
+        }
+    }
+    @include screen610 {
+        font-size: 0.8rem;
+    }
+}
+.textbook-word__stat{
+    padding-top:1rem;
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 0.9rem;
+    color: $color-dark;
+}
+.textbook-words__view{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.textbook-words__image{
+    width: 10rem;
+    height: 10rem;
+    background-image: url('./assets/img/main_page.png');
+    background-size: cover;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    margin: 1rem;
+    @include screen610 {
+        width: 8rem;
+        height: 8rem;
+    }
+}
+.textbook-words__buttons{
+    margin: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap:1rem;
+}
+.textbook-words__params{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.disabled{
+    color: $color-gray_dark;
+    &:hover {
+        transform: scale(1);
+        background: $color-gray;
+    }
+}
+.textbook-words__difficult {
+    color: $color-light_red;
+}
+.textbook-words__learned {
+    color: $color-light_green;
+}

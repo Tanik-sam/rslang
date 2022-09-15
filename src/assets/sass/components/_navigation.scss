@@ -1,0 +1,145 @@
+.navigation {
+    display: flex;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+.navigation__link{
+    text-decoration: none;
+    color: $color-dark;
+    font-family: $font_sansserif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    @include screen1200 {
+      font-size: 1rem;  
+  }
+}
+.navigation__link-item {
+    list-style: none;
+    padding: 0 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    @extend %transition;
+    &:hover {
+        color: $color-additional;
+    }
+    &--active{
+      color: #fff;
+    }
+    @include screen1200 {
+      padding: 0 6px;
+  }
+  @include screen900 {
+    padding: 0 4px;
+}
+@include media-tablet {
+  padding-bottom: 1rem;
+}
+}
+.header__navigation {
+    @include media-tablet {
+        display: none;
+    }
+}
+.crumbs {
+  display: flex;
+  padding: 0 20px;
+  max-width: fit-content;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  &__item {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.5rem;
+    transition: .3s;
+    &:hover{
+      
+      color: $color-additional;
+    }
+  &--active{
+    cursor: default;
+    color: $color-additional;
+
+  }
+  &--black{
+    color: #000;
+
+  }
+  }
+  div{
+    font-size: 2rem;
+  }
+}
+
+#menu__toggle {
+  opacity: 0;
+}
+
+.menu__btn {
+  visibility: hidden;
+  display: flex; 
+  align-items: center; 
+  margin: 0.2rem 1.2rem 0.5rem 0;
+  position: fixed;
+  top: 10px;
+  left: 1rem;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  z-index: 1;
+  @include media-tablet {
+      visibility:visible;
+  }
+}
+
+.menu__btn > span,
+.menu__btn > span::before,
+.menu__btn > span::after {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: $color-dark;
+}
+.menu__btn > span::before {
+  content: '';
+  top: -8px;
+}
+.menu__btn > span::after {
+  content: '';
+  top: 8px;
+}
+
+.menu__box {
+  display: block;
+  position: fixed;
+  visibility: hidden;
+  top: 0;
+  left: -100%;
+  width: 290px;
+  height: 100%;
+  margin: 0;
+  padding: 80px 0;
+  list-style: none;
+  text-align: center;
+  background-color: $color-like-primary;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+  @extend %transition;
+}
+
+#menu__toggle:checked ~ .menu__btn > span {
+  transform: rotate(45deg);
+}
+#menu__toggle:checked ~ .menu__btn > span::before {
+  top: 0;
+  transform: rotate(0);
+}
+#menu__toggle:checked ~ .menu__btn > span::after {
+  top: 0;
+  transform: rotate(90deg);
+}
+#menu__toggle:checked ~ .menu__box {
+  visibility: visible;
+  left: 0;
+}
+

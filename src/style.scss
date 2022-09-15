@@ -1,0 +1,96 @@
+@import "./assets/sass/base/normalize";
+@import "./assets/sass/abstract/constants";
+@import "./assets/sass/abstract/placeholders";
+@import "./assets/sass/abstract/mixins";
+@import "./assets/sass/base/normalize";
+@import "./assets/sass/base/buttons";
+@import "./assets/sass/components/navigation";
+@import "./assets/sass/components/promo";
+@import "./assets/sass/components/features";
+@import "./assets/sass/layouts/wrapper";
+@import "./assets/sass/layouts/header";
+@import "./assets/sass/components/textbook-header";
+@import "./assets/sass/components/aside";
+@import "./assets/sass/components/modal";
+@import "./assets/sass/components/pagination";
+@import "./assets/sass/components/back-to-top";
+@import "./assets/sass/layouts/columns";
+@import "./assets/sass/layouts/textbook";
+@import "./assets/sass/layouts/footer";
+@import "./assets/sass/layouts/registration";
+@import "./assets/sass/base/base";
+@import "./assets/sass/components/audio-challenge";
+@import "./assets/sass/components/sprint";
+@import "./assets/sass/components/about";
+@import "./assets/sass/components/statistics";
+
+h1 {
+    margin-top: 0.7em 0 0.4rem 0;
+    font-weight: bolder;
+    color: $color-dark;
+    font-family: $font_sansserif;
+    @include screen1200 {
+        font-size: 1.5rem;
+    }
+    @include screen900 {
+        font-size: 1.3rem;
+    }
+}
+
+h2 {
+    font: {
+        family: $font_sansserif;
+        style: normal;
+        size: 2.5rem;
+        weight: 600;
+        color: $color-dark;
+    }
+
+    margin: 0 0 0.5rem 0;
+    color: $color-dark;
+    line-height: 130%;
+    @include screen1200 {
+        font-size: 1.8rem;
+    }
+}
+
+h3 {
+    font: {
+        family: $font_sansserif;
+        style: normal;
+        size: 1.8rem;
+        weight: 600;
+        color: $color-light_blue;
+    }
+
+    letter-spacing: 0.06em;
+    line-height: 100%;
+    text-align: left;
+    color: $color-additional;
+    margin: 1rem 0;
+    @include screen1200 {
+        font-size: 1.5rem;
+        margin: 0.5rem 0;
+    }
+}
+
+h4 {
+    font-family: $font_sansserif;
+    font-style: normal;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    margin: 0px;
+    padding: 0px;
+}
+
+h5 {
+    margin: 0;
+    font-family: $font_sansserif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 110%;
+    letter-spacing: 0.06em;
+    color: $color-additional;
+}

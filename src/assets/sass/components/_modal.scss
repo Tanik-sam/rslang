@@ -1,0 +1,121 @@
+.overlay {
+    z-index: 9999;
+    position: fixed;
+    background-color: $color-overlay;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.modal-window {
+    position: relative;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: $color-primary;
+    width: 30%;
+    top: 14vw;
+    min-height: 500px;
+    max-height: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.modalSet-window{
+    position: relative;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: $color-primary;
+    width: 30%;
+    top: 14vw;
+    min-width: 320px;
+    min-height: 200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:2rem;
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    color: $color-dark;
+    @include screen610 {
+        top: 20vw;
+        min-width: 270px;
+        font-weight: 600;
+        font-size: 1rem;
+        line-height: 1rem;
+        gap:1rem;
+    }
+}
+.modal-window__img>.fa-user{
+    font-size: 10rem;
+    color: white;
+}
+
+.modal-window__info {
+    text-align: center;
+    margin: auto;
+    @extend %font-prim;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 2.2rem;
+    color: $color-dark;
+    @include screen610 {
+        font-size: 1rem;
+        line-height: 1.2rem;
+    }
+}
+.modal-window_name {
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+    color: white;
+}
+.checkbox {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	margin: 10px 0 0 20px;
+}
+.checkbox + label {
+	position: relative;
+	padding: 0 0 0 60px;
+	cursor: pointer;
+}
+.checkbox + label:before {
+	content: '';
+	position: absolute;
+	top: 8px;
+	left: 0;
+	width: 50px;
+	height: 26px;
+	border-radius: 13px;
+	background: #CDD1DA;
+	box-shadow: inset 0 2px 3px rgba(0,0,0,.2);
+	transition: .2s;
+}
+.checkbox + label:after {
+	content: '';
+	position: absolute;
+	top: 10px;
+	left: 2px;
+	width: 22px;
+	height: 22px;
+	border-radius: 10px;
+	background: #FFF;
+	box-shadow: 0 2px 5px rgba(0,0,0,.3);
+	transition: .2s;
+}
+.checkbox:checked + label:before {
+	background: $color-additional;
+}
+.checkbox:checked + label:after {
+	left: 26px;
+}
+.checkbox:focus + label:before {
+	box-shadow: inset 0 2px 3px rgba(0,0,0,.2), 0 0 0 3px $color-dark-pink;
+}

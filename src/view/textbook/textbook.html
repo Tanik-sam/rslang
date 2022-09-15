@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./favicon.ico" sizes="any">
+    <title>Textbook</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header class="header">
+        <div class="wrapper header__wrapper">
+          <div class="header__logo-line">
+            <div class="hamburger-menu">
+              <input id="menu__toggle" type="checkbox" />
+              <label class="menu__btn" for="menu__toggle">
+                <span></span>
+              </label>
+              <ul class="menu__box">
+                <a href="index.html" class="navigation__link">
+                  <li class="navigation__link-item">Главная</li>
+                </a>
+                <a href="textbook.html" class="navigation__link">
+                  <li class="navigation__link-item navigation__link-item--active">Учебник</li>
+                </a>
+                <a href="audio-challenge.html" class="navigation__link">
+                  <li class="navigation__link-item">Аудиовызов</li>
+                </a>
+                <a href="sprint.html" class="navigation__link">
+                  <li class="navigation__link-item">Спринт</li>
+                </a>
+                <a href="statistics.html" class="navigation__link">
+                  <li class="navigation__link-item">Статистика</li>
+                </a>
+                <a href="about.html" class="navigation__link">
+                  <li class="navigation__link-item">О нас</li>
+                </a>
+              </ul>
+            </div>
+            <a href="index.html" class="logo">
+              <div class="logo__wrapper">
+                <div class="logo__image"></div>
+                <h1>RSLang</h1>
+              </div>
+            </a>
+          </div>
+          <nav class="header__navigation">
+            <ul class="navigation">
+              <a href="index.html" class="navigation__link">
+                <li class="navigation__link-item">Главная</li>
+              </a>
+              <a href="textbook.html" class="navigation__link">
+                <li class="navigation__link-item navigation__link-item--active">Учебник</li>
+              </a>
+              <a href="audio-challenge.html" class="navigation__link">
+                <li class="navigation__link-item">Аудиовызов</li>
+              </a>
+              <a href="sprint.html" class="navigation__link">
+                <li class="navigation__link-item">Спринт</li>
+              </a>
+              <a href="statistics.html" class="navigation__link">
+                <li class="navigation__link-item">Статистика</li>
+              </a>
+              <a href="about.html" class="navigation__link">
+                <li class="navigation__link-item">О нас</li>
+              </a>
+            </ul>
+          </nav>
+          <div class="header__buttons">
+            <a class="button_login" href="registration.html">
+              <div id='registration' class="button button_white div-button"><span class ='hidden_span' >Регистрация </span><i class="fa-solid fa-user-plus hidden_awe"></i></div>
+            </a>
+            <a class="button_login" href="login.html">
+              <div class="button button_colored div-button" id = 'loginButton'>Вход</div>
+            </a>
+  
+          </div>
+        </div>
+      </header>
+    <section class="textbook-header">
+        <div class="wrapper textbook-header__wrapper">
+            <div class="textbook-header__logo-line">
+                <a href="#" class="logo">
+                    <h1>Учебник</h1>
+            </div>
+            </a>
+            <div class="textbook-header__buttons">
+                    <a class = "button_login link-audio" href="audio-challenge.html"><div id='audio'  class="button button_violett">Аудиовызов</div></a>
+                    <a class = "button_login link-sprint" href="sprint.html"><div id='sprint' class="button button_violett">Спринт</div></a>
+                    <button id='settings' class="button button_blue">Настройки</button>
+            </div>
+        </div>
+
+        </div>
+    </section>
+    <section class="textbook-body">
+        <div class="textbook-body_wrapper wrapper">
+            <aside class="levels">
+                <div class="level level_elementary">A1 Elementary</div><span class = "level_name level_elementary">A1</span>
+                <div class="level level_preIntermediate">A2 Pre-Intermediate</div><span class = "level_name level_preIntermediate">A2</span>
+                <div class="level level_intermediate">B1 Intermediate</div><span class = "level_name level_intermediate">B1</span>
+                <div class="level level_upperIntermediate">B2 Upper-Intermediate</div><span class = "level_name level_upperIntermediate">B2</span>
+                <div class="level level_advanced">C1 Advanced</div><span class = "level_name level_advanced">C1</span>
+                <div class="level level_proficiency">C2 Proficiency</div><span class = "level_name level_proficiency">C2</span>
+                <div class="level level_difficult">Сложные слова</div><span class = "level_name level_difficult"><i class="fa-solid fa-graduation-cap level_difficult"></i></span>
+            </aside>
+            <article class="textbook-article">
+                    <div class="pagination">
+                        <button class="pagination__item pagination_back">&lt;</button>
+                        <button class="pagination__item pagination_page" id="p_0">1</button>
+                        <button class="pagination__item pagination_page" id="p_1">2</button>
+                        <button class="pagination__item pagination_page" id="p_2">3</button>
+                        <button class="pagination__item pagination_page" id="p_3">4</button>
+                        <button class="pagination__item pagination_page" id="p_4">5</button>
+                        <span class="pagination__item_dots">&emsp;...&emsp;</span>
+                        <button class="pagination__item pagination_page" id="p_29">30</button>
+                        <button class="pagination__item pagination_front">&gt;</button>
+                    </div>
+                <div id ="words-container">
+                </div>
+            </article>
+        </div>
+    </section>
+    <a class="back_to_top" title="Наверх">&#9650;</a>
+    <footer class="footer">
+      <div class="wrapper footer__wrapper">
+
+          <div class="footer-navigation layout-3-column">
+              <div class="footer-navigation__column">
+                  <h4 class="footer-navigation__title">©2022 RSLang</h4>
+              </div>
+              <div class="footer-navigation__column">
+                  <a href="https://rs.school/" class="logo-footer">
+                      <div class="logo-object">
+                      </div>
+                  </a>
+
+              </div>
+              <div class="footer-navigation__column">
+                  <div class="footer__link">
+                      <i class="fa-brands fa-github-alt"></i>
+                      <div><a class="person-link" href="https://github.com/S4mm4ael">S4mm4el</a></div>
+                      <div><a class="person-link" href="https://github.com/Sammily">Sammily</a></div>
+                      <div><a class="person-link" href="https://github.com/Tanik-sam">Tanik-sam</a></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </footer>
+    <template id="textbookWords">
+        <div class="textbook-words">
+            <div class="textbook-words__word">
+                <div>
+                    <p class="textbook-words__word-name"><span class='textbook-words__word-name_red'>alcohol</span>
+                        <span class='textbook-words__word-trans'>[ǽlkəhɔ̀ːl] алкоголь</span></p><button class ="transparent-btn textbook-words__word-btn"> <i
+                        class="textbook-words__word-vol fa-solid fa-volume-high"></i></button>
+                    <p class="textbook-word__setence">Alcohol is a type of drink that can make people drunk.</p>
+                    <p class="textbook-word__setence_tr">Алкоголь - это тип напитка, который может сделать людей
+                        пьяными</p>
+                    <p class="textbook-word__setence_ex">A person should not drive a car after he or she has
+                        been drinking alcohol.</p>
+                    <p class="textbook-word__setence_tr_ex">Человек не должен водить машину после того, как он
+                        выпил алкоголь.</p>
+                    <p class="textbook-word__stat">Правильных ответов: <span class="stat_true">0</span>.
+                        Неправильных ответов: <span class="stat_false">0</span>.</p>
+                </div>
+                <div class="textbook-words__view">
+                    <div class="textbook-words__image"></div>
+                    <div class="textbook-words__buttons">
+                        <button class="button button_gray difficult">Сложное</button>
+                        <button class="button button_gray learned">Изучено</button>
+                    </div>
+                    <div class="textbook-words__params">
+                        <div class="textbook-words__difficult"></div>
+                        <div class="textbook-words__learned"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+    </template>
+    <template id="modalSet">
+        <div class="overlay">
+            <div class="modalSet-window">
+                <input type="checkbox" class="checkbox" id="checkbox" checked />
+                <label for="checkbox">Отображать перевод слов и предложений?</label>
+                    <button id="exit" class="button button_colored div-button">Сохранить настройки</button>
+            </div>
+    </template>
+</body>
+
+</html>

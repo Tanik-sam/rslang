@@ -1,0 +1,40 @@
+.back_to_top {
+  position: fixed;
+  @extend %font-prim;
+  padding-top: 20px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 2.2rem;
+  bottom: 80px;
+  right: 40px;
+  z-index: 9999;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  line-height: 30px;
+  background: $color-primary;
+  color: $color-gray_dark;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+  display: none;
+  @include screen610 {
+    padding-top: 6px;
+    font-size: 1rem;
+    line-height: 1.1rem;
+    bottom: 40px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+}
+  &:hover {
+    color: white;
+    background: $color-gray;
+    transform: scale(1.1);
+}
+}
+
+.back_to_top-show {
+  display: block;
+}
