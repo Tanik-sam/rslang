@@ -4,6 +4,8 @@
 
 [**Deploy**](https://rslang-tanik-sam.netlify.app/)
 
+[**Presentation**](https://rslang-tanik-sam-presentation.netlify.app/)
+
 ## Для сборки проекта использовался Webpack
 
 **достоинства**
